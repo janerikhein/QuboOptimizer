@@ -109,6 +109,23 @@ mod qubo_start_heuristic {
 
         fn get_solution_greedy_rounding(qubo: &QuboInstance, hint: &f32) -> Array1<bool> {
             todo!()
+            // let n = qubo.nvars();
+            // let mut x = vec![0.5; n];
+            // let mut min = func(&triang, &x);
+            // for i in 0..n {
+            //     x[i] = 0.0;
+            //     let tmp0 = func(&triang, &x);
+            //     x[i] = 1.0;
+            //     let tmp1 = func(&triang, &x);
+            //     if tmp0 < tmp1 {
+            //         min = tmp0;
+            //         x[i] = 0.0;
+            //     }
+            //     else {
+            //         min = tmp1;
+            //     }
+            // }
+            // min
         }
     }
 
