@@ -13,7 +13,7 @@ mod qubo {
         flip_values: Option<Array1<f64>>,
     }
 
-    // TODO: Discuss whther should allow for generic types instead of only f64.
+    // TODO: Discuss whether should allow for generic types instead of only f64.
     impl QuboInstance {
         pub fn new(q: Array2<f64>, solution: Option<Array1<bool>>) -> QuboInstance {
             let mut inst = QuboInstance { q, solution: None, obj_val: None, flip_values: None };
@@ -21,6 +21,10 @@ mod qubo {
                 inst.set_solution(solution.unwrap());
             }
             inst
+        }
+
+        pub fn from_file(filename: &str) -> QuboInstance {
+            todo!()
         }
 
         // TODO: test this
@@ -195,6 +199,9 @@ mod tabu_search {
         last_improved: u32,
         // tabu tenures, i.e. move x is tabu if tabu[x] >= it
         tabu: Array1<u32>,
+        // Cached tabu state of last global improvement
+        tabu_last_improved : Array1<u32>,
+        // Cached tabu state after last
         // swap frequency count
         swap_count: Array2<u32>,
         // current search mode of the phase
@@ -203,6 +210,36 @@ mod tabu_search {
         rng: StdRng,
         // constant search parameters
         search_parameters: SearchParameters,
+    }
+
+    impl TabuSearchState {
+        fn initialize(qubo: QuboInstance, search_parameters: SearchParameters) -> TabuSearchState {
+            todo!()
+        }
+
+        fn initialize_with_defaults(qubo: QuboInstance, seed: Option<u64>) -> TabuSearchState {
+            let search_parameters = SearchParameters::default_parameters();
+            if seed.is_some() {
+                let search_parameters = search_parameters.set_fixed_seed(seed.unwrap());
+            }
+            TabuSearchState::initialize(qubo, search_parameters)
+        }
+
+        fn objective_dif(&self, flip_index: u32) -> f64 {
+            self.qubo.get_obj_delta_on_flip(flip_index) + match self.search_mode {
+                SearchMode::Default => 0.0,
+                SearchMode::Diversify(freq_pen) => self.frequency_penalty_cost(flip_index, freq_pen)
+            }
+        }
+
+        fn frequency_penalty_cost(&self, flip_index: u32, penalty_factor: f64) -> f64 {
+            todo!()
+        }
+    }
+
+    fn tabu_search(filename: &str) {
+        let qubo = QuboInstance::from_file(filename);
+        let mut search_state = TabuSearchState::initialize_with_defaults(qubo, Some(42));
     }
 }
 
