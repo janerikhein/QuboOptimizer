@@ -1,5 +1,4 @@
 mod qubo {
-    //TODO: implement preprocessing rules for QuboInstance
     use ndarray::{Array1, Array2};
 
     pub struct QuboInstance {
@@ -138,6 +137,9 @@ mod tabu_search {
     use ndarray::{Array1, Array2};
     use rand::rngs::StdRng;
     use crate::qubo::QuboInstance;
+    use ndarray::{Array1, Array2};
+    use rand::rngs::StdRng;
+    use crate::qubo::QuboInstance;
 
     enum SearchMode {
         // Default search mode using standard objective
@@ -182,6 +184,12 @@ mod tabu_search {
             }
         }
 
+    enum SearchMode {
+        // Default search mode using standard objective
+        Default,
+        // Diversification mode using modified objective with a given frequency penalty factor
+        Diversify(f64),
+    }
         fn set_fixed_seed(self, seed: u64) -> SearchParameters {
             SearchParameters {
                 seed: Some(seed),
@@ -190,6 +198,26 @@ mod tabu_search {
         }
     }
 
+    struct SearchParameters {
+        // Minimum number of iterations a performed move is marked tabu
+        min_tabu_length: u32,
+        // Minimum number of iterations a performed move is marked tabu, relative to problem size
+        tabu_length_rel: f64,
+        // max random offset for tabu length (uniformly chosen), i.e the actual length of the tabu tenure is given by
+        // max(<min_tabu_length>, <tabu_length_rel> * n) + Rand(0,...,<max_tabu_length_offset>)
+        max_tabu_length_offset: u32,
+        // Maximum number of non-improving moves until default phase terminates
+        default_non_improvement_threshold: u32,
+        // Maximum number of non-improving moves until diversification phase terminates
+        diversify_non_improvement_threshold: u32,
+        // base factor for penalizing frequently activated/deactivated entries during diversification
+        freq_penalty_base: f64,
+        // scale factor by which frequency penalty gets increases after unsuccessful phase, i.e. a default phase, where
+        // no global improvement was found and the search returned again to previous local maximum
+        freq_penalty_scale: f64,
+        // seed for random number generator
+        seed: Option<u64>,
+    }
     struct TabuSearchState {
         // qubo instance with current solution
         qubo: QuboInstance,
@@ -216,6 +244,28 @@ mod tabu_search {
         fn initialize(qubo: QuboInstance, search_parameters: SearchParameters) -> TabuSearchState {
             todo!()
         }
+    impl SearchParameters {
+        //TODO: Read default parameters from file instead of hardcoding
+        fn default_parameters() -> SearchParameters {
+            SearchParameters {
+                min_tabu_length: 5,
+                tabu_length_rel: 0.01,
+                max_tabu_length_offset: 10,
+                default_non_improvement_threshold: 50,
+                diversify_non_improvement_threshold: 5,
+                freq_penalty_base: 0.1,
+                freq_penalty_scale: 1.5,
+                seed: None,
+            }
+        }
+
+        fn set_fixed_seed(self, seed: u64) -> SearchParameters {
+            SearchParameters {
+                seed: Some(seed),
+                ..self
+            }
+        }
+    }
 
         fn initialize_with_defaults(qubo: QuboInstance, seed: Option<u64>) -> TabuSearchState {
             let search_parameters = SearchParameters::default_parameters();
@@ -241,7 +291,22 @@ mod tabu_search {
         let qubo = QuboInstance::from_file(filename);
         let mut search_state = TabuSearchState::initialize_with_defaults(qubo, Some(42));
     }
+    struct TabuSearchState {
+        // qubo instance with current solution
+        qubo: QuboInstance,
+        // search iteration
+        it: u32,
+        // last iteration with global improvement
+        last_improved: u32,
+        // tabu tenures, i.e. move x is tabu if tabu[x] >= it
+        tabu: Array1<u32>,
+        // swap frequency count
+        swap_count: Array2<u32>,
+        // current search mode of the phase
+        search_mode: SearchMode,
+        // Random number generator
+        rng: StdRng,
+        // constant search parameters
+        search_parameters: SearchParameters,
+    }
 }
-
-
-fn main() {}
