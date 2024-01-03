@@ -6,13 +6,12 @@ mod qubo {
         q: Array2<f64>,
         // boolean solution vector
         solution: Option<Array1<bool>>,
-        // objective value
+        // objective value, to be minimized
         obj_val : Option<f64>,
-        // objective changes when flipping variables
+        // objective changes to obj_val when flipping variables
         flip_values : Option<Array1<f64>>,
     }
 
-    // TODO: Discuss whther should allow for generic types instead of only f64.
     impl QuboInstance {
         pub fn new(q: Array2<f64>, solution: Option<Array1<bool>>) -> QuboInstance {
             let mut inst = QuboInstance {q, solution: None, obj_val: None, flip_values: None};
@@ -46,6 +45,11 @@ mod qubo {
         pub fn nvars(&self) -> u32 {
             // TODO: return size of Q, i.e. number of rows or columns
             todo!()
+        }
+
+        // TODO: test this
+        pub fn get_matrix(&self) -> Array2 {
+            self.q
         }
 
         pub fn get_obj(&self) -> f64 {
@@ -86,7 +90,7 @@ mod qubo_start_heuristic {
         Random,
         // Greedy rounding of fractional constant start solution [x,x,x...] where 0<x<1 is a parameter
         // TODO: to be implemented, parmeter is just placeholder
-        GreedyRounding(f32),
+        GreedyRounding(f64),
     }
 
     impl StartHeuristic {
@@ -107,25 +111,47 @@ mod qubo_start_heuristic {
             todo!()
         }
 
-        fn get_solution_greedy_rounding(qubo: &QuboInstance, hint: &f32) -> Array1<bool> {
-            todo!()
-            // let n = qubo.nvars();
-            // let mut x = vec![0.5; n];
-            // let mut min = func(&triang, &x);
-            // for i in 0..n {
-            //     x[i] = 0.0;
-            //     let tmp0 = func(&triang, &x);
-            //     x[i] = 1.0;
-            //     let tmp1 = func(&triang, &x);
-            //     if tmp0 < tmp1 {
-            //         min = tmp0;
-            //         x[i] = 0.0;
-            //     }
-            //     else {
-            //         min = tmp1;
-            //     }
-            // }
-            // min
+        /// This is O(n^2) TODO: Test
+        fn get_solution_greedy_rounding(qubo: &QuboInstance, hint: &f64) -> Array1<bool> {
+            let n = qubo.nvars();
+            let q = qubo.get_matrix();
+            let mut hint_vec = Array1::from_elem((n), hint);
+            //let mut diff = Array1::from_elem((n), 0.0);
+            let mut obj_val = 0.0;
+            // Calculate the obj_val for the entire hint vector in O(n^2)
+            for i in 0..n {
+                for j in 0..n {
+                    obj_val = q[i,j]*hint*hint;
+                }
+            }
+            // TODO: randomize array access via random permutation
+            let mut solution = Array1::from_elem((n), false);
+            for k in 0..n {
+                // subtract old "sum cross"
+                for i in 0..n {
+                    obj_val -= q[i,k]*hint_vec[i]*hint_vec[k];
+                }
+                for j in 0..n {
+                    if j == k { continue; } // already subtracted for [k,k]
+                    obj_val -= q[k,j]*hint_vec[j]*hint_vec[k];
+                }
+                // add new "sum cross" for hint_vec[k] = 0, which is 0
+                // add new "sum cross" for hint_vec[k] = 1
+                let mut obj_val_true = obj_val;
+                for i in 0..n {
+                    obj_val_true += q[i,k]*hint_vec[i]; // * 1
+                }
+                for j in 0..n {
+                    if j == k { continue; } // already added for [k,k]
+                    obj_val_true += q[k,j]*hint_vec[j]; // * 1
+                }
+                // Set solution at [k]
+                if obj_val_true < obj_val {
+                    solution[k] = true;
+                    obj_val = obj_val_true;
+                }
+            }
+            solution
         }
     }
 
