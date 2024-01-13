@@ -1,6 +1,0 @@
-1) QuboInstance
-2) Preprocessing
-3) StartHeristics
-4) TabuSearch
-5) Experiments
-6) Run Experiments: main.rs
