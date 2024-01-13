@@ -22,7 +22,7 @@ fn main() {
     if args.len() != 2 {
         panic!("usage: {} experiment_num", &args[0]);
     }
-    let experiment_num: u8 = args[2].parse().expect("No valid experiment_num");
+    let experiment_num: u8 = args[1].parse().expect("No valid experiment_num");
     // Match experiment_num with experiment function
     match experiment_num {
         1 => { experiments::example(); },
