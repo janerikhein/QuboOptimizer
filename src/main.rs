@@ -1,16 +1,33 @@
-/// Run QUBO heuristics tests 
-/// Paul Meinhold, Jan-Erik
+/// Run QUBO experiments
+/// Lukas Mehl, Paul Meinhold, Jan-Erik Hein
 /// 12.01.24 Scientific Computing 23/24
+/// Literature: https://pads.ccc.de/QUwrTGlwvn
 
-mod qubo;
-use qubo::{BinaryVector, Vector, Matrix, QuboInstance, QuboHeuristics};
+pub mod qubo;
+pub mod preprocess;
+pub mod start_heuristics;
+pub mod tabu_search;
+pub mod experiments;
+use std::env;
 
+/// NOTE:
+/// Look at experiments::example() to see how an experiment typically could
+/// do its work! That is my proposal for doing experiments.
+/// Maybe we can put the experiment functions inside an enum or struct,
+/// which can be called "Experiment" or something. But we cannot avoid the
+/// pattern matching below whatsoever.
 fn main() {
-    let matrix = Matrix::from_diag(&Vector::from_vec(vec![-3.0, 2.0, -2.0]));
-    let correct_solution = BinaryVector::from_vec(vec![true, false, true]);
-    let qubo = QuboInstance::new(matrix, 0.0);
-    let heur = QuboHeuristics::new(qubo);
-
-    //let solution = StartHeuristic::GreedyRounding(0.5).get_solution(&qubo);
-    //assert_eq!(solution, correct_solution);
+    // We use the standard arguments to define the experiment
+    let args: Vec<String> = env::args().collect();
+    if args.len() != 2 {
+        panic!("usage: {} experiment_num", &args[0]);
+    }
+    let experiment_num: u8 = args[2].parse().expect("No valid experiment_num");
+    // Match experiment_num with experiment function
+    match experiment_num {
+        1 => { experiments::example(); },
+        2 => { experiments::foo(); },
+        3 => { experiments::bar(); },
+        _ => { panic!("No valid experiment_num"); }
+    }
 }
