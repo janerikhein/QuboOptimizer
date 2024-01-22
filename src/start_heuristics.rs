@@ -1,8 +1,11 @@
 /// QUBO start heuristic enum
 
 use crate::qubo::*;
-use ndarray::{array, Array2};
 use ndarray_stats::QuantileExt;
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand::SeedableRng;
+use ndarray_rand::rand_distr::Uniform;
+use rand_pcg::Pcg32;
 
 /// Computes the "sum cross" of x^T@Q@x for index k efficiently: O(n)
 fn compute_sum_cross(mat: &Matrix, x: &BinaryVector, k: usize) -> Float {
@@ -37,22 +40,29 @@ fn vecf_to_vecb(x: Vector) -> BinaryVector {
 }
 
 pub enum StartHeuristic {
-    Random(),
+    Random(u64),
     GreedyRounding(Float),
 }
 impl StartHeuristic {
     pub fn get_solution(&self, qubo: &QuboInstance) -> BinaryVector {
         match self {
-            StartHeuristic::Random()
-                => { StartHeuristic::rand(qubo) },
+            StartHeuristic::Random(seed)
+                => { StartHeuristic::rand(qubo, seed) },
             StartHeuristic::GreedyRounding(hint)
                 => { StartHeuristic::round_greedy(qubo, hint) },
         }
     }
 
     /// Return a random start solution
-    fn rand(qubo: &QuboInstance) -> BinaryVector {
-        todo!()
+    fn rand(qubo: &QuboInstance, seed: &u64) -> BinaryVector {
+        let n = qubo.size();
+        let mut rng = Pcg32::seed_from_u64(*seed);
+        let mut solution = Vector::random_using(
+            n, Uniform::new(0.0, 1.0), &mut rng);
+        for i in 0..solution.len() {
+            solution[i] = solution[i].round();
+        }
+        vecf_to_vecb(solution)
     }
 
     /// Find best rounding at some index until all indices are rounded
@@ -61,7 +71,8 @@ impl StartHeuristic {
         let mat = qubo.get_matrix();
         let mut hint_vec = Vector::from_vec(vec![*hint; n]);
         // Changes on round of entry:
-        let mut dx_on_round = Array2::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
+        let mut dx_on_round =
+            Matrix::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
         // Compute initial dx
         for i in 0..n {
             // Round down
@@ -85,7 +96,7 @@ impl StartHeuristic {
             unvisited[k] = usize::MAX;
             // Update dx at unvisited columns to respect the rounding at k
             for i in &unvisited {
-                let i = *i as usize;
+                let i = *i;
                 if i == usize::MAX { continue; }
                 dx_on_round[[0, i]] -= (mat[[i,k]] + mat[[k,i]])*(*hint)*(*hint);
                 dx_on_round[[1, i]] -= (mat[[i,k]] + mat[[k,i]])*(*hint)*(*hint);
