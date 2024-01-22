@@ -48,9 +48,18 @@ impl QuboInstance {
         todo!();
     }
 
-    /// Computes the objective value for a given BinaryVector, inefficient?
+    /// Computes the objective value for a given BinaryVector
     pub fn compute_objective(&self, x: BinaryVector) -> Float {
-        todo!();
+        let n = self.mat.nrows();
+        let mut obj_val = 0.0;
+        for i in 0..n {
+            for j in i..n {
+                obj_val += self.get_entry_at(i, j)
+                    *(x[i] as u8 as Float)
+                    *(x[j] as u8 as Float);
+            }
+        }
+        obj_val
     }
 
     /// Returns matrix size, i.e. number of rows or columns
@@ -64,7 +73,9 @@ impl QuboInstance {
     }
 
     pub fn get_entry_at(&self, i: usize, j: usize) -> Float {
-        assert!(j >= i);
+        if j < i {
+            panic!("Don't access lower (0) entries of upper triangular\
+                matrix"); }
         self.mat[[i,j]]
     }
 }
