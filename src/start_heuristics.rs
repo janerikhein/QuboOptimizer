@@ -116,14 +116,18 @@ mod tests {
 
     #[test]
     fn test_greedy_rounding() {
-        let matrix = Matrix::from_shape_vec((3,3),
-            vec![1.0, 2.0, 3.0, 0.0, 4.0, 5.0, 0.0, 0.0, 6.0,]).unwrap();
+        let matrix = Matrix::from_shape_vec((6, 6),
+            vec![-5.0,  2.0, -10.0, -9.0,  3.0, -3.0,
+                  0.0,  3.0,   8.0,  8.0,  6.0,  0.0,
+                  0.0,  0.0,   0.0, -9.0,  7.0,  6.0,
+                  0.0,  0.0,   0.0,  5.0,  3.0,  8.0,
+                  0.0,  0.0,   0.0,  0.0, -5.0,  0.0,
+                  0.0,  0.0,   0.0,  0.0,  0.0,  0.0,]).unwrap();
         let qubo = QuboInstance::new(matrix, 0.0);
-
         let heur = StartHeuristic::GreedyRounding(0.5);
         let solution = heur.get_solution(&qubo);
-
-        let x = BinaryVector::from_vec(vec![false, false, false]);
+        let x = BinaryVector::from_vec(
+            vec![true, false, true, true, false, false]);
         assert_eq!(solution, x);
     }
 }

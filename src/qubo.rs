@@ -1,6 +1,10 @@
 /// QUBO instance struct and useful types
 
 use ndarray::{Array1, Array2};
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand::SeedableRng;
+use ndarray_rand::rand_distr::Uniform;
+use rand_pcg::Pcg32;
 
 /// Useful type definitions
 pub type Float = f64;
@@ -17,14 +21,26 @@ pub struct QuboInstance {
 impl QuboInstance {
     /// Default initilize
     pub fn new(mat: Matrix, baseline: Float) -> Self {
-        // TODO: Check for square and triangular
+        let n = mat.nrows();
+        for i in 0..n {
+            for j in 0..i {
+                if mat[[i, j]] != 0.0 { panic!("Matrix not upper triangular"); }
+            }
+        }
         Self { mat, baseline }
     }
 
-    /// Random matrix initilize
+    /// Instance with matrix having uniformly random entries in [-10, 10]
     pub fn new_rand(n: usize, density: Float) -> Self {
-        todo!();
-        //Self { mat, baseline }
+        let mut rng = Pcg32::seed_from_u64(42);
+        let mut mat = Matrix::random_using(
+            (n, n), Uniform::new(-10.0, 10.0), &mut rng);
+        for i in 0..n {
+            for j in 0..i {
+                mat[[i, j]] = 0.0;
+            }
+        }
+        Self { mat, baseline: 0.0 }
     }
 
     /// Initialize from problem instance file
