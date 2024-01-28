@@ -5,6 +5,15 @@ use ndarray::Array2;
 
 use crate::qubo::*;
 
+fn vecb_to_vecf(x: &BinaryVector) -> Vector {
+    let n = x.len();
+    let mut y = Vector::from_vec(vec![f64::MAX; n]);
+    for i in 0..n {
+        y[i] = if x[i] == true { 1. } else { 0. };
+    }
+    y
+}
+
 /// NOTE:
 /// These functions only serve as usage hints in the greater project context, as
 /// they could be used by the experiment functions.
@@ -49,32 +58,81 @@ struct SearchParameters {
 
 struct QuboEvaluator {
     matrix: Matrix,
-    size: u32,
-    active: BinaryVector
+    size: usize,
+    curr_solution: BinaryVector,
+    objective_deltas_on_flip: Vector,
+    objective_of_curr_solution: f64
 }
 
 
 
 impl QuboEvaluator {
 
+    fn new(matrix: Matrix, solution: BinaryVector) -> QuboEvaluator {
+        assert!(matrix.is_square());
+        assert_eq!(matrix.nrows(), solution.len());
+        let size = matrix.nrows();
+        let mut new = QuboEvaluator{matrix: matrix,
+            size: size,
+            curr_solution: Default::default(),
+            objective_deltas_on_flip: Default::default(),
+            objective_of_curr_solution: f64::MIN };
+        //one could also integrate set_solution into this function?
+        new.set_solution(solution);
+        new
+    }
+
+    pub fn get_matrix_entry_at(&self, i: usize, j: usize) -> f64 {
+        assert!(j >= i);
+        self.matrix[[i,j]]
+    }
+
     // objective delta when flipping a given index
-    fn get_objective_delta_on_flip(&self, flip_index: u32) -> f64 {
-        todo!()
+    fn get_objective_delta_on_flip(&self, flip_index: usize) -> f64 {
+        assert!(flip_index < self.size);
+        self.objective_deltas_on_flip[flip_index]
     }
 
     // current objective
-    fn get_objective(&self) -> f64 {
-
-        todo!()
+    fn get_objective_of_curr_solution(&self) -> f64 {
+        self.objective_of_curr_solution
     }
 
-    fn flip(&self, flip_index: u32) {
-
-        todo!()
+    fn flip(&mut self, flip_index: usize) {
+        self.objective_of_curr_solution += self.objective_deltas_on_flip[flip_index];
+        self.objective_deltas_on_flip[flip_index] = -self.objective_deltas_on_flip[flip_index];
+        for idx in 0..self.size {
+            let sigma = if self.curr_solution[idx] == self.curr_solution[flip_index] { 1. } else { -1. };
+            if idx < flip_index {
+                self.objective_deltas_on_flip[idx] += sigma * self.get_matrix_entry_at(idx, flip_index);
+            }
+            if idx > flip_index {
+                self.objective_deltas_on_flip[idx] += sigma * self.get_matrix_entry_at(flip_index, idx);
+            }
+        }
+        self.curr_solution[flip_index] = !self.curr_solution[flip_index];
     }
 
+    //sets curr_solution,  computes corresponding objective_deltas_on_flip and objective_of_curr_solution
     fn set_solution(&mut self, solution: BinaryVector) {
-        todo!()
+        assert_eq!(solution.len(), self.size);
+        self.curr_solution = solution;
+
+        let solution_f = vecb_to_vecf(&self.curr_solution);
+        self.objective_of_curr_solution = solution_f.dot(&self.matrix.dot(&solution_f));
+
+        self.objective_deltas_on_flip = Vector::from_vec(vec![f64::MIN; self.size]);
+        for i in 0..self.size {
+            let sigma = if self.curr_solution[i] == false { 1. } else { -1. };
+            self.objective_deltas_on_flip[i] = sigma * self.get_matrix_entry_at(i, i);
+            for j in 0..self.size {
+                if j == i {continue}
+                let x_j = (self.curr_solution[j] as usize) as f64;
+                let matrix_entry = if j < i {self.get_matrix_entry_at(j, i)}
+                                        else {self.get_matrix_entry_at(i, j)};
+                self.objective_deltas_on_flip[i] += sigma * matrix_entry * x_j;
+            }
+        }
     }
 }
 
@@ -102,16 +160,6 @@ impl SearchParameters {
         todo!()
         // Initialize search_paramters based on model_parameters and given instance, i.e. tabu_tenure <- tabu_ratio * model_size
 
-    }
-}
-
-impl QuboEvaluator {
-    fn new() {
-        todo!()
-    }
-
-    fn set_solution(&mut self, solution: BinaryVector) {
-        todo!()
     }
 }
 
@@ -208,7 +256,7 @@ impl TabuSearchState {
             // is best move found so far wrt. objective of the phase
             let is_best_local = orig_obj_delta + additional_penalty < best_obj_delta;
             // leads to best solution found throughout the search wrt. original objective
-            let is_best_global = self.qubo.get_objective() + orig_obj_delta < self.best_objective;
+            let is_best_global = self.qubo.get_objective_of_curr_solution() + orig_obj_delta < self.best_objective;
 
             if let (true, _, true) = (is_tabu, is_best_local, is_best_global) {
 
@@ -245,7 +293,7 @@ impl TabuSearchState {
         assert_eq!(self.phase_type, PhaseType::Diversification);
         let mut frequency_penalty_sum = 0;
         for i in 0..self.qubo.size {
-            if self.qubo.active[i] {
+            if self.qubo.curr_solution[i] {
                 if self.qubo.matrix[(flip_index, i)] != 0.0 {
                     frequency_penalty_sum += self.frequency_matrix[(flip_index, i)]
                 };
