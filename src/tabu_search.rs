@@ -1,6 +1,12 @@
 use std::mem::take;
 use std::time::Instant;
-use ndarray::Array2;
+use ndarray::{Array2, s};
+
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand::SeedableRng;
+use ndarray_rand::rand_distr::Uniform;
+use rand_pcg::Pcg32;
+
 /// QUBO tabu search functions
 
 use crate::qubo::*;
@@ -136,6 +142,51 @@ impl QuboEvaluator {
     }
 }
 
+//tests flip values for a "current" solution that is the zero vector
+#[test]
+fn test_qubo_evaluator_rand() {
+    let seed = 0;
+    let size = 10;
+    let (min, max) = (-10., 10.);
+    let mut rng = Pcg32::seed_from_u64(seed);
+    //todo: mir fällt hier auf, dass wir ja gar nicht so richtig ausnutzen, dass wir ne obere Dreiecksmatrix haben oder
+    let mut matrix = Matrix::random_using(
+        (size, size), Uniform::new(min, max), &mut rng);
+    //set entries to zero to make the matrix upper triangular
+    for row_idx in 0..size {
+        for column_idx in 0..row_idx {
+            matrix[[row_idx, column_idx]] = 0.;
+        }
+    }
+    let zero_vector = BinaryVector::from_vec(vec![false; size]);
+    let evaluator = QuboEvaluator::new(matrix.clone(), zero_vector);
+    assert_eq!(evaluator.get_objective_of_curr_solution(), 0.);
+    for i in 0..size {
+        assert_eq!(evaluator.get_objective_delta_on_flip(i), matrix[[i, i]]);
+    }
+}
+
+#[test]
+fn test_qubo_evaluator_small_example() {
+    let mut matrix = Matrix::from_shape_vec((3, 3),
+                                            vec![1., -2.,  -3.,
+                                                 0., 4., 5.,
+                                                 0., 0., -6.]).unwrap();
+    //set entries to zero to make the matrix upper triangular
+    for row_idx in 0..3 {
+        for column_idx in 0..row_idx {
+            matrix[[row_idx, column_idx]] = 0.;
+        }
+    }
+    let solution = BinaryVector::from_vec(vec![true, false, true]);
+    let evaluator = QuboEvaluator::new(matrix.clone(), solution);
+    assert_eq!(evaluator.get_objective_of_curr_solution(), -8.);
+    assert_eq!(evaluator.get_objective_delta_on_flip(0), 2.);
+    assert_eq!(evaluator.get_objective_delta_on_flip(1), 7.);
+    assert_eq!(evaluator.get_objective_delta_on_flip(2), 9.);
+}
+
+
 enum PhaseType {
     Search,
     Diversification
@@ -163,6 +214,7 @@ impl SearchParameters {
     }
 }
 
+/*
 impl TabuSearchState {
 
     fn new(qubo_instance: QuboInstance, model_parameters: ModelParameters, start_solution: BinaryVector) {
