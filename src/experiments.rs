@@ -23,10 +23,15 @@ pub fn example() {
     /// 2) Do preprocessing
     let qubo = preprocess::shrink(qubo);
     /// 3) Do start heursitic
-    let start_heuristic = StartHeuristic::GreedyRounding(0.5);
+    let start_heuristic = StartHeuristic::GreedyFromHint(0.5);
     let start_solution = start_heuristic.get_solution(&qubo);
     /// 4) Do tabu search heursitic
     let good_solution = tabu_search::tabu_search(&qubo, &start_solution);
+}
+
+///TODO: greedy_multiple_steps, 0.4-0.6, 0.2-0.8, 0.0-1.0
+pub fn test_greedy_from_vec() {
+    todo!();
 }
 
 /// Another experiment
