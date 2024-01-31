@@ -7,8 +7,8 @@ pub type Float = f64;
 pub type Vector = Array1<Float>;
 pub type Matrix = Array2<Float>;
 pub type BinaryVector = Array1<bool>;
-pub type IntegerVector = Array1<u32>;
-pub type IntegerMatrix = Array2<u32>;
+pub type IntegerVector = Array1<usize>;
+pub type IntegerMatrix = Array2<usize>;
 
 pub struct QuboInstance {
     // Upper triangular square matrix
