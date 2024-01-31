@@ -11,12 +11,12 @@ const AT_DN: usize = 0;
 const AT_UP: usize = 1;
 
 /// Computes the "sum cross" of x^T@Q@x for index k efficiently: O(n)
-fn compute_sum_cross_float(mat: &Matrix, x: &Vector, k: usize) -> f64 {
+fn compute_sum_cross(mat: &Matrix, x: &Vector, k: usize) -> f64 {
     assert!(k <= mat.nrows());
     let xk = x[k];
     let mut sum_cross = 0.0;
     for i in 0..k {
-        let xi = x[i]; // false => 0, true => 1
+        let xi = x[i];
         sum_cross += mat[[i, k]]*xi*xk;
         sum_cross += mat[[k, i]]*xi*xk;
     }
@@ -28,7 +28,7 @@ fn vecf_from_vecb(x: &Vector) -> BinaryVector {
     let n = x.len();
     let mut y = BinaryVector::from_vec(vec![false; n]);
     for i in 0..n {
-        y[i] = x[i] as u8 != 0;
+        y[i] = (x[i].round() != 0.0);
     }
     y
 }
@@ -37,7 +37,7 @@ pub enum StartHeuristic {
     Random(u64),
     GreedyFromHint(f64),
     GreedyFromVec(Vector),
-    GreedyInSteps(f64),
+    GreedyInSteps(),
 }
 impl StartHeuristic {
     pub fn get_solution(&self, qubo: &QuboInstance) -> BinaryVector {
@@ -51,8 +51,8 @@ impl StartHeuristic {
             StartHeuristic::GreedyFromVec(hint_vec) => {
                 StartHeuristic::greedy_from_vec(qubo, hint_vec)
             },
-            StartHeuristic::GreedyInSteps(hint) => {
-                StartHeuristic::greedy_in_steps(qubo, *hint)
+            StartHeuristic::GreedyInSteps() => {
+                StartHeuristic::greedy_in_steps(qubo)
             },
         }
     }
@@ -81,8 +81,8 @@ impl StartHeuristic {
     }
 
     /// Do greedy rounding five times with ever-evolving floors/ceilings
-    fn greedy_in_steps(qubo: &QuboInstance, hint: f64) -> BinaryVector {
-        let hints = &Vector::from_vec(vec![hint; qubo.size()]);
+    fn greedy_in_steps(qubo: &QuboInstance) -> BinaryVector {
+        let hints = &Vector::from_vec(vec![0.5; qubo.size()]);
         let hints = &Self::greedy(qubo, hints, 0.4, 0.6);
         let hints = &Self::greedy(qubo, hints, 0.3, 0.7);
         let hints = &Self::greedy(qubo, hints, 0.2, 0.8);
@@ -112,11 +112,11 @@ impl StartHeuristic {
             // Round down
             hints[i] = floor;
             dx_on_round[[AT_DN, i]]
-                = compute_sum_cross_float(mat, &hints, i);
+                = compute_sum_cross(mat, &hints, i);
             // Round up
             hints[i] = ceil;
             dx_on_round[[AT_UP, i]]
-                = compute_sum_cross_float(mat, &hints, i);
+                = compute_sum_cross(mat, &hints, i);
             // Undo rounding
             hints[i] = tmp;
         }
@@ -127,7 +127,6 @@ impl StartHeuristic {
                 AT_DN => floor,
                 _     => ceil,
             };
-            //let round = if let row = AT_DN { floor } else { ceil };
             // Update dx at k to MAX so it is not found as minimum again
             dx_on_round[[AT_DN, k]] = f64::MAX;
             dx_on_round[[AT_UP, k]] = f64::MAX;
@@ -138,11 +137,11 @@ impl StartHeuristic {
                 // Subtract from dx for current hints[i] and old hints[k]
                 dx_on_round[[AT_DN, i]] -= matsum*hints[i]*hints[k];
                 dx_on_round[[AT_UP, i]] -= matsum*hints[i]*hints[k];
-                // Add to dx for new hint_k=round and floor or ceil at i
+                // Add to dx for new hints[k]=round and floor or ceil at i
                 dx_on_round[[AT_DN, i]] += matsum*floor*round;
                 dx_on_round[[AT_UP, i]] += matsum*ceil*round;
             }
-            // Actually round to r at k
+            // Actually round at k
             hints[k] = round;
         }
         hints
@@ -154,12 +153,12 @@ mod tests {
     use crate::qubo::*;
     use crate::start_heuristics::*;
 
-    fn compute_sum_cross(mat: &Matrix, x: &BinaryVector, k: usize) -> f64 {
+    fn compute_sum_cross_bin(mat: &Matrix, x: &BinaryVector, k: usize) -> f64 {
         let mut y = Vector::zeros(x.len());
         for i in 0..x.len() {
             y[i] = x[i] as u8 as f64;
         }
-        compute_sum_cross_float(mat, &y, k)
+        compute_sum_cross(mat, &y, k)
     }
 
     #[test]
@@ -169,7 +168,7 @@ mod tests {
             vec![1.0, 2.0, 3.0, 0.0, 4.0, 5.0, 0.0, 0.0, 6.0,]).unwrap();
         let mut obj_val = 0.0;
         for i in 0..matrix.nrows() {
-            obj_val += compute_sum_cross(&matrix, &x, i);
+            obj_val += compute_sum_cross_bin(&matrix, &x, i);
         }
         assert_eq!(10.0, obj_val);
     }

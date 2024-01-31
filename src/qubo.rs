@@ -1,5 +1,7 @@
 /// QUBO instance struct and useful types
 
+use std::io::{BufRead,BufReader};
+use std::fs::File;
 use ndarray::{Array1, Array2};
 use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
@@ -44,7 +46,30 @@ impl QuboInstance {
 
     /// Initialize from problem instance file
     pub fn from_file(file_path: &str) -> Self {
-        todo!();
+        let f = File::open(file_path).expect("Couldn't open file");
+        let mut reader = BufReader::new(f);
+        let mut buffer = String::new();
+        // Read number vertices and edges
+        let _ = reader.read_line(&mut buffer).expect("Error reading line");
+        let header: Vec<&str> = buffer.split_whitespace().collect();
+        let n = header[0].parse().unwrap();
+        let mut mat = Matrix::from_shape_vec((n, n), vec![0.0; n*n]).unwrap();
+        // Read each entry
+        for _ in 0..n*n {
+            buffer.clear();
+            let result = reader.read_line(&mut buffer);
+            match result {
+                Ok(0)  => { break; },
+                Ok(_)  => { },
+                Err(_) => { panic!("Error reading file"); }
+            }
+            let entry: Vec<&str> = buffer.split_whitespace().collect();
+            let row = entry[0].parse().unwrap();
+            let col = entry[1].parse().unwrap();
+            // Transpose due to file containing lower-triang
+            mat[[col, row]] = entry[2].parse().unwrap()
+        }
+        Self { mat, baseline: 0.0 }
     }
 
     /// Computes the objective value for a given BinaryVector
