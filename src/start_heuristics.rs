@@ -7,6 +7,9 @@ use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::Uniform;
 use rand_pcg::Pcg32;
 
+const AT_DN: usize = 0;
+const AT_UP: usize = 1;
+
 /// Computes the "sum cross" of x^T@Q@x for index k efficiently: O(n)
 fn compute_sum_cross_float(mat: &Matrix, x: &Vector, k: usize) -> f64 {
     assert!(k <= mat.nrows());
@@ -32,18 +35,21 @@ fn vecf_from_vecb(x: &Vector) -> BinaryVector {
 
 pub enum StartHeuristic {
     Random(u64),
-    GreedyFromHint(f64),
-    GreedyFromVec(Vector),
+    GreedyFromHint(f64, f64, f64),
+    GreedyFromVec(Vector, f64, f64),
 }
 impl StartHeuristic {
     pub fn get_solution(&self, qubo: &QuboInstance) -> BinaryVector {
         match self {
-            StartHeuristic::Random(seed)
-                => { StartHeuristic::rand(qubo, seed) },
-            StartHeuristic::GreedyFromHint(hint)
-                => { StartHeuristic::greedy_from_hint(qubo, hint) },
-            StartHeuristic::GreedyFromVec(hint_vec)
-                => { StartHeuristic::greedy_from_vec(qubo, hint_vec) },
+            StartHeuristic::Random(seed) => {
+                StartHeuristic::rand(qubo, seed)
+            },
+            StartHeuristic::GreedyFromHint(hint, floor, ceil) => {
+                StartHeuristic::greedy_from_hint(qubo, *hint, *floor, *ceil)
+            },
+            StartHeuristic::GreedyFromVec(hint_vec, floor, ceil) => {
+                StartHeuristic::greedy_from_vec(qubo, hint_vec, *floor, *ceil)
+            },
         }
     }
 
@@ -58,57 +64,79 @@ impl StartHeuristic {
         }
         vecf_from_vecb(&solution)
     }
+    
+    /// Do greedy rounding with "hint" for all starting entries
+    fn greedy_from_hint(qubo: &QuboInstance, hint: f64, floor: f64, ceil: f64)
+    -> BinaryVector {
+        let hints = Vector::from_vec(vec![hint; qubo.size()]);
+        vecf_from_vecb(&Self::greedy(qubo, &hints, floor, ceil))
+    }
 
-    /// Find best rounding at some index until all indices are rounded
-    fn greedy_from_vec(qubo: &QuboInstance, hint_vec: &Vector) -> BinaryVector {
+    /// Find best rounding toward floor or ceil for each hint entry greedily
+    fn greedy_from_vec(
+        qubo:  &QuboInstance,
+        hints: &Vector,
+        floor: f64,
+        ceil:  f64
+    ) -> BinaryVector {
+        vecf_from_vecb(&Self::greedy(qubo, &hints, floor, ceil))
+    }
+
+    /// Find best rounding toward floor or ceil for each hint entry greedily
+    fn greedy(
+        qubo:  &QuboInstance,
+        hints: &Vector,
+        floor: f64,
+        ceil:  f64
+    ) -> Vector {
+        assert!(0.0 <= floor && floor < ceil && ceil <= 1.0);
         // Make mutable copy
-        let mut hint_vec = hint_vec.clone();
+        let mut hints = hints.clone();
         let n = qubo.size();
         let mat = qubo.get_matrix();
-        //let mut hint_vec = Vector::from_vec(vec![*hint; n]);
         // Changes on round of entry:
         let mut dx_on_round =
             Matrix::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
         // Compute initial dx
         for i in 0..n {
+            let tmp = hints[i];
             // Round down
-            let hint_i = hint_vec[i];
-            hint_vec[i] = 0.0;
-            dx_on_round[[0, i]] = compute_sum_cross_float(mat, &hint_vec, i);
+            hints[i] = floor;
+            dx_on_round[[AT_DN, i]]
+                = compute_sum_cross_float(mat, &hints, i);
             // Round up
-            hint_vec[i] = 1.0;
-            dx_on_round[[1, i]] = compute_sum_cross_float(mat, &hint_vec, i);
+            hints[i] = ceil;
+            dx_on_round[[AT_UP, i]]
+                = compute_sum_cross_float(mat, &hints, i);
             // Undo rounding
-            hint_vec[i] = hint_i;
+            hints[i] = tmp;
         }
         for _ in 0..n {
             // Find next best k for up/down rounding (for biggest downward dx)
-            let (r, k) = dx_on_round.argmin().unwrap();
-            // Round to 0 or 1
-            hint_vec[k] = r as f64;
+            let (row, k) = dx_on_round.argmin().unwrap();
+            let round = match row {
+                AT_DN => floor,
+                _     => ceil,
+            };
+            //let round = if let row = AT_DN { floor } else { ceil };
             // Update dx at k to MAX so it is not found as minimum again
-            dx_on_round[[0, k]] = f64::MAX;
-            dx_on_round[[1, k]] = f64::MAX;
-            let hint_k = hint_vec[k];
+            dx_on_round[[AT_DN, k]] = f64::MAX;
+            dx_on_round[[AT_UP, k]] = f64::MAX;
             // Update dx at unvisited columns to respect the rounding at k
             for i in 0..n {
-                let hint_i = hint_vec[i];
-                if hint_i == f64::MAX { continue; }
-                dx_on_round[[0, i]] -= (mat[[i,k]] + mat[[k,i]])
-                                    *(hint_i)*(hint_k);
-                dx_on_round[[1, i]] -= (mat[[i,k]] + mat[[k,i]])
-                                    *(hint_i)*(hint_k);
-                dx_on_round[[1, i]] += mat[[i,k]] + mat[[k,i]];
+                if hints[i] == f64::MAX { continue; }
+                let matsum = mat[[i, k]] + mat[[k, i]];
+                // Subtract from dx for current hints[i] and old hints[k]
+                dx_on_round[[AT_DN, i]] -= matsum*hints[i]*hints[k];
+                dx_on_round[[AT_UP, i]] -= matsum*hints[i]*hints[k];
+                // Add to dx for new hint_k=round and floor or ceil at i
+                dx_on_round[[AT_DN, i]] += matsum*floor*(round as f64);
+                dx_on_round[[AT_UP, i]] += matsum*ceil*(round as f64);
             }
+            // Actually round to r at k
+            hints[k] = round as f64;
         }
-        // Cast hint_vec to BinaryVector
-        vecf_from_vecb(&hint_vec)
-    }
-    
-    /// Do greedy rounding with "hint" for all starting entries
-    fn greedy_from_hint(qubo: &QuboInstance, hint: &f64) -> BinaryVector {
-        let hint_vec = Vector::from_vec(vec![*hint; qubo.size()]);
-        Self::greedy_from_vec(qubo, &hint_vec)
+        hints
     }
 }
 
@@ -147,7 +175,7 @@ mod tests {
                   0.0,  0.0,   0.0,  0.0, -5.0,  0.0,
                   0.0,  0.0,   0.0,  0.0,  0.0,  0.0,]).unwrap();
         let qubo = QuboInstance::new(matrix, 0.0);
-        let heur = StartHeuristic::GreedyFromHint(0.5);
+        let heur = StartHeuristic::GreedyFromHint(0.5, 0.0, 1.0);
         let solution = heur.get_solution(&qubo);
         let x = BinaryVector::from_vec(
             vec![true, false, true, true, false, false]);
