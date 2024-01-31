@@ -79,7 +79,7 @@ impl StartHeuristic {
         floor: f64,
         ceil:  f64
     ) -> BinaryVector {
-        vecf_from_vecb(&Self::greedy(qubo, &hints, floor, ceil))
+        vecf_from_vecb(&Self::greedy(qubo, hints, floor, ceil))
     }
 
     /// Find best rounding toward floor or ceil for each hint entry greedily
@@ -130,11 +130,11 @@ impl StartHeuristic {
                 dx_on_round[[AT_DN, i]] -= matsum*hints[i]*hints[k];
                 dx_on_round[[AT_UP, i]] -= matsum*hints[i]*hints[k];
                 // Add to dx for new hint_k=round and floor or ceil at i
-                dx_on_round[[AT_DN, i]] += matsum*floor*(round as f64);
-                dx_on_round[[AT_UP, i]] += matsum*ceil*(round as f64);
+                dx_on_round[[AT_DN, i]] += matsum*floor*round;
+                dx_on_round[[AT_UP, i]] += matsum*ceil*round;
             }
             // Actually round to r at k
-            hints[k] = round as f64;
+            hints[k] = round;
         }
         hints
     }
