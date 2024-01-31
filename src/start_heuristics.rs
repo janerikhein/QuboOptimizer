@@ -35,8 +35,9 @@ fn vecf_from_vecb(x: &Vector) -> BinaryVector {
 
 pub enum StartHeuristic {
     Random(u64),
-    GreedyFromHint(f64, f64, f64),
-    GreedyFromVec(Vector, f64, f64),
+    GreedyFromHint(f64),
+    GreedyFromVec(Vector),
+    GreedyInSteps(f64),
 }
 impl StartHeuristic {
     pub fn get_solution(&self, qubo: &QuboInstance) -> BinaryVector {
@@ -44,11 +45,14 @@ impl StartHeuristic {
             StartHeuristic::Random(seed) => {
                 StartHeuristic::rand(qubo, seed)
             },
-            StartHeuristic::GreedyFromHint(hint, floor, ceil) => {
-                StartHeuristic::greedy_from_hint(qubo, *hint, *floor, *ceil)
+            StartHeuristic::GreedyFromHint(hint) => {
+                StartHeuristic::greedy_from_hint(qubo, *hint)
             },
-            StartHeuristic::GreedyFromVec(hint_vec, floor, ceil) => {
-                StartHeuristic::greedy_from_vec(qubo, hint_vec, *floor, *ceil)
+            StartHeuristic::GreedyFromVec(hint_vec) => {
+                StartHeuristic::greedy_from_vec(qubo, hint_vec)
+            },
+            StartHeuristic::GreedyInSteps(hint) => {
+                StartHeuristic::greedy_in_steps(qubo, *hint)
             },
         }
     }
@@ -66,20 +70,25 @@ impl StartHeuristic {
     }
     
     /// Do greedy rounding with "hint" for all starting entries
-    fn greedy_from_hint(qubo: &QuboInstance, hint: f64, floor: f64, ceil: f64)
-    -> BinaryVector {
+    fn greedy_from_hint(qubo: &QuboInstance, hint: f64) -> BinaryVector {
         let hints = Vector::from_vec(vec![hint; qubo.size()]);
-        vecf_from_vecb(&Self::greedy(qubo, &hints, floor, ceil))
+        vecf_from_vecb(&Self::greedy(qubo, &hints, 0.0, 1.0))
     }
 
-    /// Find best rounding toward floor or ceil for each hint entry greedily
-    fn greedy_from_vec(
-        qubo:  &QuboInstance,
-        hints: &Vector,
-        floor: f64,
-        ceil:  f64
-    ) -> BinaryVector {
-        vecf_from_vecb(&Self::greedy(qubo, hints, floor, ceil))
+    /// Do greedy rounding with hint vector
+    fn greedy_from_vec(qubo: &QuboInstance, hints: &Vector) -> BinaryVector {
+        vecf_from_vecb(&Self::greedy(qubo, hints, 0.0, 1.0))
+    }
+
+    /// Do greedy rounding five times with ever-evolving floors/ceilings
+    fn greedy_in_steps(qubo: &QuboInstance, hint: f64) -> BinaryVector {
+        let hints = &Vector::from_vec(vec![hint; qubo.size()]);
+        let hints = &Self::greedy(qubo, hints, 0.4, 0.6);
+        let hints = &Self::greedy(qubo, hints, 0.3, 0.7);
+        let hints = &Self::greedy(qubo, hints, 0.2, 0.8);
+        let hints = &Self::greedy(qubo, hints, 0.1, 0.9);
+        let hints = &Self::greedy(qubo, hints, 0.0, 1.0);
+        vecf_from_vecb(hints)
     }
 
     /// Find best rounding toward floor or ceil for each hint entry greedily
@@ -175,7 +184,7 @@ mod tests {
                   0.0,  0.0,   0.0,  0.0, -5.0,  0.0,
                   0.0,  0.0,   0.0,  0.0,  0.0,  0.0,]).unwrap();
         let qubo = QuboInstance::new(matrix, 0.0);
-        let heur = StartHeuristic::GreedyFromHint(0.5, 0.0, 1.0);
+        let heur = StartHeuristic::GreedyFromHint(0.5);
         let solution = heur.get_solution(&qubo);
         let x = BinaryVector::from_vec(
             vec![true, false, true, true, false, false]);
