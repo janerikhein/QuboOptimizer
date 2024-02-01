@@ -108,9 +108,6 @@ impl StartHeuristic {
             Matrix::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
         // Compute initial dx
         for i in 0..n {
-            //let sum_cross = compute_sum_cross(mat, &hints, i);
-            //dx_on_round[[AT_DN, i]] = sum_cross - *hint[i] + ...*floor
-            //dx_on_round[[AT_UP, i]] = sum_cross - *hint[i] + ...*ceil
             let tmp = hints[i];
             // Round down
             hints[i] = floor;
