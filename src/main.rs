@@ -26,7 +26,7 @@ fn main() {
     // Match experiment_num with experiment function
     match experiment_num {
         1 => { experiments::example(); },
-        2 => { experiments::foo(); },
+        2 => { experiments::test_start_heuristics(); },
         3 => { experiments::bar(); },
         _ => { panic!("No valid experiment_num"); }
     }

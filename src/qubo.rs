@@ -67,7 +67,8 @@ impl QuboInstance {
             let row = entry[0].parse().unwrap();
             let col = entry[1].parse().unwrap();
             // Transpose due to file containing lower-triang
-            mat[[col, row]] = entry[2].parse().unwrap()
+            mat[[col, row]] = entry[2].parse().unwrap();
+            assert!(col <= row || mat[[col, row]] == 0.);
         }
         Self { mat, baseline: 0.0 }
     }

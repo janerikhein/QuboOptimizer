@@ -28,7 +28,7 @@ fn vecf_from_vecb(x: &Vector) -> BinaryVector {
     let n = x.len();
     let mut y = BinaryVector::from_vec(vec![false; n]);
     for i in 0..n {
-        y[i] = (x[i].round() != 0.0);
+        y[i] = x[i].round() != 0.0;
     }
     y
 }
@@ -108,6 +108,9 @@ impl StartHeuristic {
             Matrix::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
         // Compute initial dx
         for i in 0..n {
+            //let sum_cross = compute_sum_cross(mat, &hints, i);
+            //dx_on_round[[AT_DN, i]] = sum_cross - *hint[i] + ...*floor
+            //dx_on_round[[AT_UP, i]] = sum_cross - *hint[i] + ...*ceil
             let tmp = hints[i];
             // Round down
             hints[i] = floor;
@@ -135,8 +138,8 @@ impl StartHeuristic {
                 if hints[i] == f64::MAX { continue; }
                 let matsum = mat[[i, k]] + mat[[k, i]];
                 // Subtract from dx for current hints[i] and old hints[k]
-                dx_on_round[[AT_DN, i]] -= matsum*hints[i]*hints[k];
-                dx_on_round[[AT_UP, i]] -= matsum*hints[i]*hints[k];
+                dx_on_round[[AT_DN, i]] -= matsum*floor*hints[k];
+                dx_on_round[[AT_UP, i]] -= matsum*ceil*hints[k];
                 // Add to dx for new hints[k]=round and floor or ceil at i
                 dx_on_round[[AT_DN, i]] += matsum*floor*round;
                 dx_on_round[[AT_UP, i]] += matsum*ceil*round;
