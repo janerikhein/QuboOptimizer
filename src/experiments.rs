@@ -5,6 +5,7 @@ use crate::qubo::*;
 use crate::preprocess;
 use crate::start_heuristics::StartHeuristic;
 use crate::tabu_search;
+use ndarray_stats::QuantileExt;
 
 const INST_DIR: &str = "instances/";
 
@@ -32,24 +33,73 @@ pub fn example() {
 }
 
 pub fn test_start_heuristics() {
-    //TODO: greedy_multiple_steps, 0.4-0.6, 0.2-0.8, 0.0-1.0
-    let instances = ["p7000.3"];
+    fn create_vecs(qubo: &QuboInstance) -> (Vector, Vector) {
+        let n = qubo.size();
+        let mut  p = vec![0; n];  // number of positives
+        let mut  z = vec![0; n];  // number of nonzeros
+        let mut sp = vec![0.; n]; // sum of positives
+        let mut sn = vec![0.; n]; // sum of negatives
+        for i in 0..n {
+            for j in i..n {
+                // Run through row i
+                let entry_ij = qubo.get_entry_at(i, j);
+                if entry_ij > 0. {
+                    p[i] += 1;
+                    z[i] += 1;
+                    sp[i] += entry_ij;
+                }
+                else if entry_ij < 0. {
+                    z[i] += 1;
+                    sn[i] += entry_ij;
+                }
+            }
+        }
+        let mut a = Vector::from_vec(vec![0.; n]);
+        let mut b = Vector::from_vec(vec![0.; n]);
+        for i in 0..n {
+            if   z[i] != 0 { a[i] = (p[i] as f64)/(z[i] as f64); }
+            else { a[i] = 1.; }
+            if sp[i] - sn[i] != 0. { b[i] = sp[i]/(sp[i] - sn[i]); }
+            else { b[i] = 1.; }
+        }
+        (a, b)
+    }
+    //TODO: greedy_multiple_steps?
+    let instances = ["p3000.1", "p3000.4", "p6000.1", "p6000.3"];
+    println!("Compare start heuristics for instances {instances:?}");
     for i in instances {
+        println!("--- Starting for {i} ---");
         let filename = INST_DIR.to_owned() + i;
         let qubo = QuboInstance::from_file(&filename);
         let n = qubo.size();
-        let hints = Vector::from_vec(vec![0.5; n]);
+        let (a, b) = create_vecs(&qubo);
         let heuristics = [
             StartHeuristic::Random(42),
-            StartHeuristic::GreedyFromHint(0.5),
-            StartHeuristic::GreedyFromVec(hints),
-            StartHeuristic::GreedyInSteps(),
+            StartHeuristic::GreedyFromVec(Vector::from_vec(vec![0.5; n])),
+            StartHeuristic::GreedyFromVec(a),
+            StartHeuristic::GreedyFromVec(b),
         ];
-        for h in heuristics {
-            let sol = h.get_solution(&qubo);
-            let obj_val = qubo.compute_objective(sol);
-            println!("{filename}: {obj_val}");
+        let mut obj_vals = Vector::from_vec(vec![0.; heuristics.len()]);
+        for k in 0..heuristics.len() {
+            let h = &heuristics[k];
+            let mut avg_time = std::time::Duration::new(0, 0);
+            let mut sol = BinaryVector::from_vec(vec![false; n]);
+            for _ in 0..10 {
+                let now = std::time::Instant::now();
+                sol = h.get_solution(&qubo);
+                avg_time += now.elapsed();
+            }
+            obj_vals[k] = qubo.compute_objective(sol);
+            avg_time /= 10;
+            println!(
+                "#{k} {h:?}: {}, took {avg_time:.2?} on 10 run avg.",
+                obj_vals[k]);
         }
+        let best = obj_vals.argmin().unwrap();
+        println!(
+            "--- Done. #Best={best}: {:?}, {} ---",
+            heuristics[best],
+            obj_vals[best]);
     }
 }
 

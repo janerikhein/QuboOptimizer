@@ -6,6 +6,7 @@ use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::Uniform;
 use rand_pcg::Pcg32;
+use std::fmt;
 
 const AT_DN: usize = 0;
 const AT_UP: usize = 1;
@@ -145,6 +146,29 @@ impl StartHeuristic {
             hints[k] = round;
         }
         hints
+    }
+}
+impl fmt::Debug for StartHeuristic {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            StartHeuristic::Random(seed) => {
+                write!(f, "Random({seed})")
+            },
+            StartHeuristic::GreedyFromHint(hint) => {
+                write!(f, "GreedyFromHint({hint})")
+            },
+            StartHeuristic::GreedyFromVec(hint_vec) => {
+                write!(
+                    f,
+                    "GreedyFromVec([{:.3},..,{:.3}])",
+                    hint_vec[0],
+                    hint_vec[hint_vec.len() - 1]
+                )
+            },
+            StartHeuristic::GreedyInSteps() => {
+                write!(f, "GreedyInSteps()")
+            },
+        }
     }
 }
 
