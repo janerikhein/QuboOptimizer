@@ -6,8 +6,12 @@ use crate::preprocess;
 use crate::start_heuristics::StartHeuristic;
 use crate::tabu_search::*;
 use ndarray_stats::QuantileExt;
+use serde_json;
+use std::fs::File;
+use std::io::Read;
 
 const INST_DIR: &str = "instances/";
+const METADATA: &str = "metadata.json";
 
 /// Read a file path from user input
 fn read_path_from_user_input() -> String {
@@ -34,6 +38,12 @@ pub fn example() {
 
 
 pub fn test_tabu_search_params() {
+    let mut file = File::open(METADATA).unwrap();
+    let mut buffer = String::new();
+    file.read_to_string(&mut buffer).unwrap();
+    let data: serde_json::Value =
+        serde_json::from_str(&buffer).expect("JSON was not well-formatted");
+    println!("{}", data["bqp50.1"]["best"]);
     // let params = ModelParameters {
     //     tenure_ratio: f64,
     //     diversification_base_factor: f64,
@@ -60,7 +70,6 @@ pub fn test_tabu_search_params() {
 }
 
 pub fn test_start_heuristics() {
-    //TODO: greedy_multiple_steps?
     let instances = [
         "bqp50.1",
         "bqp50.2",
