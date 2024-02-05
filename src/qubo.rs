@@ -1,6 +1,10 @@
 /// QUBO instance struct and useful types
 
 use ndarray::{Array1, Array2};
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand::SeedableRng;
+use ndarray_rand::rand_distr::Uniform;
+use rand_pcg::Pcg32;
 
 /// Useful type definitions
 pub type Float = f64;
@@ -19,14 +23,26 @@ pub struct QuboInstance {
 impl QuboInstance {
     /// Default initilize
     pub fn new(mat: Matrix, baseline: Float) -> Self {
-        // TODO: Check for square and triangular
+        let n = mat.nrows();
+        for i in 0..n {
+            for j in 0..i {
+                if mat[[i, j]] != 0.0 { panic!("Matrix not upper triangular"); }
+            }
+        }
         Self { mat, baseline }
     }
 
-    /// Random matrix initilize
+    /// Instance with matrix having uniformly random entries in [-10, 10]
     pub fn new_rand(n: usize, density: Float) -> Self {
-        todo!();
-        //Self { mat, baseline }
+        let mut rng = Pcg32::seed_from_u64(42);
+        let mut mat = Matrix::random_using(
+            (n, n), Uniform::new(-10.0, 10.0), &mut rng);
+        for i in 0..n {
+            for j in 0..i {
+                mat[[i, j]] = 0.0;
+            }
+        }
+        Self { mat, baseline: 0.0 }
     }
 
     /// Initialize from problem instance file
@@ -34,9 +50,18 @@ impl QuboInstance {
         todo!();
     }
 
-    /// Computes the objective value for a given BinaryVector, inefficient?
+    /// Computes the objective value for a given BinaryVector
     pub fn compute_objective(&self, x: BinaryVector) -> Float {
-        todo!();
+        let n = self.mat.nrows();
+        let mut obj_val = 0.0;
+        for i in 0..n {
+            for j in i..n {
+                obj_val += self.get_entry_at(i, j)
+                    *(x[i] as u8 as Float)
+                    *(x[j] as u8 as Float);
+            }
+        }
+        obj_val
     }
 
     /// Returns matrix size, i.e. number of rows or columns
@@ -50,7 +75,9 @@ impl QuboInstance {
     }
 
     pub fn get_entry_at(&self, i: usize, j: usize) -> Float {
-        assert!(j >= i);
+        if j < i {
+            panic!("Don't access lower (0) entries of upper triangular\
+                matrix"); }
         self.mat[[i,j]]
     }
 }
