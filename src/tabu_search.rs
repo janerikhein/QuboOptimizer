@@ -1,7 +1,7 @@
-use std::cmp::min;
-use std::mem::take;
+
+use std::fmt::Debug;
 use std::time::Instant;
-use ndarray::{Array2, s, Zip};
+use ndarray::Zip;
 
 use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
@@ -28,32 +28,51 @@ fn vecb_to_vecf(x: &BinaryVector) -> Vector {
 
 /// Do (simple) tabu search
 pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector) -> BinaryVector {
-    // define how verbose log is: -1 no log, 0 only global improvements,
+    // define how verbose log is: 3 no log, 0 complete log
     let log_level = 0;
 
     let search_parameters = SearchParameters::default(qubo);
     let mut search_state = TabuSearchState::new(qubo, search_parameters, start_solution);
 
-    if log_level
+    if log_level <= 2 {
+        println!("Time(ms) | It | Phase It | Phase Type | objective | best obj. | move type")
+    }
     while let Some(return_code) = search_state.get_next() {
+
+        let phase_type = match search_state.phase_type {
+            PhaseType::Search => "Search",
+            PhaseType::Diversification => "Diversification"
+        };
+        let base_str = format!("{} | {} | {} | {} | {} | {}",
+                               search_state.search_start_time.elapsed().as_millis(),
+                               search_state.it,
+                               search_state.phase_it,
+                               phase_type,
+                               search_state.qubo.objective_of_curr_solution,
+                               search_state.best_objective);
+
         match return_code {
             MoveReturnCode::GlobalImprovement => {
-                if log_level >= 2 {
-
+                if log_level <= 2 {
+                    println!("{base_str} | Global Improvement.")
                 }
             },
             MoveReturnCode::LocalImprovement => {
-                if log_level >= 1 {
-
+                if log_level <= 1 {
+                    println!("{base_str} | Local Improvement.")
                 }
             },
             MoveReturnCode::NonImprovement => {
-                if log_level >= 0 {
-                    println!()
+                if log_level <= 0 {
+                    println!("{base_str} | Non-Improvement.")
                 }
             },
         }
     }
+    let duration_secs = search_state.search_start_time.elapsed().as_secs_f64();
+    let best_obj = search_state.best_objective;
+    print!("\n Optimization finished in {duration_secs}s. \n Objective of best solution found: {best_obj}");
+    // TODO: write optimal solution to file
     search_state.best_solution
 }
 
@@ -101,11 +120,11 @@ impl SearchParameters {
         time_limit_seconds: usize,
     ) -> SearchParameters {
 
-        let tabu_tenure = tenure_ratio * qubo_instance.size();
+        let mut tabu_tenure = tenure_ratio * qubo_instance.size();
         if tabu_tenure < 5 {
             println!("Warning: Given tabu_ratio leads to small tabu_tenure of {tabu_tenure}.\
              Minimum tabu_tenure set instead");
-            let tabu_tenure = 5;
+            tabu_tenure = 5;
         }
         SearchParameters {
             tabu_tenure,
@@ -221,8 +240,8 @@ enum MoveReturnCode {
 struct TabuSearchState {
     search_parameters: SearchParameters,
     search_start_time: Instant,
-    // TODO: maybe move this to a seperate SearchStatistics struct
     phase_type: PhaseType,
+    it : usize,
     phase_it: usize,
     last_improved: usize,
     qubo: QuboEvaluator,
@@ -235,7 +254,6 @@ struct TabuSearchState {
     last_diversification_initial_steps: BinaryVector,
     last_improved_initial_steps: BinaryVector,
     best_solution: BinaryVector,
-    //TODO: substract phase_it before setting
     last_improved_tabu_list: IntegerVector,
     frequency_matrix_norm: f64,
 }
@@ -246,11 +264,46 @@ impl TabuSearchState {
         search_parameters: SearchParameters,
         start_solution: &BinaryVector,
     ) -> TabuSearchState {
-        todo!()
+        let matrix = qubo_instance.get_matrix().to_owned();
+        let evaluator = QuboEvaluator::new(matrix, start_solution.to_owned());
+        let start_objective = evaluator.objective_of_curr_solution;
+        let (rows, cols) = matrix.dim();
+        let mut frequency_norm = 0.0;
+        let frequency_matrix = IntegerMatrix::from_shape_fn((rows, cols), |(i, j)| {
+            if matrix[[i, j]] != 0.0 {
+                frequency_norm += 1;
+                1
+            } else {
+                0
+            }
+        });
+        let mut initial_state = TabuSearchState {
+            search_parameters,
+            search_start_time: Instant::now(),
+            phase_type: PhaseType::Search,
+            it: 0,
+            phase_it: 0,
+            last_improved: 0,
+            qubo: evaluator,
+            tabu_list: IntegerVector::zeros(qubo_instance.size()),
+            best_objective: start_objective,
+            frequency_matrix,
+            diversification_intensity: Default::default(),
+            explored_moves: BinaryVector::zeros(qubo_instance.size()),
+            successive_unsuccessful_phases: 0,
+            last_diversification_initial_steps: BinaryVector::zeros(qubo_instance.size()),
+            last_improved_initial_steps: BinaryVector::zeros(qubo_instance.size()),
+            best_solution: start_solution.to_owned(),
+            last_improved_tabu_list: IntegerVector::zeros(qubo_instance.size()),
+            frequency_matrix_norm: frequency_norm,
+        };
+
+        initial_state.diversification_intensity = initial_state.get_base_diversification_intensity();
+        initial_state
 
     }
 
-    // Main function that performs a Tabu Search Iteration TODO: return codes: local_improvement, global_improvement,
+    // Tabu Search Iteration
     fn get_next(&mut self) -> Option<MoveReturnCode> {
         if self.check_phase_transition() {
             self.perform_phase_transition()
@@ -259,7 +312,6 @@ impl TabuSearchState {
         let secs_elapsed = self.search_start_time.elapsed().as_secs_f64();
         // termination criteria
         if swap.is_none() || secs_elapsed >= self.search_parameters.time_limit_seconds as f64 {
-            self.finalize_search();
             None
         }
         else {
@@ -267,15 +319,6 @@ impl TabuSearchState {
         }
     }
 
-    // Stop search and retrieve best solution found
-    fn finalize_search(&self) {
-
-        todo!()
-        // retrieve best solution and return
-        // do final logging with overall statistics
-        // TODO: probably add a different struct for storing statistics throughout the search, i.e. overall iterations
-        // TODO: number of phases performed, number of successful/unsuccesful phases, objective value of solution
-    }
 
     // Check if phase transition should be initiated (search phase <-> diversification phase)
     fn check_phase_transition(&self) -> bool {
@@ -299,7 +342,7 @@ impl TabuSearchState {
                     self.successive_unsuccessful_phases = 0;
                     self.diversification_intensity = self.get_base_diversification_intensity();
                     // reset explored moves and add initial steps performed after last global improvement
-                    self.explored_moves.assign(&self.last_improved_initial_steps)
+                    self.explored_moves.assign(&self.last_improved_initial_steps);
                 }
                 // Search phase was unsuccessful, i.e. no global improvement found
                 if self.last_improved == 0 {
@@ -311,6 +354,7 @@ impl TabuSearchState {
                     Zip::from(&mut self.explored_moves).and(&self.last_diversification_initial_steps).for_each(
                         |a, &b| *a = *a || b
                     );
+                    self.last_diversification_initial_steps.mapv_inplace(|_| false);
                 }
                 // restore best solution and tabu list
                 self.qubo.set_solution(&self.best_solution);
@@ -323,15 +367,19 @@ impl TabuSearchState {
                         self.tabu_list[flip_index] = self.phase_it + self.search_parameters.tabu_tenure;
                     }
                 }
+                self.last_improved = 0;
+                self.phase_type = PhaseType::Diversification;
             },
             PhaseType::Diversification => {
                 self.tabu_list.iter_mut().for_each(|x| *x = (*x-self.phase_it).max(0));
                 self.phase_it = 0;
+                self.last_improved = 0;
+                self.phase_type = PhaseType::Search;
             }
-        }
+        };
     }
 
-    // Select next variable swap, if a eligble swap exists (non-tabu or tabu with aspiration)
+    // Select next variable swap, if a eligible swap exists (non-tabu or tabu with aspiration)
     fn get_next_move(&self) -> Option<(usize, MoveReturnCode)> {
         let mut best_mv: Option<usize> = None;
         let mut best_obj_delta = f64::MAX;
@@ -389,6 +437,7 @@ impl TabuSearchState {
     fn perform_move(&mut self, flip_index: usize) -> MoveReturnCode {
         self.qubo.flip(flip_index);
         self.tabu_list[flip_index] = self.phase_it + self.search_parameters.tabu_tenure;
+        let prev_objective = self.qubo.objective_of_curr_solution;
 
         // Update frequency matrix
         for index in 0..self.qubo.size {
@@ -396,16 +445,50 @@ impl TabuSearchState {
                 continue
             }
             if index <= flip_index && self.qubo.matrix[[index,flip_index]] != 0.0 {
-                self.frequency_matrix[[index, flip_index]] += 1
+                self.frequency_matrix[[index, flip_index]] += 1;
+                self.frequency_matrix_norm += 1.0
             }
             if index > flip_index && self.qubo.matrix[[index,flip_index]] != 0.0 {
-                self.frequency_matrix[[flip_index, index]] += 1
+                self.frequency_matrix[[flip_index, index]] += 1;
+                self.frequency_matrix_norm += 1.0
             }
-            self.frequency_matrix_norm += 1.0
         }
-        todo!()
-        // compute type of move and updte everthing accordingly
 
+        self.it += 1;
+        self.phase_it += 1;
+
+        assert!(self.best_objective <= prev_objective);
+
+        match self.phase_type {
+            PhaseType::Search => {
+                if self.last_improved != 0 && self.phase_it - self.last_improved <= self.search_parameters.blocking_move_number {
+                    self.last_improved_initial_steps[flip_index] = true
+                }
+            },
+            PhaseType::Diversification => {
+                if self.phase_it <= self.search_parameters.blocking_move_number {
+                    self.last_diversification_initial_steps[flip_index] = true
+                }
+            }
+        };
+
+        let return_code = if self.qubo.objective_of_curr_solution < self.best_objective {
+            // Global Improvement
+            self.last_improved = self.phase_it;
+            self.last_improved_tabu_list.assign(&self.tabu_list);
+            self.best_solution.assign(&self.qubo.curr_solution);
+            self.best_objective = self.qubo.objective_of_curr_solution;
+            self.last_improved_initial_steps.mapv_inplace(|_| false);
+            MoveReturnCode::GlobalImprovement
+        } else if self.qubo.objective_of_curr_solution < prev_objective {
+            // Local Improvement
+            MoveReturnCode::LocalImprovement
+        } else {
+            // Non-Improvement
+            MoveReturnCode::NonImprovement
+        };
+
+        return_code
     }
 
 
@@ -437,7 +520,6 @@ impl TabuSearchState {
     }
 }
 
-
 //tests flip values for a "current" solution that is the zero vector
 #[test]
 fn test_qubo_evaluator_rand() {
@@ -445,7 +527,6 @@ fn test_qubo_evaluator_rand() {
     let size = 10;
     let (min, max) = (-10., 10.);
     let mut rng = Pcg32::seed_from_u64(seed);
-    //todo: mir fällt hier auf, dass wir ja gar nicht so richtig ausnutzen, dass wir ne obere Dreiecksmatrix haben oder
     let mut matrix = Matrix::random_using(
         (size, size), Uniform::new(min, max), &mut rng);
     //set entries to zero to make the matrix upper triangular
