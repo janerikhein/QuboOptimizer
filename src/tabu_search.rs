@@ -1,3 +1,4 @@
+use std::cmp::min;
 use std::mem::take;
 use std::time::Instant;
 use ndarray::{Array2, s, Zip};
@@ -26,16 +27,36 @@ fn vecb_to_vecf(x: &BinaryVector) -> Vector {
 /// they could be used by the experiment functions.
 
 /// Do (simple) tabu search
-pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector)
-                   -> BinaryVector {
-    todo!();
+pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector) -> BinaryVector {
+    // define how verbose log is: -1 no log, 0 only global improvements,
+    let log_level = 0;
+
+    let search_parameters = SearchParameters::default(qubo);
+    let mut search_state = TabuSearchState::new(qubo, search_parameters, start_solution);
+
+    if log_level
+    while let Some(return_code) = search_state.get_next() {
+        match return_code {
+            MoveReturnCode::GlobalImprovement => {
+                if log_level >= 2 {
+
+                }
+            },
+            MoveReturnCode::LocalImprovement => {
+                if log_level >= 1 {
+
+                }
+            },
+            MoveReturnCode::NonImprovement => {
+                if log_level >= 0 {
+                    println!()
+                }
+            },
+        }
+    }
+    search_state.best_solution
 }
 
-/// Do staged tabu search
-pub fn staged_tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector)
-                          -> BinaryVector {
-    todo!();
-}
 
 
 struct ModelParameters {
@@ -45,6 +66,8 @@ struct ModelParameters {
     improvement_threshold: usize,
     blocking_move_number: usize,
     activation_function: ActivationFunction,
+    time_limit_seconds: usize,
+    diversification_length: usize
 }
 
 enum ActivationFunction {
@@ -55,12 +78,60 @@ enum ActivationFunction {
 }
 
 struct SearchParameters {
-    time_limit_seconds: f64,
-    improvement_threshold: usize,
-    diversification_length: usize,
-    diversification_activation_function: ActivationFunction,
     tabu_tenure: usize,
+    diversification_length: usize,
+    diversification_base_factor: f64,
     diversification_scaling_factor: f64,
+    diversification_activation_function: ActivationFunction,
+    improvement_threshold: usize,
+    blocking_move_number: usize,
+    activation_function: ActivationFunction,
+    time_limit_seconds: usize,
+}
+
+impl SearchParameters {
+    fn new(
+        qubo_instance: &QuboInstance,
+        tenure_ratio: f64,
+        diversification_base_factor: f64,
+        diversification_scaling_factor: f64,
+        activation_function: ActivationFunction,
+        improvement_threshold: usize,
+        blocking_move_number: usize,
+        time_limit_seconds: usize,
+    ) -> SearchParameters {
+
+        let tabu_tenure = tenure_ratio * qubo_instance.size();
+        if tabu_tenure < 5 {
+            println!("Warning: Given tabu_ratio leads to small tabu_tenure of {tabu_tenure}.\
+             Minimum tabu_tenure set instead");
+            let tabu_tenure = 5;
+        }
+        SearchParameters {
+            tabu_tenure,
+            diversification_length: tabu_tenure,
+            diversification_base_factor,
+            diversification_scaling_factor,
+            diversification_activation_function: ActivationFunction::Constant,
+            improvement_threshold,
+            blocking_move_number,
+            activation_function,
+            time_limit_seconds,
+        }
+    }
+
+    fn default(qubo_instance: &QuboInstance) -> SearchParameters {
+        SearchParameters::new(
+            qubo_instance,
+            0.01,
+            0.1,
+            1.5,
+            ActivationFunction::Constant,
+            200,
+            5,
+            100,
+        )
+    }
 }
 
 struct QuboEvaluator {
@@ -68,24 +139,29 @@ struct QuboEvaluator {
     size: usize,
     curr_solution: BinaryVector,
     objective_deltas_on_flip: Vector,
-    objective_of_curr_solution: f64
+    objective_of_curr_solution: f64,
+    matrix_norm: f64,
 }
 
 
 impl QuboEvaluator {
 
-    fn new(matrix: Matrix, solution: BinaryVector) -> QuboEvaluator {
+    fn new(matrix: Matrix, initial_solution: BinaryVector) -> QuboEvaluator {
         assert!(matrix.is_square());
-        assert_eq!(matrix.nrows(), solution.len());
+        assert_eq!(matrix.nrows(), initial_solution.len());
+        let matrix_norm = matrix.iter().map(|&val| val.abs()).sum();
         let size = matrix.nrows();
-        let mut new = QuboEvaluator{matrix: matrix,
-            size: size,
-            curr_solution: Default::default(),
-            objective_deltas_on_flip: Default::default(),
-            objective_of_curr_solution: f64::MIN };
-        //one could also integrate set_solution into this function?
-        new.set_solution(solution);
-        new
+        let mut new_inst = QuboEvaluator{
+            matrix,
+            size,
+            curr_solution: BinaryVector::zeros(size),
+            objective_deltas_on_flip: matrix.into_diag(),
+            objective_of_curr_solution: 0.0,
+            matrix_norm,
+
+        };
+        new_inst.set_solution(&initial_solution);
+        new_inst
     }
 
     pub fn get_matrix_entry_at(&self, i: usize, j: usize) -> f64 {
@@ -119,24 +195,12 @@ impl QuboEvaluator {
         self.curr_solution[flip_index] = !self.curr_solution[flip_index];
     }
 
-    //sets curr_solution,  computes corresponding objective_deltas_on_flip and objective_of_curr_solution
-    fn set_solution(&mut self, solution: BinaryVector) {
+    fn set_solution(&mut self, solution: &BinaryVector) {
         assert_eq!(solution.len(), self.size);
-        self.curr_solution = solution;
 
-        let solution_f = vecb_to_vecf(&self.curr_solution);
-        self.objective_of_curr_solution = solution_f.dot(&self.matrix.dot(&solution_f));
-
-        self.objective_deltas_on_flip = Vector::from_vec(vec![f64::MIN; self.size]);
         for i in 0..self.size {
-            let sigma = if self.curr_solution[i] == false { 1. } else { -1. };
-            self.objective_deltas_on_flip[i] = sigma * self.get_matrix_entry_at(i, i);
-            for j in 0..self.size {
-                if j == i {continue}
-                let x_j = (self.curr_solution[j] as usize) as f64;
-                let matrix_entry = if j < i {self.get_matrix_entry_at(j, i)}
-                                        else {self.get_matrix_entry_at(i, j)};
-                self.objective_deltas_on_flip[i] += sigma * matrix_entry * x_j;
+            if solution[i] != self.curr_solution[i] {
+                self.flip(i)
             }
         }
     }
@@ -146,6 +210,12 @@ impl QuboEvaluator {
 enum PhaseType {
     Search,
     Diversification,
+}
+
+enum MoveReturnCode {
+    LocalImprovement,
+    GlobalImprovement,
+    NonImprovement,
 }
 
 struct TabuSearchState {
@@ -161,58 +231,39 @@ struct TabuSearchState {
     frequency_matrix: IntegerMatrix,
     diversification_intensity: f64,
     explored_moves: BinaryVector,
-    successive_unsuccesful_phases: usize,
+    successive_unsuccessful_phases: usize,
     last_diversification_initial_steps: BinaryVector,
-}
-
-
-impl SearchParameters {
-    fn new(model_parameters: ModelParameters, qubo_instance: QuboInstance) -> SearchParameters {
-        todo!()
-        // Initialize search_paramters based on model_parameters and given instance, i.e. tabu_tenure <- tabu_ratio * model_size
-    }
-}
-
-impl QuboEvaluator {
-    fn new() {
-        todo!()
-    }
-
-    fn set_solution(&mut self, solution: BinaryVector) {
-        todo!()
-    }
+    last_improved_initial_steps: BinaryVector,
+    best_solution: BinaryVector,
+    //TODO: substract phase_it before setting
+    last_improved_tabu_list: IntegerVector,
+    frequency_matrix_norm: f64,
 }
 
 impl TabuSearchState {
-    fn new(qubo_instance: QuboInstance, model_parameters: ModelParameters, start_solution: BinaryVector) {}
+    fn new(
+        qubo_instance: &QuboInstance,
+        search_parameters: SearchParameters,
+        start_solution: &BinaryVector,
+    ) -> TabuSearchState {
+        todo!()
+
+    }
 
     // Main function that performs a Tabu Search Iteration TODO: return codes: local_improvement, global_improvement,
-    fn get_next(&mut self) {
+    fn get_next(&mut self) -> Option<MoveReturnCode> {
         if self.check_phase_transition() {
             self.perform_phase_transition()
         }
-        let swap_index = self.get_next_move();
-        self.perform_move(swap_index);
+        let swap = self.get_next_move();
+        let secs_elapsed = self.search_start_time.elapsed().as_secs_f64();
         // termination criteria
-        if self.check_termination() {
-            self.finalize_search()
+        if swap.is_none() || secs_elapsed >= self.search_parameters.time_limit_seconds as f64 {
+            self.finalize_search();
+            None
         }
-        self.perform_move(swap_index.unwrap()[0]);
-    }
-
-    // Check if search should be terminated
-    fn check_termination(&self) -> bool {
-        match self.phase_type {
-            PhaseType::Search => {
-                self.search_start_time.elapsed().as_secs_f64() >= self.search_parameters.time_limit_seconds
-            },
-            PhaseType::Diversification => {
-                self.search_start_time.elapsed().as_secs_f64() >= self.search_parameters.time_limit_seconds ||
-                    {
-                        // No eligible move found as all moves are tabu
-                        todo!()
-                    }
-            }
+        else {
+            Some(self.perform_move(swap.unwrap()[0]))
         }
     }
 
@@ -233,8 +284,8 @@ impl TabuSearchState {
                 self.phase_it - self.last_improved == self.search_parameters.improvement_threshold
             },
             PhaseType::Diversification => {
-                self.phase_it == self.search_parameters.diversification_length || todo!()
-                // TODO: transition if new best solution found
+                self.phase_it == self.search_parameters.diversification_length ||
+                    (self.last_improved >= self.phase_it - 1 && self.last_improved != 0)
             }
         }
     }
@@ -245,39 +296,47 @@ impl TabuSearchState {
             PhaseType::Search => {
                 // Search phase was successful, i.e. one or more global improvements found
                 if self.last_improved != 0 {
-                    self.successive_unsuccesful_phases = 0;
+                    self.successive_unsuccessful_phases = 0;
                     self.diversification_intensity = self.get_base_diversification_intensity();
-                    self.explored_moves.mapv_inplace(|_| false);
+                    // reset explored moves and add initial steps performed after last global improvement
+                    self.explored_moves.assign(&self.last_improved_initial_steps)
                 }
                 // Search phase was unsuccessful, i.e. no global improvement found
                 if self.last_improved == 0 {
-                    self.successive_unsuccesful_phases += 1;
+                    self.successive_unsuccessful_phases += 1;
                     self.diversification_intensity = self.search_parameters.diversification_scaling_factor.pow(
-                        self.successive_unsuccesful_phases
+                        self.successive_unsuccessful_phases
                     ) * self.get_base_diversification_intensity();
+                    // add initial steps of last diversification phase to explored moves
                     Zip::from(&mut self.explored_moves).and(&self.last_diversification_initial_steps).for_each(
                         |a, &b| *a = *a || b
                     );
                 }
-                // if successful -> reset diversification intensity, reset additional tabu moves to empty vec
-                // TODO: if unsuccessful -> scale diversification intensity, add previous first steps of diversification to tabu list
-                // TODO      -> needs caching of first tabu moves probably in tabu search state
-                // TODO: restore best solution together with its tabu_list
-                // TODO: reset phase_it to 0 and update tabu_list list (substract phase_id from all)
-                // TODO: mark all additional tabu moves tabu
-            }
+                // restore best solution and tabu list
+                self.qubo.set_solution(&self.best_solution);
+                self.tabu_list.assign(&self.last_improved_tabu_list);
+                self.phase_it = 0;
+
+                // mark explored moves tabu
+                for flip_index in 0..self.qubo.size {
+                    if self.explored_moves[flip_index] {
+                        self.tabu_list[flip_index] = self.phase_it + self.search_parameters.tabu_tenure;
+                    }
+                }
+            },
             PhaseType::Diversification => {
-                //TODO: reset phase_it to 0 and update tabu_list (as prev)
-                //TODO: simply change PhaseType
-                todo!()
+                self.tabu_list.iter_mut().for_each(|x| *x = (*x-self.phase_it).max(0));
+                self.phase_it = 0;
             }
         }
     }
 
     // Select next variable swap, if a eligble swap exists (non-tabu or tabu with aspiration)
-    fn get_next_move(&self) -> Option<(usize, f64)> {
+    fn get_next_move(&self) -> Option<(usize, MoveReturnCode)> {
         let mut best_mv: Option<usize> = None;
         let mut best_obj_delta = f64::MAX;
+        let mut global_improvement_found = false;
+        let mut local_improvement_found = false;
         for flip_index in 0..self.qubo.size {
             let is_tabu = self.tabu_list[flip_index] >= self.phase_it;
             let orig_obj_delta = self.qubo.get_objective_delta_on_flip(flip_index);
@@ -290,34 +349,63 @@ impl TabuSearchState {
             // leads to best solution found throughout the search wrt. original objective
             let is_best_global = self.qubo.get_objective_of_curr_solution() + orig_obj_delta < self.best_objective;
 
-            if let (true, _, true) = (is_tabu, is_best_local, is_best_global) {
-
-                // aspiration reached
-                best_mv.take().replace(flip_index);
-                best_obj_delta = orig_obj_delta + additional_penalty;
-                if self.phase_type == PhaseType::Diversification {
-                    break;
+            match (is_tabu, is_best_local, is_best_global) {
+                (true, _, true) => { // aspiration reached
+                    global_improvement_found = true;
+                    best_mv.take().replace(flip_index);
+                    best_obj_delta = orig_obj_delta + additional_penalty;
+                    if self.phase_type == PhaseType::Diversification {
+                        break;
+                    }
                 }
-            } else if let (false, true, _) = (is_tabu, is_best_local, is_best_global) {
-
-                // non-tabu and best move found so far
-                best_mv.take().replace(flip_index);
-                best_obj_delta = orig_obj_delta + additional_penalty;
+                (false, true, _) => { // best non-tabu move so far
+                    if orig_obj_delta < -0.0 {
+                        local_improvement_found = true;
+                    }
+                    best_mv.take().replace(flip_index);
+                    best_obj_delta = orig_obj_delta + additional_penalty;
+                }
+                _ => {}
             };
         }
+
         match best_mv {
-            Some(flip_index) => Some((flip_index, best_obj_delta)),
+            Some(flip_index) => {
+                if global_improvement_found {
+                    Some((flip_index, MoveReturnCode::GlobalImprovement))
+                }
+                else if local_improvement_found  {
+                    Some((flip_index, MoveReturnCode::LocalImprovement))
+                }
+                else {
+                    Some((flip_index, MoveReturnCode::NonImprovement))
+                }
+            },
             _ => None
         }
     }
 
     // Perform a given variable swap and update memory structures accordingly
-    fn perform_move(&mut self, flip_index: usize) {
+    fn perform_move(&mut self, flip_index: usize) -> MoveReturnCode {
         self.qubo.flip(flip_index);
         self.tabu_list[flip_index] = self.phase_it + self.search_parameters.tabu_tenure;
 
+        // Update frequency matrix
+        for index in 0..self.qubo.size {
+            if !self.qubo.curr_solution[index] {
+                continue
+            }
+            if index <= flip_index && self.qubo.matrix[[index,flip_index]] != 0.0 {
+                self.frequency_matrix[[index, flip_index]] += 1
+            }
+            if index > flip_index && self.qubo.matrix[[index,flip_index]] != 0.0 {
+                self.frequency_matrix[[flip_index, index]] += 1
+            }
+            self.frequency_matrix_norm += 1.0
+        }
         todo!()
-        // update frequency measure -> get activated/dactivated entries -> add 1 if entry in Q is non-zero
+        // compute type of move and updte everthing accordingly
+
     }
 
 
@@ -345,7 +433,7 @@ impl TabuSearchState {
         scale_factor * frequency_penalty_sum
     }
     fn get_base_diversification_intensity(&self) -> f64 {
-        todo!()
+        self.search_parameters.diversification_base_factor * self.qubo.matrix_norm / self.frequency_matrix_norm
     }
 }
 
