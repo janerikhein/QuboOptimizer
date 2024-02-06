@@ -12,12 +12,15 @@ use std::env;
 
 fn main() {
     // We use the standard arguments to define the experiment
-    let args: Vec<String> = env::args().collect();
+    /*let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
         panic!("usage: {} experiment_num", &args[0]);
     }
     let experiment_num: u8 = args[1].parse().expect("No valid experiment_num");
     // Match experiment_num with experiment function
+    */
+    let experiment_num = 1;
+
     match experiment_num {
         1 => { experiments::example(); },
         2 => { experiments::test_start_heuristics(); },
