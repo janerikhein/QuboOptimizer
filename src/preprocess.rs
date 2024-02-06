@@ -112,7 +112,7 @@ pub enum FixState {
     Irrelevant
 }
 
-pub fn compute_fixations_of_solution_variables(instance: &QuboInstance) -> (Array1<FixState>, Matrix, Float) {
+pub fn compute_fixations_of_solution_variables(instance: &QuboInstance) -> (Array1<FixState>, Matrix, f64) {
     let mut tentative_modified_matrix = instance.get_matrix().clone();
     let mut baseline_from_fixation = 0.;
     let mut fix_states: Array1<FixState>  = Array1::from(vec![FixState::Unfixed; instance.size()]);
@@ -226,7 +226,7 @@ mod input {
     use std::fs::File;
     use std::io::{BufRead, BufReader, Read};
     use ndarray::{Array2, ShapeBuilder};
-    use crate::qubo::{Float, Matrix};
+    use crate::qubo::{Matrix};
 
     ///reads in a matrix in the MTX-format (see assignment 7)
     pub(crate) fn read_from_file(filename: &str) -> Matrix {
@@ -287,8 +287,8 @@ mod input {
                 while fields[idx_to_access_data].is_empty() {
                     idx_to_access_data += 1;
                 }
-                let data_of_entry: Float = fields[idx_to_access_data]
-                    .parse::<Float>()
+                let data_of_entry: f64 = fields[idx_to_access_data]
+                    .parse::<f64>()
                     .expect("Problem reading the data of an entry");
                 assert_ne!(data_of_entry, 0.0);
                 matrix[[row_of_entry, column_of_entry]] = data_of_entry;

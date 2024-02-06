@@ -18,3 +18,7 @@ test.py
 greedy.py
 *.pdf
 instances
+!instances/G*
+!instances/bqp50.*
+!instances/bqp100.*
+!instances/preprocessing_very_small
