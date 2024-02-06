@@ -12,6 +12,8 @@ use rand_pcg::Pcg32;
 pub type Vector = Array1<f64>;
 pub type Matrix = Array2<f64>;
 pub type BinaryVector = Array1<bool>;
+pub type IntegerVector = Array1<usize>;
+pub type IntegerMatrix = Array2<usize>;
 
 pub struct QuboInstance {
     // Upper triangular square matrix
