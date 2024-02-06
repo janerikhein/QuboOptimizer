@@ -16,3 +16,5 @@ Cargo.lock
 # Paul:
 test.py
 greedy.py
+*.pdf
+instances

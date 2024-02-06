@@ -10,12 +10,6 @@ pub mod tabu_search;
 pub mod experiments;
 use std::env;
 
-/// NOTE:
-/// Look at experiments::example() to see how an experiment typically could
-/// do its work! That is my proposal for doing experiments.
-/// Maybe we can put the experiment functions inside an enum or struct,
-/// which can be called "Experiment" or something. But we cannot avoid the
-/// pattern matching below whatsoever.
 fn main() {
     // We use the standard arguments to define the experiment
     let args: Vec<String> = env::args().collect();
@@ -26,8 +20,8 @@ fn main() {
     // Match experiment_num with experiment function
     match experiment_num {
         1 => { experiments::example(); },
-        2 => { experiments::foo(); },
-        3 => { experiments::bar(); },
+        2 => { experiments::test_start_heuristics(); },
+        3 => { experiments::test_tabu_search_params(); },
         _ => { panic!("No valid experiment_num"); }
     }
 }
