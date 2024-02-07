@@ -21,7 +21,7 @@ fn main() {
     match experiment_num {
         1 => { experiments::example(); },
         2 => { experiments::test_start_heuristics(); },
-        3 => { experiments::test_tabu_search_params(); },
+        3 => { experiments::tune_tabu_params(); },
         _ => { panic!("No valid experiment_num"); }
     }
 }

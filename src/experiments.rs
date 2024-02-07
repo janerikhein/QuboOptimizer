@@ -13,6 +13,10 @@ use std::io::Read;
 const INST_DIR: &str = "instances/";
 const METADATA: &str = "metadata.json";
 
+fn filepath_from_name(filename: &str) -> &str {
+    &(INST_DIR.to_owned() + filename)
+}
+
 /// Read a file path from user input
 fn read_path_from_user_input() -> String {
     let mut buffer = String::new();
@@ -36,37 +40,71 @@ pub fn example() {
     //let good_solution = tabu_search::tabu_search(&qubo, &start_solution);
 }
 
+fn compute_best_start_solution(qubo: &QuboInstance) -> BinaryVector {
+    let obj_vals = Vector::from_vec(vec![0.; 3]);
+    let sols = Vec::<BinaryVector>::new();
+    let (a, b, c) = create_hint_vecs(&qubo);
+    let heuristics = [
+        StartHeuristic::GreedyFromVec(a),
+        StartHeuristic::GreedyFromVec(b),
+        StartHeuristic::GreedyFromVec(c),
+    ];
+    for i in 0..heuristics.len() {
+        sols[i] = heuristics[i].get_solution(&qubo);
+        obj_vals[i] = qubo.compute_objective(sols[i]);
+    }
+    let best = obj_vals.argmin().unwrap();
+    sols[best]
+}
 
-pub fn test_tabu_search_params() {
+fn params_from(
+    tenure_ratio: f64,
+    diversification_base_factor: f64,
+    diversification_scaling_factor: f64,
+    improvement_threshold: usize,
+    blocking_move_number: usize,
+    activation_function: ActivationFunction,
+) -> ModelParameters {
+    ModelParameters {
+        tenure_ratio,
+        diversification_base_factor,
+        diversification_scaling_factor,
+        improvement_threshold,
+        blocking_move_number,
+        activation_function,
+    }
+}
+
+pub fn tune_tabu_params() {
     let mut file = File::open(METADATA).unwrap();
     let mut buffer = String::new();
     file.read_to_string(&mut buffer).unwrap();
     let data: serde_json::Value =
         serde_json::from_str(&buffer).expect("JSON was not well-formatted");
     println!("{}", data["bqp50.1"]["best"]);
-    // let params = ModelParameters {
-    //     tenure_ratio: f64,
-    //     diversification_base_factor: f64,
-    //     diversification_scaling_factor: f64,
-    //     improvement_threshold: usize,
-    //     blocking_move_number: usize,
-    //     activation_function: ActivationFunction,
-    // }
     let instances = ["bqp50.1",];
-    // Pseudocode:
-    // let x = start_vec
-    // for i in instances {
-    //     let qubo = QuboInstance::from_file(i);
-    //     for _ in params {
-    //         let obj_vals = (...);
-    //         for _ in param_vals {
-    //             let solution = tabu_search(qubo, x)
-    //             obj_val[...] = qubo.compute_objective(x);
-    //         }
-    //         let best = obj_vals.argmin();
-    //         println!("{param}, {}", param_vals[best]);
-    //     }
-    // }
+    for i in instances {
+        let start_solution =
+            StartHeuristic::GreedyFromHint(0.5).get_solution(&qubo);
+        let qubo = QuboInstance::from_file(filepath_from_name(i));
+        let params_mat = Matrix::from_shape_vec(
+            (6, 4),
+            vec![
+                1., 1., 1., 1., 1.,
+                1., 1., 1., 1., 1.,
+                1., 1., 1., 1., 1.,
+                1., 1., 1., 1., 1.,
+                1., 1., 1., 1., 1.,
+                1., 1., 1., 1., 1.,
+            ]
+        );
+        for i in params_mat.ncols() {
+            todo!()
+            let start_solution = compute_best_start_solution(&qubo);
+            //let solution =
+            //    tabu_search::tabu_search(&qubo, &start_solution, &params);
+        }
+    }
 }
 
 pub fn test_start_heuristics() {
@@ -101,12 +139,12 @@ pub fn test_start_heuristics() {
         let filename = INST_DIR.to_owned() + i;
         let qubo = QuboInstance::from_file(&filename);
         let n = qubo.size();
-        let (a, b) = create_hint_vecs(&qubo);
+        let (a, b, c) = create_hint_vecs(&qubo);
         let heuristics = [
             StartHeuristic::Random(42),
-            StartHeuristic::GreedyFromVec(Vector::from_vec(vec![0.5; n])),
             StartHeuristic::GreedyFromVec(a),
             StartHeuristic::GreedyFromVec(b),
+            StartHeuristic::GreedyFromVec(c),
         ];
         let mut obj_vals = Vector::from_vec(vec![0.; heuristics.len()]);
         for k in 0..heuristics.len() {
@@ -152,7 +190,7 @@ pub fn bar() {
 }
 
 /// Helper function for start heuristic testing
-fn create_hint_vecs(qubo: &QuboInstance) -> (Vector, Vector) {
+fn create_hint_vecs(qubo: &QuboInstance) -> (Vector, Vector, Vector) {
     let n = qubo.size();
     let mut negs = vec![0; n];  // number of negatives
     let mut nzrs = vec![0; n];  // number of nonzeros
@@ -203,5 +241,5 @@ fn create_hint_vecs(qubo: &QuboInstance) -> (Vector, Vector) {
             b[i] = 1.;
         }
     }
-    (a, b)
+    (Vector::from_vec(vec![0.5; n]), a, b)
 }
