@@ -17,6 +17,15 @@ fn filepath_from_name(filename: &str) -> &str {
     &(INST_DIR.to_owned() + filename)
 }
 
+fn get_literature_obj(filename: &str) -> f64 {
+    let mut file = File::open(METADATA).unwrap();
+    let mut buffer = String::new();
+    file.read_to_string(&mut buffer).unwrap();
+    let data: serde_json::Value =
+        serde_json::from_str(&buffer).expect("JSON was not well-formatted");
+    data["bqp50.1"]["best"].as_f64().unwrap()
+}
+
 /// Read a file path from user input
 fn read_path_from_user_input() -> String {
     let mut buffer = String::new();
@@ -57,36 +66,20 @@ fn compute_best_start_solution(qubo: &QuboInstance) -> BinaryVector {
     sols[best]
 }
 
-fn params_from(
-    tenure_ratio: f64,
-    diversification_base_factor: f64,
-    diversification_scaling_factor: f64,
-    improvement_threshold: usize,
-    blocking_move_number: usize,
-    activation_function: ActivationFunction,
-) -> ModelParameters {
-    ModelParameters {
-        tenure_ratio,
-        diversification_base_factor,
-        diversification_scaling_factor,
-        improvement_threshold,
-        blocking_move_number,
-        activation_function,
-    }
-}
-
+// qubo_instance: &QuboInstance,
+// tenure_ratio: f64,
+// diversification_base_factor: f64,
+// diversification_scaling_factor: f64,
+// activation_function: ActivationFunction,
+// improvement_threshold: usize,
+// blocking_move_number: usize,
+// time_limit_seconds: usize,
 pub fn tune_tabu_params() {
-    let mut file = File::open(METADATA).unwrap();
-    let mut buffer = String::new();
-    file.read_to_string(&mut buffer).unwrap();
-    let data: serde_json::Value =
-        serde_json::from_str(&buffer).expect("JSON was not well-formatted");
-    println!("{}", data["bqp50.1"]["best"]);
     let instances = ["bqp50.1",];
     for i in instances {
+        let qubo = QuboInstance::from_file(filepath_from_name(i));
         let start_solution =
             StartHeuristic::GreedyFromHint(0.5).get_solution(&qubo);
-        let qubo = QuboInstance::from_file(filepath_from_name(i));
         let params_mat = Matrix::from_shape_vec(
             (6, 4),
             vec![
@@ -97,10 +90,11 @@ pub fn tune_tabu_params() {
                 1., 1., 1., 1., 1.,
                 1., 1., 1., 1., 1.,
             ]
-        );
-        for i in params_mat.ncols() {
-            todo!()
+        ).unwrap();
+        for i in 0..params_mat.ncols() {
+            todo!();
             let start_solution = compute_best_start_solution(&qubo);
+            //let params = SearchParameters::new(...);
             //let solution =
             //    tabu_search::tabu_search(&qubo, &start_solution, &params);
         }
@@ -133,11 +127,11 @@ pub fn test_start_heuristics() {
         "p6000.3",
     ];
     println!("Compare start heuristics for instances {instances:?}");
-    let mut goodness = Vector::from_vec(vec![0.; 4]);
+    let mut total_goodness = Vector::from_vec(vec![0.; 4]);
     for i in instances {
         println!("--- Starting for {i} ---");
-        let filename = INST_DIR.to_owned() + i;
-        let qubo = QuboInstance::from_file(&filename);
+        let literature_obj = get_literature_obj(i);
+        let qubo = QuboInstance::from_file(filepath_from_name(i));
         let n = qubo.size();
         let (a, b, c) = create_hint_vecs(&qubo);
         let heuristics = [
@@ -146,22 +140,24 @@ pub fn test_start_heuristics() {
             StartHeuristic::GreedyFromVec(b),
             StartHeuristic::GreedyFromVec(c),
         ];
+        let mut goodness = Vector::from_vec(vec![0.; heuristics.len()]);
         let mut obj_vals = Vector::from_vec(vec![0.; heuristics.len()]);
         for k in 0..heuristics.len() {
-            let h = &heuristics[k];
-            let mut avg_time = std::time::Duration::new(0, 0);
             let mut sol = BinaryVector::from_vec(vec![false; n]);
+            let now = std::time::Instant::now();
             for _ in 0..10 {
-                let now = std::time::Instant::now();
-                sol = h.get_solution(&qubo);
-                avg_time += now.elapsed();
+                sol = heuristics[k].get_solution(&qubo);
             }
+            let mut avg_time = now.elapsed()/10;
             obj_vals[k] = qubo.compute_objective(sol);
-            goodness[k] += obj_vals[k];
+            goodness[k] = obj_vals[k]/literature_obj;
+            total_goodness[k] += goodness[k];
             avg_time /= 10;
             println!(
-                "#{k} {h:?}: {}, took {avg_time:.2?} on 10 run avg.",
-                obj_vals[k]
+                "#{k} {:?}: {} {}, took {avg_time:.2?} on 10 run avg.",
+                heuristics[k],
+                obj_vals[k],
+                goodness[k],
             );
         }
         let best = obj_vals.argmin().unwrap();
@@ -171,22 +167,12 @@ pub fn test_start_heuristics() {
             obj_vals[best]
         );
     }
-    let best = goodness.argmin().unwrap();
+    let best = total_goodness.argmin().unwrap();
     println!(
         "#{best} is best overall with goodness {} vs.{}",
-        goodness[best],
-        goodness,
+        total_goodness[best],
+        total_goodness,
     );
-}
-
-/// Another experiment
-pub fn foo() {
-    todo!();
-}
-
-/// Yet another experiment
-pub fn bar() {
-    todo!();
 }
 
 /// Helper function for start heuristic testing
