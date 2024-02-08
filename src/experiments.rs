@@ -25,7 +25,7 @@ fn read_path_from_user_input() -> String {
 pub fn example() {
     // 0) Read file_path if experiment uses an instance file
     //let file_path = read_path_from_user_input();
-    let file_path= "instances/G2";
+    let file_path= "instances/G3";
     // 1) Read or create instance
     let qubo = QuboInstance::from_file(&file_path);
     // 2) Do preprocessing

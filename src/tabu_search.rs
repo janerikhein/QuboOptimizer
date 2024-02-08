@@ -6,6 +6,9 @@ use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::num_traits::Pow;
 use ndarray_rand::rand_distr::Uniform;
+use rand::Rng;
+use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
 use rand_pcg::Pcg32;
 
 /// QUBO tabu search functions
@@ -129,7 +132,7 @@ impl SearchParameters {
 
         SearchParameters {
             tabu_tenure,
-            diversification_length: tabu_tenure,
+            diversification_length: 40,
             diversification_base_factor,
             diversification_scaling_factor,
             diversification_activation_function: ActivationFunction::Constant,
@@ -144,23 +147,28 @@ impl SearchParameters {
         SearchParameters::new(
             qubo_instance,
             0.05,
-            0.1,
-            1.5,
+            0.75,
+            1.25,
             ActivationFunction::Constant,
-            2000,
-            5,
-            500,
+            800,
+            40,
+            1800,
         )
     }
 }
 
 struct QuboEvaluator {
     matrix: Matrix,
+    frequency_matrix : IntegerMatrix,
     size: usize,
     curr_solution: BinaryVector,
     objective_deltas_on_flip: Vector,
+    active_freq_sum: IntegerVector,
+    partial_freq_sum: IntegerVector,
+    inactive_freq_sum: IntegerVector,
     objective_of_curr_solution: f64,
     matrix_norm: f64,
+    frequency_norm : f64,
 }
 
 
@@ -173,14 +181,21 @@ impl QuboEvaluator {
         let size = matrix.nrows();
         let mut new_inst = QuboEvaluator{
             matrix: matrix.clone(),
+            frequency_matrix: IntegerMatrix::zeros((size, size)),
             size,
             curr_solution: BinaryVector::from_elem(size, false),
             objective_deltas_on_flip: matrix.diag().into_owned(),
+            active_freq_sum: IntegerVector::zeros(size),
+            partial_freq_sum: IntegerVector::zeros(size),
+            inactive_freq_sum: IntegerVector::zeros(size),
             objective_of_curr_solution: 0.0,
             matrix_norm,
-
+            frequency_norm: 0.0,
         };
         new_inst.set_solution(&initial_solution);
+        if new_inst.frequency_norm == 0.0 {
+            new_inst.frequency_norm = 1.0
+        }
         new_inst
     }
 
@@ -195,22 +210,91 @@ impl QuboEvaluator {
         self.objective_deltas_on_flip[flip_index]
     }
 
+    fn get_frequency_penalty_on_flip(&self, flip_index: usize) -> usize {
+        if self.curr_solution[flip_index] {
+            self.active_freq_sum[flip_index]
+        } else {
+            self.partial_freq_sum[flip_index]
+        }
+    }
+
     // current objective
     fn get_objective_of_curr_solution(&self) -> f64 {
         self.objective_of_curr_solution
     }
 
+    fn register_activation_deactivation(&mut self, i: usize, j:usize) {
+        self.frequency_matrix[[i,j]] += 1;
+        self.frequency_norm += 1.0;
+        match (self.curr_solution[i], self.curr_solution[j]) {
+            (true, true) => {
+                self.active_freq_sum[i] += 1;
+                if i!=j {
+                    self.active_freq_sum[j] += 1;
+                }
+            }
+            (false, true) => {
+                self.partial_freq_sum[i] += 1;
+                self.partial_freq_sum[j] += 1;
+            }
+            (true, false) => {
+                self.partial_freq_sum[i] += 1;
+                self.partial_freq_sum[j] += 1;
+            }
+            (false, false) => {
+                if i != j {
+                    panic!("no activation/deactivation of non-diagonal element should be possible here.")
+                }
+                self.partial_freq_sum[i] += 1
+            }
+        }
+    }
+
     fn flip(&mut self, flip_index: usize) {
         self.objective_of_curr_solution += self.objective_deltas_on_flip[flip_index];
+        let is_activation = !self.curr_solution[flip_index];
+        self.register_activation_deactivation(flip_index, flip_index);
         self.objective_deltas_on_flip[flip_index] = -self.objective_deltas_on_flip[flip_index];
         for idx in 0..self.size {
-            let sigma = if self.curr_solution[idx] == self.curr_solution[flip_index] { 1. } else { -1. };
+            let obj_sigma = if self.curr_solution[idx] == self.curr_solution[flip_index] { 1. } else { -1. };
             if idx < flip_index {
-                self.objective_deltas_on_flip[idx] += sigma * self.get_matrix_entry_at(idx, flip_index);
+                if self.curr_solution[idx] {
+                    self.register_activation_deactivation(idx, flip_index)
+                }
+                self.objective_deltas_on_flip[idx] += obj_sigma * self.get_matrix_entry_at(idx, flip_index);
             }
             if idx > flip_index {
-                self.objective_deltas_on_flip[idx] += sigma * self.get_matrix_entry_at(flip_index, idx);
+                if self.curr_solution[idx] {
+                    self.register_activation_deactivation(flip_index, idx);
+                }
+                self.objective_deltas_on_flip[idx] += obj_sigma * self.get_matrix_entry_at(flip_index, idx);
             }
+        }
+        // updating frequency flip values
+        for idx in 0..self.size {
+            if idx == flip_index {
+                if is_activation {
+                    self.active_freq_sum[flip_index] = self.partial_freq_sum[flip_index];
+                    self.partial_freq_sum[flip_index] = self.inactive_freq_sum[flip_index];
+                    self.inactive_freq_sum[flip_index] = 0;
+                } else {
+                    self.inactive_freq_sum[flip_index] = self.partial_freq_sum[flip_index];
+                    self.partial_freq_sum[flip_index] = self.active_freq_sum[flip_index];
+                    self.active_freq_sum[flip_index] = 0;
+                }
+                continue
+            }
+            let f_idx = if idx <= flip_index {(idx, flip_index)} else {(flip_index, idx)};
+            let freq_matrix_entry = self.frequency_matrix[[f_idx.0, f_idx.1]];
+            let freq_sigma = if is_activation {1} else {-1};
+            if self.curr_solution[idx] {
+                self.active_freq_sum[idx] = (self.active_freq_sum[idx] as isize + freq_sigma * freq_matrix_entry as isize) as usize;
+                self.partial_freq_sum[idx] = (self.partial_freq_sum[idx] as isize - freq_sigma * freq_matrix_entry as isize) as usize;
+            } else {
+                self.partial_freq_sum[idx] = (self.partial_freq_sum[idx] as isize + freq_sigma * freq_matrix_entry as isize) as usize;
+                self.inactive_freq_sum[idx] = (self.inactive_freq_sum[idx] as isize - freq_sigma * freq_matrix_entry as isize) as usize;
+            }
+
         }
         self.curr_solution[flip_index] = !self.curr_solution[flip_index];
     }
@@ -251,7 +335,7 @@ struct TabuSearchState {
     qubo: QuboEvaluator,
     tabu_list: IntegerVector,
     best_objective: f64,
-    frequency_matrix: IntegerMatrix,
+    //frequency_matrix: IntegerMatrix,
     diversification_intensity: f64,
     explored_moves: BinaryVector,
     successive_unsuccessful_phases: usize,
@@ -260,6 +344,7 @@ struct TabuSearchState {
     best_solution: BinaryVector,
     last_improved_tabu_list: IntegerVector,
     frequency_matrix_norm: f64,
+    rng: StdRng,
 }
 
 impl TabuSearchState {
@@ -271,16 +356,10 @@ impl TabuSearchState {
         let matrix = qubo_instance.get_matrix().to_owned();
         let evaluator = QuboEvaluator::new(&matrix, start_solution.to_owned());
         let start_objective = evaluator.objective_of_curr_solution;
-        let (rows, cols) = &matrix.dim();
-        let mut frequency_norm = 0.0;
-        let frequency_matrix = IntegerMatrix::from_shape_fn((*rows, *cols), |(i, j)| {
-            if matrix[[i, j]] != 0.0 {
-                frequency_norm += 1.0;
-                1
-            } else {
-                0
-            }
-        });
+        //let (rows, cols) = &matrix.dim();
+        let frequency_norm = (qubo_instance.size()*qubo_instance.size()) as f64;
+        //let frequency_matrix = IntegerMatrix::from_elem((*rows, *cols), 1);
+
         let mut initial_state = TabuSearchState {
             search_parameters,
             search_start_time: Instant::now(),
@@ -291,7 +370,7 @@ impl TabuSearchState {
             qubo: evaluator,
             tabu_list: IntegerVector::zeros(qubo_instance.size()),
             best_objective: start_objective,
-            frequency_matrix,
+            //frequency_matrix,
             diversification_intensity: Default::default(),
             explored_moves: BinaryVector::from_elem(qubo_instance.size(), false),
             successive_unsuccessful_phases: 0,
@@ -300,6 +379,7 @@ impl TabuSearchState {
             best_solution: start_solution.to_owned(),
             last_improved_tabu_list: IntegerVector::zeros(qubo_instance.size()),
             frequency_matrix_norm: frequency_norm,
+            rng: StdRng::seed_from_u64(42),
         };
 
         initial_state.diversification_intensity = initial_state.get_base_diversification_intensity();
@@ -384,18 +464,26 @@ impl TabuSearchState {
     }
 
     // Select next variable swap, if a eligible swap exists (non-tabu or tabu with aspiration)
-    fn get_next_move(&self) -> Option<(usize, MoveReturnCode)> {
+    fn get_next_move(&mut self) -> Option<(usize, MoveReturnCode)> {
+        let reject_zero_move: bool = self.rng.gen();
         let mut best_mv: Option<usize> = None;
         let mut best_obj_delta = f64::MAX;
         let mut global_improvement_found = false;
         let mut local_improvement_found = false;
-        for flip_index in 0..self.qubo.size {
+        let mut permutation: Vec<usize> = (0..self.qubo.size).collect();
+        permutation.shuffle(&mut self.rng);
+        for flip_index in permutation {
+
             let is_tabu = self.tabu_list[flip_index] > self.phase_it;
             let orig_obj_delta = self.qubo.get_objective_delta_on_flip(flip_index);
+            //TODO: maybe remove this, this is temp
+            if reject_zero_move && orig_obj_delta == 0.0 {continue}
             let additional_penalty = match self.phase_type {
                 PhaseType::Search => 0.0,
                 PhaseType::Diversification => self.get_diversification_penalty(flip_index)
             };
+
+
             // is best move found so far wrt. objective of the phase
             let is_best_local = orig_obj_delta + additional_penalty < best_obj_delta;
             // leads to best solution found throughout the search wrt. original objective
@@ -446,14 +534,16 @@ impl TabuSearchState {
             if !self.qubo.curr_solution[index] {
                 continue
             }
-            if index <= flip_index && self.qubo.matrix[[index,flip_index]] != 0.0 {
+            /*
+            if index <= flip_index {
                 self.frequency_matrix[[index, flip_index]] += 1;
                 self.frequency_matrix_norm += 1.0
             }
-            if index > flip_index && self.qubo.matrix[[index,flip_index]] != 0.0 {
+
+            if index > flip_index {
                 self.frequency_matrix[[flip_index, index]] += 1;
                 self.frequency_matrix_norm += 1.0
-            }
+            }*/
         }
 
         self.it += 1;
@@ -496,17 +586,19 @@ impl TabuSearchState {
 
     fn get_diversification_penalty(&self, flip_index: usize) -> f64 {
         assert_eq!(self.phase_type, PhaseType::Diversification);
-        let mut frequency_penalty_sum = 0;
-        for i in 0..self.qubo.size {
+        let frequency_penalty_sum = self.qubo.get_frequency_penalty_on_flip(flip_index);
+        /*for i in 0..self.qubo.size {
             if self.qubo.curr_solution[i] {
-                if self.qubo.matrix[(flip_index, i)] != 0.0 {
+                frequency_penalty_sum += self.frequency_matrix[[flip_index, i]];
+                frequency_penalty_sum += self.frequency_matrix[[i, flip_index]];
+                /*if self.qubo.matrix[(flip_index, i)] != 0.0 {
                     frequency_penalty_sum += self.frequency_matrix[[flip_index, i]]
                 };
                 if self.qubo.matrix[(i, flip_index)] != 0.0 {
                     frequency_penalty_sum += self.frequency_matrix[[i, flip_index]]
-                };
+                };*/
             }
-        }
+        }*/
         let scale_factor = match self.search_parameters.diversification_activation_function {
             ActivationFunction::Constant => { self.diversification_intensity }
             ActivationFunction::Linear => {
@@ -538,7 +630,7 @@ fn test_qubo_evaluator_rand() {
         }
     }
     let zero_vector = BinaryVector::from_vec(vec![false; size]);
-    let evaluator = QuboEvaluator::new(matrix.clone(), zero_vector);
+    let evaluator = QuboEvaluator::new(&matrix, zero_vector);
     assert_eq!(evaluator.get_objective_of_curr_solution(), 0.);
     for i in 0..size {
         assert_eq!(evaluator.get_objective_delta_on_flip(i), matrix[[i, i]]);
@@ -558,7 +650,7 @@ fn test_qubo_evaluator_small_example() {
         }
     }
     let solution = BinaryVector::from_vec(vec![true, false, true]);
-    let evaluator = QuboEvaluator::new(matrix.clone(), solution);
+    let evaluator = QuboEvaluator::new(&matrix, solution);
     assert_eq!(evaluator.get_objective_of_curr_solution(), -8.);
     assert_eq!(evaluator.get_objective_delta_on_flip(0), 2.);
     assert_eq!(evaluator.get_objective_delta_on_flip(1), 7.);
