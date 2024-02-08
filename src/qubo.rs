@@ -76,7 +76,7 @@ impl QuboInstance {
     }
 
     /// Computes the objective value for a given BinaryVector
-    pub fn compute_objective(&self, x: BinaryVector) -> f64 {
+    pub fn compute_objective(&self, x: &BinaryVector) -> f64 {
         let n = self.mat.nrows();
         let mut obj_val = 0.0;
         for i in 0..n {

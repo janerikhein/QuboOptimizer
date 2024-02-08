@@ -5,6 +5,7 @@ use crate::qubo::*;
 use crate::{preprocess, tabu_search};
 use crate::start_heuristics::StartHeuristic;
 use crate::tabu_search::*;
+use ndarray::Array5;
 use ndarray_stats::QuantileExt;
 use serde_json;
 use std::fs::File;
@@ -13,8 +14,8 @@ use std::io::Read;
 const INST_DIR: &str = "instances/";
 const METADATA: &str = "metadata.json";
 
-fn filepath_from_name(filename: &str) -> &str {
-    &(INST_DIR.to_owned() + filename)
+fn filepath_from_name(filename: &str) -> String {
+    INST_DIR.to_owned() + filename
 }
 
 fn get_literature_obj(filename: &str) -> f64 {
@@ -40,65 +41,144 @@ pub fn example() {
     //let file_path = read_path_from_user_input();
     let file_path= "instances/bqp100.9";
     // 1) Read or create instance
-    let qubo = QuboInstance::from_file(&file_path);
+    let qubo = QuboInstance::from_file(file_path);
     // 2) Do preprocessing
     let qubo = preprocess::shrink(qubo);
     // 3) Do start heuristic
     let start_heuristic = StartHeuristic::GreedyFromHint(0.5);
     let start_solution = start_heuristic.get_solution(&qubo);
     // 4) Do tabu search heuristic
-    let good_solution = tabu_search::tabu_search_with_defaults(&qubo, &start_solution, 2);
+    tabu_search::tabu_search_with_defaults(&qubo, &start_solution, 2);
 }
 
 fn compute_best_start_solution(qubo: &QuboInstance) -> BinaryVector {
-    let obj_vals = Vector::from_vec(vec![0.; 3]);
-    let sols = Vec::<BinaryVector>::new();
-    let (a, b, c) = create_hint_vecs(&qubo);
+    let mut obj_vals = Vector::from_vec(vec![0.; 3]);
+    let mut sols = Vec::<BinaryVector>::new();
+    let (a, b, c) = create_hint_vecs(qubo);
     let heuristics = [
         StartHeuristic::GreedyFromVec(a),
         StartHeuristic::GreedyFromVec(b),
         StartHeuristic::GreedyFromVec(c),
     ];
     for i in 0..heuristics.len() {
-        sols[i] = heuristics[i].get_solution(&qubo);
-        obj_vals[i] = qubo.compute_objective(sols[i]);
+        sols.push(heuristics[i].get_solution(qubo));
+        obj_vals[i] = qubo.compute_objective(&sols[i]);
     }
     let best = obj_vals.argmin().unwrap();
-    sols[best]
+    sols[best].clone()
 }
 
-// qubo_instance: &QuboInstance,
-// tenure_ratio: f64,
-// diversification_base_factor: f64,
-// diversification_scaling_factor: f64,
-// activation_function: ActivationFunction,
-// improvement_threshold: usize,
-// blocking_move_number: usize,
-// time_limit_seconds: usize,
+/**
+// The QUBO instance
+qubo_instance: &QuboInstance,
+// ratio for setting tabu tenures relative to problem size
+//TODO: test values: (0.1, 0.25, 0.5)
+tenure_ratio: f64,
+
+// ratio for length of diversification phase relative to problem size
+//TODO: test values: (0.1, 0.5, 1.0)
+diversification_length_scale: f64,
+
+// base factor for diversification penalties
+//TODO: test values: (0.1, 0.25, 0.5)
+diversification_base_factor: f64,
+
+// scaling factor for increasing diversification intensity after unsuccessful phases
+//TODO: not too impactful, can fix to 1.5
+diversification_scaling_factor: f64,
+
+// activation function for diversification penalties
+//TODO: ignore this, fix to ActivationFunction::CONSTANT
+activation_function: ActivationFunction,
+
+// improvement threshold relative to problem size
+//TODO: test values: (1.0, 5.0, 10.0),
+improvement_threshold_scale: f64,
+
+// blocking move number relative to problem size
+//TODO: test values: (0.0, 0.05)
+blocking_move_number_scale: f64,
+
+// time limit for tabu search
+// TODO: set something reasonable here, small instances <500 should terminate in less than 30s
+time_limit_seconds: usize,
+
+// seed value
+// TODO: fix some seed value, i.e 42
+seed: usize,
+*/
+
 pub fn tune_tabu_params() {
     let instances = ["bqp50.1",];
+    // Constant parameters (will not be tuned)
+    let dsf = 1.5;
+    let af = ActivationFunction::Constant;
+    let seed = 42;
     for i in instances {
-        let qubo = QuboInstance::from_file(filepath_from_name(i));
+        let qubo = QuboInstance::from_file(&filepath_from_name(i));
+        let n = qubo.size();
+        let time_limit_secs = n*n/8000;
         let start_solution =
             StartHeuristic::GreedyFromHint(0.5).get_solution(&qubo);
-        let params_mat = Matrix::from_shape_vec(
-            (6, 4),
-            vec![
-                1., 1., 1., 1., 1.,
-                1., 1., 1., 1., 1.,
-                1., 1., 1., 1., 1.,
-                1., 1., 1., 1., 1.,
-                1., 1., 1., 1., 1.,
-                1., 1., 1., 1., 1.,
-            ]
-        ).unwrap();
-        for i in 0..params_mat.ncols() {
-            todo!();
-            let start_solution = compute_best_start_solution(&qubo);
-            //let params = SearchParameters::new(...);
-            //let solution =
-            //    tabu_search::tabu_search(&qubo, &start_solution, &params);
+        let proposed = vec![
+            vec![0.1, 0.25,  0.5,],
+            vec![0.1, 0.5,   1.0,],
+            vec![0.1, 0.25,  0.5,],
+            vec![1.0, 5.0,  10.0,],
+            vec![0.0, 0.05],
+        ];
+        let mut obj_vals = Array5::from_elem((3, 3, 3, 3, 2), 0.);
+        let mut counter = 0;
+        let start_solution = compute_best_start_solution(&qubo);
+        // Iterate over all possible combinations
+        for i in 0..proposed[0].len() {
+            for j in 0..proposed[1].len() {
+                for k in 0..proposed[2].len() {
+                    for l in 0..proposed[3].len() {
+                        for m in 0..proposed[4].len() {
+                            counter += 1;
+                            println!("{i},{j},{k},{l},{m}");
+                            let params = SearchParameters::new(
+                                &qubo,
+                                proposed[0][i],
+                                proposed[1][j],
+                                proposed[2][k],
+                                dsf,
+                                af.clone(),
+                                proposed[3][l],
+                                proposed[4][m],
+                                time_limit_secs,
+                                seed,
+                            );
+                            let solution = tabu_search::tabu_search(
+                                &qubo,
+                                &start_solution,
+                                5,
+                                params
+                            );
+                            obj_vals[[i, j, k, l, m]] =
+                                qubo.compute_objective(&solution);
+                        }
+                    }
+                }
+            }
         }
+        // Get best params
+        let best = obj_vals.argmin().unwrap();
+        let params = SearchParameters::new(
+            &qubo,
+            proposed[0][best.0],
+            proposed[1][best.1],
+            proposed[2][best.2],
+            dsf,
+            af.clone(),
+            proposed[3][best.3],
+            proposed[4][best.4],
+            time_limit_secs,
+            seed,
+        );
+        println!("{best:?}");
+        println!("{params:?}");
     }
 }
 
@@ -132,7 +212,7 @@ pub fn test_start_heuristics() {
     for i in instances {
         println!("--- Starting for {i} ---");
         let literature_obj = get_literature_obj(i);
-        let qubo = QuboInstance::from_file(filepath_from_name(i));
+        let qubo = QuboInstance::from_file(&filepath_from_name(i));
         let n = qubo.size();
         let (a, b, c) = create_hint_vecs(&qubo);
         let heuristics = [
@@ -149,11 +229,10 @@ pub fn test_start_heuristics() {
             for _ in 0..10 {
                 sol = heuristics[k].get_solution(&qubo);
             }
-            let mut avg_time = now.elapsed()/10;
-            obj_vals[k] = qubo.compute_objective(sol);
+            let avg_time = now.elapsed()/10;
+            obj_vals[k] = qubo.compute_objective(&sol);
             goodness[k] = obj_vals[k]/literature_obj;
             total_goodness[k] += goodness[k];
-            avg_time /= 10;
             println!(
                 "#{k} {:?}: {} {}, took {avg_time:.2?} on 10 run avg.",
                 heuristics[k],

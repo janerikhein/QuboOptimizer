@@ -84,14 +84,16 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level
 }
 
 
-
-enum ActivationFunction {
+#[derive(Debug,Clone)]
+pub enum ActivationFunction {
     // constant diversification intensity used
     Constant,
     // linearly descending intensity
     Linear,
 }
 
+
+#[derive(Debug)]
 pub struct SearchParameters {
     tabu_tenure: usize,
     diversification_length: usize,
@@ -107,7 +109,7 @@ pub struct SearchParameters {
 const MIN_TABU_TENURE: usize = 5;
 
 impl SearchParameters {
-    fn new(
+    pub fn new(
         // The QUBO instance
         qubo_instance: &QuboInstance,
         // ratio for setting tabu tenures relative to problem size
