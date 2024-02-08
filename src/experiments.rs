@@ -25,7 +25,7 @@ fn read_path_from_user_input() -> String {
 pub fn example() {
     // 0) Read file_path if experiment uses an instance file
     //let file_path = read_path_from_user_input();
-    let file_path= "instances/G3";
+    let file_path= "instances/bqp100.9";
     // 1) Read or create instance
     let qubo = QuboInstance::from_file(&file_path);
     // 2) Do preprocessing
@@ -34,7 +34,7 @@ pub fn example() {
     let start_heuristic = StartHeuristic::GreedyFromHint(0.5);
     let start_solution = start_heuristic.get_solution(&qubo);
     // 4) Do tabu search heuristic
-    let good_solution = tabu_search::tabu_search(&qubo, &start_solution);
+    let good_solution = tabu_search::tabu_search_with_defaults(&qubo, &start_solution, 2);
 }
 
 

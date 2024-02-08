@@ -1,12 +1,10 @@
 use std::fmt::Debug;
 use std::time::Instant;
-use ndarray::{Array, Zip};
+use ndarray::Zip;
 
 use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
-use ndarray_rand::rand_distr::num_traits::Pow;
 use ndarray_rand::rand_distr::Uniform;
-use rand::Rng;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use rand_pcg::Pcg32;
@@ -24,16 +22,23 @@ fn vecb_to_vecf(x: &BinaryVector) -> Vector {
     y
 }
 
+pub fn tabu_search_with_defaults(qubo: &QuboInstance, start_solution: &BinaryVector, log_level:usize) {
+    let search_parameters = SearchParameters::default(qubo);
+    tabu_search(qubo, start_solution, log_level, search_parameters);
+}
+
+
+
 /// NOTE:
 /// These functions only serve as usage hints in the greater project context, as
 /// they could be used by the experiment functions.
 
 /// Do (simple) tabu search
-pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector) -> BinaryVector {
+pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level:usize, search_parameters: SearchParameters) -> BinaryVector {
     // define how verbose log is: 3 no log, 0 complete log
-    let log_level = 2;
+    //let log_level = 2;
 
-    let search_parameters = SearchParameters::default(qubo);
+    //let search_parameters = SearchParameters::default(qubo);
     let mut search_state = TabuSearchState::new(qubo, search_parameters, start_solution);
 
     if log_level <= 2 {
@@ -80,17 +85,6 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector) -> Binary
 
 
 
-struct ModelParameters {
-    tenure_ratio: f64,
-    diversification_base_factor: f64,
-    diversification_scaling_factor: f64,
-    improvement_threshold: usize,
-    blocking_move_number: usize,
-    activation_function: ActivationFunction,
-    time_limit_seconds: usize,
-    diversification_length: usize
-}
-
 enum ActivationFunction {
     // constant diversification intensity used
     Constant,
@@ -98,7 +92,7 @@ enum ActivationFunction {
     Linear,
 }
 
-struct SearchParameters {
+pub struct SearchParameters {
     tabu_tenure: usize,
     diversification_length: usize,
     diversification_base_factor: f64,
@@ -106,40 +100,65 @@ struct SearchParameters {
     diversification_activation_function: ActivationFunction,
     improvement_threshold: usize,
     blocking_move_number: usize,
-    activation_function: ActivationFunction,
     time_limit_seconds: usize,
+    seed: usize,
 }
+
+const MIN_TABU_TENURE: usize = 5;
 
 impl SearchParameters {
     fn new(
+        // The QUBO instance
         qubo_instance: &QuboInstance,
+        // ratio for setting tabu tenures relative to problem size
+        //TODO: test values: (0.1, 0.25, 0.5)
         tenure_ratio: f64,
+        // ratio for length of diversification phase relative to problem size
+        //TODO: test values: (0.1, 0.5, 1.0)
+        diversification_length_scale: f64,
+        // base factor for diversification penalties
+        //TODO: test values: (0.1, 0.25, 0.5)
         diversification_base_factor: f64,
+        // scaling factor for increasing diversification intensity after unsuccessful phases
+        //TODO: not too impactful, can fix to 1.5
         diversification_scaling_factor: f64,
+        // activation function for diversification penalties
+        //TODO: ignore this, fix to ActivationFunction::CONSTANT
         activation_function: ActivationFunction,
-        improvement_threshold: usize,
-        blocking_move_number: usize,
+        // improvement threshold relative to problem size
+        //TODO: test values: (1.0, 5.0, 10.0),
+        improvement_threshold_scale: f64,
+        // blocking move number relative to problem size
+        //TODO: test values: (0.0, 0.05)
+        blocking_move_number_scale: f64,
+        // time limit for tabu search
+        // TODO: set something reasonable here, small instances <500 should terminate in less than 30s
         time_limit_seconds: usize,
+        // seed value
+        // TODO: fix some seed value, i.e 42
+        seed: usize,
     ) -> SearchParameters {
-
         let mut tabu_tenure = tenure_ratio * qubo_instance.size() as f64;
-        if tabu_tenure < 5.0 {
-            println!("Warning: Given tabu_ratio leads to small tabu_tenure of {tabu_tenure}.\
-             Minimum tabu_tenure set instead");
-            tabu_tenure = 5.0;
+        let mut tabu_tenure = tabu_tenure.round() as usize;
+        if tabu_tenure < MIN_TABU_TENURE {
+            println!("Warning: Given tenure ratio leads to small tabu tenure of {tabu_tenure}.\
+             Minimum tabu_tenure {MIN_TABU_TENURE} set instead");
+            tabu_tenure = MIN_TABU_TENURE;
         }
-        let tabu_tenure = tabu_tenure.round() as usize;
+        let improvement_threshold = (improvement_threshold_scale * qubo_instance.size() as f64).round() as usize;
+        let blocking_move_number= (blocking_move_number_scale * qubo_instance.size() as f64).round() as usize;
+        let diversification_length = (diversification_length_scale * qubo_instance.size() as f64).round() as usize;
 
         SearchParameters {
             tabu_tenure,
-            diversification_length: 40,
+            diversification_length,
             diversification_base_factor,
             diversification_scaling_factor,
-            diversification_activation_function: ActivationFunction::Constant,
+            diversification_activation_function: activation_function,
             improvement_threshold,
             blocking_move_number,
-            activation_function,
             time_limit_seconds,
+            seed
         }
     }
 
@@ -147,12 +166,14 @@ impl SearchParameters {
         SearchParameters::new(
             qubo_instance,
             0.05,
+            0.05,
             0.75,
             1.25,
             ActivationFunction::Constant,
-            800,
-            40,
+            2.0,
+            0.01,
             1800,
+            42
         )
     }
 }
@@ -335,7 +356,6 @@ struct TabuSearchState {
     qubo: QuboEvaluator,
     tabu_list: IntegerVector,
     best_objective: f64,
-    //frequency_matrix: IntegerMatrix,
     diversification_intensity: f64,
     explored_moves: BinaryVector,
     successive_unsuccessful_phases: usize,
@@ -343,7 +363,6 @@ struct TabuSearchState {
     last_improved_initial_steps: BinaryVector,
     best_solution: BinaryVector,
     last_improved_tabu_list: IntegerVector,
-    frequency_matrix_norm: f64,
     rng: StdRng,
 }
 
@@ -356,10 +375,7 @@ impl TabuSearchState {
         let matrix = qubo_instance.get_matrix().to_owned();
         let evaluator = QuboEvaluator::new(&matrix, start_solution.to_owned());
         let start_objective = evaluator.objective_of_curr_solution;
-        //let (rows, cols) = &matrix.dim();
-        let frequency_norm = (qubo_instance.size()*qubo_instance.size()) as f64;
-        //let frequency_matrix = IntegerMatrix::from_elem((*rows, *cols), 1);
-
+        let seed = search_parameters.seed;
         let mut initial_state = TabuSearchState {
             search_parameters,
             search_start_time: Instant::now(),
@@ -370,7 +386,6 @@ impl TabuSearchState {
             qubo: evaluator,
             tabu_list: IntegerVector::zeros(qubo_instance.size()),
             best_objective: start_objective,
-            //frequency_matrix,
             diversification_intensity: Default::default(),
             explored_moves: BinaryVector::from_elem(qubo_instance.size(), false),
             successive_unsuccessful_phases: 0,
@@ -378,8 +393,7 @@ impl TabuSearchState {
             last_improved_initial_steps: BinaryVector::from_elem(qubo_instance.size(), false),
             best_solution: start_solution.to_owned(),
             last_improved_tabu_list: IntegerVector::zeros(qubo_instance.size()),
-            frequency_matrix_norm: frequency_norm,
-            rng: StdRng::seed_from_u64(42),
+            rng: StdRng::seed_from_u64(seed as u64),
         };
 
         initial_state.diversification_intensity = initial_state.get_base_diversification_intensity();
@@ -465,7 +479,7 @@ impl TabuSearchState {
 
     // Select next variable swap, if a eligible swap exists (non-tabu or tabu with aspiration)
     fn get_next_move(&mut self) -> Option<(usize, MoveReturnCode)> {
-        let reject_zero_move: bool = self.rng.gen();
+        //let reject_zero_move: bool = self.rng.gen();
         let mut best_mv: Option<usize> = None;
         let mut best_obj_delta = f64::MAX;
         let mut global_improvement_found = false;
@@ -477,7 +491,7 @@ impl TabuSearchState {
             let is_tabu = self.tabu_list[flip_index] > self.phase_it;
             let orig_obj_delta = self.qubo.get_objective_delta_on_flip(flip_index);
             //TODO: maybe remove this, this is temp
-            if reject_zero_move && orig_obj_delta == 0.0 {continue}
+            //if reject_zero_move && orig_obj_delta == 0.0 {continue}
             let additional_penalty = match self.phase_type {
                 PhaseType::Search => 0.0,
                 PhaseType::Diversification => self.get_diversification_penalty(flip_index)
@@ -534,16 +548,6 @@ impl TabuSearchState {
             if !self.qubo.curr_solution[index] {
                 continue
             }
-            /*
-            if index <= flip_index {
-                self.frequency_matrix[[index, flip_index]] += 1;
-                self.frequency_matrix_norm += 1.0
-            }
-
-            if index > flip_index {
-                self.frequency_matrix[[flip_index, index]] += 1;
-                self.frequency_matrix_norm += 1.0
-            }*/
         }
 
         self.it += 1;
@@ -587,18 +591,6 @@ impl TabuSearchState {
     fn get_diversification_penalty(&self, flip_index: usize) -> f64 {
         assert_eq!(self.phase_type, PhaseType::Diversification);
         let frequency_penalty_sum = self.qubo.get_frequency_penalty_on_flip(flip_index);
-        /*for i in 0..self.qubo.size {
-            if self.qubo.curr_solution[i] {
-                frequency_penalty_sum += self.frequency_matrix[[flip_index, i]];
-                frequency_penalty_sum += self.frequency_matrix[[i, flip_index]];
-                /*if self.qubo.matrix[(flip_index, i)] != 0.0 {
-                    frequency_penalty_sum += self.frequency_matrix[[flip_index, i]]
-                };
-                if self.qubo.matrix[(i, flip_index)] != 0.0 {
-                    frequency_penalty_sum += self.frequency_matrix[[i, flip_index]]
-                };*/
-            }
-        }*/
         let scale_factor = match self.search_parameters.diversification_activation_function {
             ActivationFunction::Constant => { self.diversification_intensity }
             ActivationFunction::Linear => {
@@ -610,7 +602,7 @@ impl TabuSearchState {
         scale_factor * frequency_penalty_sum as f64
     }
     fn get_base_diversification_intensity(&self) -> f64 {
-        self.search_parameters.diversification_base_factor * self.qubo.matrix_norm / self.frequency_matrix_norm
+        self.search_parameters.diversification_base_factor * self.qubo.matrix_norm / self.qubo.frequency_norm
     }
 }
 
