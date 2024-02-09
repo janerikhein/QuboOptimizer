@@ -5,7 +5,7 @@ use crate::qubo::*;
 use crate::{preprocess, tabu_search};
 use crate::start_heuristics::StartHeuristic;
 use crate::tabu_search::*;
-use ndarray::Array5;
+use ndarray::{Array1, Array5};
 use ndarray_stats::QuantileExt;
 use serde_json;
 use std::fs::File;
@@ -107,48 +107,61 @@ time_limit_seconds: usize,
 // TODO: fix some seed value, i.e 42
 seed: usize,
 */
+fn params_from
+(q: &QuboInstance, tr: f64, dls: f64, dbf: f64, its: f64, bmns: f64, tl: usize)
+-> SearchParameters {
+    let af = ActivationFunction::Constant;
+    SearchParameters::new(q, tr, dls, dbf, 1.5, af, its, bmns, tl, 42)
+}
 
 pub fn tune_tabu_params() {
-    let instances = ["bqp50.1",];
-    // Constant parameters (will not be tuned)
-    let dsf = 1.5;
-    let af = ActivationFunction::Constant;
-    let seed = 42;
+    // Parameters to tune
+    let tr = vec![0.1, 0.25,  0.5,];
+    let dls = vec![0.1, 0.5,   1.0,];
+    let dbf = vec![0.1, 0.25,  0.5,];
+    let its = vec![1.0, 5.0,  10.0,];
+    let bmns = vec![0.0, 0.05];
+    // Counters
+    let mut tr_count = Array1::from_vec(vec![0; 3]);
+    let mut dls_count = Array1::from_vec(vec![0; 3]);
+    let mut dbf_count = Array1::from_vec(vec![0; 3]);
+    let mut its_count = Array1::from_vec(vec![0; 3]);
+    let mut bmns_count = Array1::from_vec(vec![0; 2]);
+    let instances = [
+        "G1",
+        "G2",
+        "bqp50.1",
+        "bqp50.2",
+        "bqp100.1",
+        "bqp100.2",
+        "bqp250.1",
+        "bqp500.1",
+    ];
     for i in instances {
+        let literature_obj = get_literature_obj(i);
         let qubo = QuboInstance::from_file(&filepath_from_name(i));
         let n = qubo.size();
-        let time_limit_secs = n*n/8000;
+        let time_limit_secs = std::cmp::max(5, n.ilog10() as usize);
+        println!("Using time limit of {time_limit_secs}s");
         let start_solution =
             StartHeuristic::GreedyFromHint(0.5).get_solution(&qubo);
-        let proposed = vec![
-            vec![0.1, 0.25,  0.5,],
-            vec![0.1, 0.5,   1.0,],
-            vec![0.1, 0.25,  0.5,],
-            vec![1.0, 5.0,  10.0,],
-            vec![0.0, 0.05],
-        ];
         let mut obj_vals = Array5::from_elem((3, 3, 3, 3, 2), 0.);
-        let mut counter = 0;
         let start_solution = compute_best_start_solution(&qubo);
         // Iterate over all possible combinations
-        for i in 0..proposed[0].len() {
-            for j in 0..proposed[1].len() {
-                for k in 0..proposed[2].len() {
-                    for l in 0..proposed[3].len() {
-                        for m in 0..proposed[4].len() {
-                            counter += 1;
-                            println!("{i},{j},{k},{l},{m}");
-                            let params = SearchParameters::new(
+        for i in 0..tr.len() {
+            for j in 0..dls.len() {
+                for k in 0..dbf.len() {
+                    for l in 0..its.len() {
+                        for m in 0..bmns.len() {
+                            //println!("{i},{j},{k},{l},{m}");
+                            let params = params_from(
                                 &qubo,
-                                proposed[0][i],
-                                proposed[1][j],
-                                proposed[2][k],
-                                dsf,
-                                af.clone(),
-                                proposed[3][l],
-                                proposed[4][m],
+                                tr[i],
+                                dls[j],
+                                dbf[k],
+                                its[l],
+                                bmns[m],
                                 time_limit_secs,
-                                seed,
                             );
                             let solution = tabu_search::tabu_search(
                                 &qubo,
@@ -165,21 +178,33 @@ pub fn tune_tabu_params() {
         }
         // Get best params
         let best = obj_vals.argmin().unwrap();
-        let params = SearchParameters::new(
-            &qubo,
-            proposed[0][best.0],
-            proposed[1][best.1],
-            proposed[2][best.2],
-            dsf,
-            af.clone(),
-            proposed[3][best.3],
-            proposed[4][best.4],
-            time_limit_secs,
-            seed,
+        tr_count[best.0] += 1;
+        dls_count[best.1] += 1;
+        dbf_count[best.2] += 1;
+        its_count[best.3] += 1;
+        bmns_count[best.4] += 1;
+        println!(
+            "best choice for {i}: {} {} {} {} {}",
+            tr[best.0],
+            dls[best.1],
+            dbf[best.2],
+            its[best.3],
+            bmns[best.4],
         );
-        println!("{best:?}");
-        println!("{params:?}");
     }
+    let i = tr_count.argmax().unwrap();
+    let j = dls_count.argmax().unwrap();
+    let k = dbf_count.argmax().unwrap();
+    let l = its_count.argmax().unwrap();
+    let m = bmns_count.argmax().unwrap();
+    println!(
+        "best choice overall: {} {} {} {} {}",
+        tr[i],
+        dls[j],
+        dbf[k],
+        its[l],
+        bmns[m],
+    );
 }
 
 pub fn test_start_heuristics() {

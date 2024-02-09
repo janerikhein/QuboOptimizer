@@ -1,0 +1,2609 @@
+Using time limit of 5s
+
+ Optimization finished in 5.000003029s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.156044309s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.31304444s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.32323207s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.403670903s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.405019342s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000276943s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.160365664s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.313245739s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.315592461s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.431434901s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.441502796s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000017987s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.185069844s.
+ Objective of best solution found: -11534
+ Optimization finished in 0.319957167s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.328488971s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.423253114s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.433994662s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000022275s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.205498642s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.404633709s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.403876769s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.478403692s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.461045302s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000004121s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.324517692s.
+ Objective of best solution found: -11534
+ Optimization finished in 0.347403179s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.353391141s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.472253266s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.456784601s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000010784s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.213132382s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.352419529s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.334339836s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.44335518s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.4388341s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000024089s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.25319572s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.315360005s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.313607577s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.402411219s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.400925804s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000023507s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.248590191s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.341202969s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.336686177s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.415306969s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.422988338s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.00001399s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.246998316s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.335314374s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.343593693s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.426208778s.
+ Objective of best solution found: -11579
+ Optimization finished in 0.41985995s.
+ Objective of best solution found: -11579
+ Optimization finished in 5.000001728s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.194911835s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.169887035s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.170349262s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.267721587s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.261578574s.
+ Objective of best solution found: -11508
+ Optimization finished in 1.6641940100000001s.
+ Objective of best solution found: -11524
+ Optimization finished in 0.194400445s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.180874755s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.169492284s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.273353811s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.268350727s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.287126546s.
+ Objective of best solution found: -11523
+ Optimization finished in 0.190784342s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.168574662s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.167295454s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.272029388s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.271011568s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.000002799s.
+ Objective of best solution found: -11537
+ Optimization finished in 0.255444398s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.171079912s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.172903533s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.273237413s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.269877s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.00283926s.
+ Objective of best solution found: -11529
+ Optimization finished in 0.244772009s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.165909784s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.164679016s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.262357615s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.279432003s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.000016334s.
+ Objective of best solution found: -11516
+ Optimization finished in 0.25111163s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.174776997s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.176608031s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.275819657s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.271714807s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.002321508s.
+ Objective of best solution found: -11534
+ Optimization finished in 0.327790841s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.176791445s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.179153837s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.280015026s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.280695713s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.000001216s.
+ Objective of best solution found: -11528
+ Optimization finished in 0.312673655s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.167558547s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.167110727s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.262807469s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.267203074s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.00000866s.
+ Objective of best solution found: -11525
+ Optimization finished in 0.378708169s.
+ Objective of best solution found: -11545
+ Optimization finished in 0.166066548s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.172532076s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.274846181s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.280995867s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.00000869s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.179952715s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.266606114s.
+ Objective of best solution found: -11487
+ Optimization finished in 0.319198354s.
+ Objective of best solution found: -11503
+ Optimization finished in 0.711940718s.
+ Objective of best solution found: -11496
+ Optimization finished in 1.220246949s.
+ Objective of best solution found: -11520
+ Optimization finished in 5.000020552s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.180308373s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.630721281s.
+ Objective of best solution found: -11500
+ Optimization finished in 0.539576396s.
+ Objective of best solution found: -11506
+ Optimization finished in 0.573656232s.
+ Objective of best solution found: -11551
+ Optimization finished in 0.534027238s.
+ Objective of best solution found: -11512
+ Optimization finished in 5.003209914s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.178803329s.
+ Objective of best solution found: -11432
+ Optimization finished in 1.6846316350000001s.
+ Objective of best solution found: -11511
+ Optimization finished in 0.273931615s.
+ Objective of best solution found: -11497
+ Optimization finished in 0.591656445s.
+ Objective of best solution found: -11483
+ Optimization finished in 0.965263316s.
+ Objective of best solution found: -11506
+ Optimization finished in 5.000315877s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.220959413s.
+ Objective of best solution found: -11454
+ Optimization finished in 0.537239062s.
+ Objective of best solution found: -11488
+ Optimization finished in 0.524082514s.
+ Objective of best solution found: -11534
+ Optimization finished in 1.251832927s.
+ Objective of best solution found: -11522
+ Optimization finished in 0.499131181s.
+ Objective of best solution found: -11476
+ Optimization finished in 2.321188522s.
+ Objective of best solution found: -11502
+ Optimization finished in 0.223660529s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.880091074s.
+ Objective of best solution found: -11496
+ Optimization finished in 0.320318034s.
+ Objective of best solution found: -11484
+ Optimization finished in 0.527704838s.
+ Objective of best solution found: -11495
+ Optimization finished in 0.583336709s.
+ Objective of best solution found: -11497
+ Optimization finished in 5.000026232s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.216832842s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.30803816s.
+ Objective of best solution found: -11505
+ Optimization finished in 0.570745842s.
+ Objective of best solution found: -11505
+ Optimization finished in 0.623751908s.
+ Objective of best solution found: -11469
+ Optimization finished in 0.526979838s.
+ Objective of best solution found: -11485
+ Optimization finished in 5.000002488s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.285441214s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.431823801s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.58511172s.
+ Objective of best solution found: -11518
+ Optimization finished in 0.793306149s.
+ Objective of best solution found: -11528
+ Optimization finished in 0.592456566s.
+ Objective of best solution found: -11537
+ Optimization finished in 5.000000515s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.271122346s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.861443527s.
+ Objective of best solution found: -11492
+ Optimization finished in 0.591981896s.
+ Objective of best solution found: -11490
+ Optimization finished in 0.760930059s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.563667696s.
+ Objective of best solution found: -11523
+ Optimization finished in 5.000004543s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.267171264s.
+ Objective of best solution found: -11432
+ Optimization finished in 1.223080455s.
+ Objective of best solution found: -11495
+ Optimization finished in 0.753896045s.
+ Objective of best solution found: -11432
+ Optimization finished in 0.507757192s.
+ Objective of best solution found: -11488
+ Optimization finished in 0.50673238s.
+ Objective of best solution found: -11520best choice for G1: 0.1 0.1 0.1 5 0
+Using time limit of 5s
+
+ Optimization finished in 5.000018057s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.172609431s.
+ Objective of best solution found: -11537
+ Optimization finished in 5.000004302s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.305427484s.
+ Objective of best solution found: -11591
+ Optimization finished in 3.307204726s.
+ Objective of best solution found: -11606
+ Optimization finished in 0.498765585s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000013559s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.181977573s.
+ Objective of best solution found: -11537
+ Optimization finished in 5.000010654s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.305998996s.
+ Objective of best solution found: -11591
+ Optimization finished in 2.197992709s.
+ Objective of best solution found: -11603
+ Optimization finished in 0.482211765s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000026764s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.153563847s.
+ Objective of best solution found: -11537
+ Optimization finished in 5.000007437s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.308733645s.
+ Objective of best solution found: -11591
+ Optimization finished in 1.863318816s.
+ Objective of best solution found: -11595
+ Optimization finished in 0.500051398s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000012076s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.223482425s.
+ Objective of best solution found: -11533
+ Optimization finished in 5.000024359s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.296087985s.
+ Objective of best solution found: -11591
+ Optimization finished in 4.834696717s.
+ Objective of best solution found: -11597
+ Optimization finished in 0.486651353s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000021765s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.345547839s.
+ Objective of best solution found: -11537
+ Optimization finished in 5.000548132s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.298531839s.
+ Objective of best solution found: -11591
+ Optimization finished in 4.114408993s.
+ Objective of best solution found: -11596
+ Optimization finished in 0.476429159s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.00000879s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.3136465s.
+ Objective of best solution found: -11537
+ Optimization finished in 5.0000194s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.306844872s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.852464424s.
+ Objective of best solution found: -11602
+ Optimization finished in 0.492928337s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000001196s.
+ Objective of best solution found: -11533
+ Optimization finished in 1.620050639s.
+ Objective of best solution found: -11581
+ Optimization finished in 5.000005694s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.308319278s.
+ Objective of best solution found: -11591
+ Optimization finished in 3.6956203629999997s.
+ Objective of best solution found: -11604
+ Optimization finished in 0.491675326s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000011085s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.863906496s.
+ Objective of best solution found: -11583
+ Optimization finished in 5.000016514s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.305450788s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000009921s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.490187766s.
+ Objective of best solution found: -11591
+ Optimization finished in 5.000022215s.
+ Objective of best solution found: -11533
+ Optimization finished in 1.59076701s.
+ Objective of best solution found: -11603
+ Optimization finished in 5.000018088s.
+ Objective of best solution found: -11591
+ Optimization finished in 0.33008795s.
+ Objective of best solution found: -11591
+ Optimization finished in 1.538803138s.
+ Objective of best solution found: -11613
+ Optimization finished in 0.671285188s.
+ Objective of best solution found: -11597
+ Optimization finished in 5.000023287s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.123686023s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.537943444s.
+ Objective of best solution found: -11541
+ Optimization finished in 0.451849934s.
+ Objective of best solution found: -11508
+ Optimization finished in 1.320461587s.
+ Objective of best solution found: -11553
+ Optimization finished in 0.839450814s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.00001947s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.116969325s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.000020061s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.45596874s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.789650201s.
+ Objective of best solution found: -11536
+ Optimization finished in 0.843221056s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.00000343s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.123127826s.
+ Objective of best solution found: -11508
+ Optimization finished in 3.8145659849999998s.
+ Objective of best solution found: -11534
+ Optimization finished in 0.317717967s.
+ Objective of best solution found: -11549
+ Optimization finished in 2.859809959s.
+ Objective of best solution found: -11542
+ Optimization finished in 0.834899557s.
+ Objective of best solution found: -11508
+ Optimization finished in 3.668282264s.
+ Objective of best solution found: -11558
+ Optimization finished in 0.145563771s.
+ Objective of best solution found: -11508
+ Optimization finished in 1.203316833s.
+ Objective of best solution found: -11531
+ Optimization finished in 0.452451843s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.943845982s.
+ Objective of best solution found: -11531
+ Optimization finished in 0.880995731s.
+ Objective of best solution found: -11539
+ Optimization finished in 5.000017126s.
+ Objective of best solution found: -11540
+ Optimization finished in 0.144239787s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.628286494s.
+ Objective of best solution found: -11541
+ Optimization finished in 0.452419984s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.587531748s.
+ Objective of best solution found: -11569
+ Optimization finished in 0.833186723s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.000039738s.
+ Objective of best solution found: -11558
+ Optimization finished in 0.144375652s.
+ Objective of best solution found: -11508
+ Optimization finished in 1.403227213s.
+ Objective of best solution found: -11565
+ Optimization finished in 0.463622988s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.000022916s.
+ Objective of best solution found: -11558
+ Optimization finished in 0.444178715s.
+ Objective of best solution found: -11564
+ Optimization finished in 5.000000485s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.176306766s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.91857988s.
+ Objective of best solution found: -11541
+ Optimization finished in 0.483196182s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.787248836s.
+ Objective of best solution found: -11584
+ Optimization finished in 0.482518952s.
+ Objective of best solution found: -11547
+ Optimization finished in 5.000011876s.
+ Objective of best solution found: -11548
+ Optimization finished in 0.17583979s.
+ Objective of best solution found: -11508
+ Optimization finished in 3.048284808s.
+ Objective of best solution found: -11577
+ Optimization finished in 0.482476432s.
+ Objective of best solution found: -11508
+ Optimization finished in 1.7590254889999999s.
+ Objective of best solution found: -11528
+ Optimization finished in 1.534782607s.
+ Objective of best solution found: -11533
+ Optimization finished in 5.000009732s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.178407837s.
+ Objective of best solution found: -11508
+ Optimization finished in 1.051355893s.
+ Objective of best solution found: -11538
+ Optimization finished in 0.486508916s.
+ Objective of best solution found: -11508
+ Optimization finished in 0.944317106s.
+ Objective of best solution found: -11549
+ Optimization finished in 0.858409356s.
+ Objective of best solution found: -11508
+ Optimization finished in 5.000005885s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.177391952s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.316005585s.
+ Objective of best solution found: -11528
+ Optimization finished in 0.777698392s.
+ Objective of best solution found: -11526
+ Optimization finished in 0.53253555s.
+ Objective of best solution found: -11499
+ Optimization finished in 0.571573174s.
+ Objective of best solution found: -11518
+ Optimization finished in 5.000009061s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.185210116s.
+ Objective of best solution found: -11452
+ Optimization finished in 3.345299802s.
+ Objective of best solution found: -11531
+ Optimization finished in 0.666196663s.
+ Objective of best solution found: -11452
+ Optimization finished in 1.133287907s.
+ Objective of best solution found: -11524
+ Optimization finished in 1.275293062s.
+ Objective of best solution found: -11452
+ Optimization finished in 5.00000359s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.178028375s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.317748725s.
+ Objective of best solution found: -11533
+ Optimization finished in 0.65783023s.
+ Objective of best solution found: -11452
+ Optimization finished in 1.463956966s.
+ Objective of best solution found: -11541
+ Optimization finished in 1.446978049s.
+ Objective of best solution found: -11565
+ Optimization finished in 5.000023548s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.216400361s.
+ Objective of best solution found: -11452
+ Optimization finished in 1.4708691219999999s.
+ Objective of best solution found: -11490
+ Optimization finished in 0.334869619s.
+ Objective of best solution found: -11504
+ Optimization finished in 0.613673384s.
+ Objective of best solution found: -11505
+ Optimization finished in 1.269472363s.
+ Objective of best solution found: -11533
+ Optimization finished in 5.000126951s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.216824688s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.513278378s.
+ Objective of best solution found: -11501
+ Optimization finished in 0.70360955s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.599025458s.
+ Objective of best solution found: -11548
+ Optimization finished in 1.322690056s.
+ Objective of best solution found: -11452
+ Optimization finished in 5.000015302s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.215724784s.
+ Objective of best solution found: -11452
+ Optimization finished in 3.01199103s.
+ Objective of best solution found: -11511
+ Optimization finished in 0.711209526s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.5829693s.
+ Objective of best solution found: -11486
+ Optimization finished in 0.515792834s.
+ Objective of best solution found: -11489
+ Optimization finished in 5.000021945s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.278005877s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.59301818s.
+ Objective of best solution found: -11531
+ Optimization finished in 0.784912133s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.620348895s.
+ Objective of best solution found: -11500
+ Optimization finished in 1.377921597s.
+ Objective of best solution found: -11452
+ Optimization finished in 5.000018529s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.267190541s.
+ Objective of best solution found: -11452
+ Optimization finished in 3.844557511s.
+ Objective of best solution found: -11541
+ Optimization finished in 0.752471493s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.490964253s.
+ Objective of best solution found: -11501
+ Optimization finished in 0.712607739s.
+ Objective of best solution found: -11529
+ Optimization finished in 5.000002067s.
+ Objective of best solution found: -11452
+ Optimization finished in 0.271559816s.
+ Objective of best solution found: -11452
+ Optimization finished in 2.002970297s.
+ Objective of best solution found: -11532
+ Optimization finished in 0.77917906s.
+ Objective of best solution found: -11452
+ Optimization finished in 1.085215174s.
+ Objective of best solution found: -11506
+ Optimization finished in 0.572479164s.
+ Objective of best solution found: -11496best choice for G2: 0.1 1 0.5 10 0
+Using time limit of 5s
+
+ Optimization finished in 0.170937164s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001394856s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.760600201s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006214587s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.495623094s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.012125754s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.170773737s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001399094s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.759499446s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006185142s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.494342662s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.012135032s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.170309617s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001392191s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.75885182s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006180092s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.495287424s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.012118862s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.245560398s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001943796s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.831877789s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006747136s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.569529433s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.012690895s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.246021313s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001965466s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.832577342s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006794214s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.567693068s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.012723406s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.24542841s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001967431s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.828950588s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006761152s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.564258797s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.012680185s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.339663661s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.00265461s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.921799699s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007447931s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.655038376s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.013419973s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.338385684s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.002635443s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.919494475s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007451878s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.654061414s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.013389806s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.338207199s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.002677022s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.916894157s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007447841s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.6550987s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.013407058s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.198999693s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001284239s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.872010467s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.005595455s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.712782289s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.0109341s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.198621643s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001275582s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.872008344s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.005583643s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.7089259449999998s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.010935102s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.198572321s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001287976s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.869633639s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.005569758s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.706840724s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.010932216s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.275308628s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001753439s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.942527599s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006069836s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.779331207s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.011271893s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.274722609s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001737188s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.939346162s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006038066s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.777596173s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.011489462s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.274295358s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001763057s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.939598795s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006036092s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.779008643s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.01141372s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.364118322s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.00232455s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.038866506s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006619747s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.87630173s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.011912965s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.364455545s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.002311716s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.039630049s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006605019s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.8757560359999998s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.011945477s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.362900778s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.002330061s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.038828395s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.006608136s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.8744502459999999s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.012031147s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.213924748s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.000919204s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.941480465s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.003950881s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.854016809s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007573486s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.213722908s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.00091206s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.939665351s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.00388136s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.852353248s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007611156s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.213003149s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.000904797s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.939177696s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.003921325s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.849121005s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007604845s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.289733776s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.00120476s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.02159014s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.004173408s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.927925812s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.00787435s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.288774266s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001191925s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.01841811s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.00417456s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.928877629s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007874199s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.289606257s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001205511s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.017959801s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.004198655s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.926717947s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.007873218s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.395015037s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001582488s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.117302342s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.004556747s.
+ Objective of best solution found: -2098
+ Optimization finished in 2.025596457s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.008217033s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.393331589s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001563142s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.114640158s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.004523515s.
+ Objective of best solution found: -2098
+ Optimization finished in 2.036719912s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.008441153s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.397689513s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.001575565s.
+ Objective of best solution found: -2098
+ Optimization finished in 1.125284304s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.004557598s.
+ Objective of best solution found: -2098
+ Optimization finished in 2.04777522s.
+ Objective of best solution found: -2098
+ Optimization finished in 0.008440983s.
+ Objective of best solution found: -2098best choice for bqp50.1: 0.1 0.1 0.1 1 0
+Using time limit of 5s
+
+ Optimization finished in 0.17642078s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.001597857s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.806210874s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.006731006s.
+ Objective of best solution found: -3653
+ Optimization finished in 1.507269109s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.012431799s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.176055705s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.001515373s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.82269277s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.006686211s.
+ Objective of best solution found: -3653
+ Optimization finished in 1.517454745s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.013910763s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.172646461s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001511505s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.757788897s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.007206377s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.494023414s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.01389289s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.246825211s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002362482s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.832327062s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.008170064s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.6032057210000001s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.012676508s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.253878681s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002389151s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.826525479s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.007212398s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.553868287s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.013539467s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.246083099s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002066005s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.829354576s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.007217257s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.548318376s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.012786454s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.335956377s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002333928s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.909519084s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.008965176s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.640274333s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.013315747s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.337489904s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002979238s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.907173695s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.00794907s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.631437657s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.014291687s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.339457596s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002707419s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.921032831s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.007944953s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.647077092s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.013391058s.
+ Objective of best solution found: -3653
+ Optimization finished in 0.198256458s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001079234s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.864130937s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.004538223s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.690366614s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.008811187s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.199272114s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001061892s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.869786225s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.004646976s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.698812335s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.008904482s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.197869963s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001078173s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.865608609s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.004553882s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.697032917s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.008863967s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.275239498s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001425113s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.947126605s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.004873221s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.777747307s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.00916442s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.289983896s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.00147707s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.953044415s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.004866589s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.79984149s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.009326234s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.276547391s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001430514s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.935485951s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.004930479s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.75754873s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.009213462s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.375990462s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001901417s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.032300831s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005379671s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.861882192s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.009600088s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.380639842s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001864618s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.03794142s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005355255s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.876373905s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.009908426s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.379823492s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001923859s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.048872585s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005377928s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.8722320460000001s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.009886204s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.212625781s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.00069314s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.939457421s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002813568s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.86107606s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005452307s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.212408704s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.000689774s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.938948456s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002879621s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.8662766450000001s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005410779s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.211896904s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.000683372s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.939326064s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002799682s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.851223088s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005453189s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.290049338s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.000856737s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.02269852s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002983195s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.919943069s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005613851s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.290251297s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.000854914s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.024530566s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002977065s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.939760621s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005566652s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.293863181s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.000844153s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.021629925s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.002995298s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.941565306s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005604963s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.395734256s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001103029s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.113241354s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.003270344s.
+ Objective of best solution found: -3702
+ Optimization finished in 2.023883315s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.00586432s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.393304037s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001100654s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.118600336s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.003211003s.
+ Objective of best solution found: -3702
+ Optimization finished in 2.018071142s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005823193s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.392928974s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.001094072s.
+ Objective of best solution found: -3702
+ Optimization finished in 1.113748806s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.003210672s.
+ Objective of best solution found: -3702
+ Optimization finished in 2.017245433s.
+ Objective of best solution found: -3702
+ Optimization finished in 0.005825708s.
+ Objective of best solution found: -3702best choice for bqp50.2: 0.1 0.1 0.1 5 0
+Using time limit of 5s
+
+ Optimization finished in 0.648442882s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.006473933s.
+ Objective of best solution found: -7970
+ Optimization finished in 2.994685179s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.01985366s.
+ Objective of best solution found: -7904
+ Optimization finished in 5.000000856s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.02955618s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.660766678s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.004072259s.
+ Objective of best solution found: -7970
+ Optimization finished in 2.9955629249999998s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.020558433s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000002879s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.036527035s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.661677667s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.007944802s.
+ Objective of best solution found: -7970
+ Optimization finished in 2.835083077s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.019187801s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000002388s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.028196289s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.886025716s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.012449723s.
+ Objective of best solution found: -7970
+ Optimization finished in 3.063505578s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.023243919s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000002007s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.040113312s.
+ Objective of best solution found: -7970
+ Optimization finished in 1.177537768s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.009412195s.
+ Objective of best solution found: -7970
+ Optimization finished in 3.104857474s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.028860655s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000001346s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.040369402s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.906599518s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.007815641s.
+ Objective of best solution found: -7970
+ Optimization finished in 3.096727715s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.021201118s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000002058s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.040289062s.
+ Objective of best solution found: -7970
+ Optimization finished in 1.196988212s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.012255698s.
+ Objective of best solution found: -7970
+ Optimization finished in 3.489662699s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.029870649s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000001166s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.040759073s.
+ Objective of best solution found: -7970
+ Optimization finished in 1.233291989s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.01934168s.
+ Objective of best solution found: -7970
+ Optimization finished in 3.5620309629999998s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.023834638s.
+ Objective of best solution found: -7904
+ Optimization finished in 5.000000935s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.041406308s.
+ Objective of best solution found: -7904
+ Optimization finished in 1.238629631s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.008523016s.
+ Objective of best solution found: -7970
+ Optimization finished in 3.559320901s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.023378512s.
+ Objective of best solution found: -7904
+ Optimization finished in 5.000000084s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.046475696s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.834212017s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.003529891s.
+ Objective of best solution found: -7942
+ Optimization finished in 0.03708929s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.009847461s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.015400066s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.017602087s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.746832937s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.00350786s.
+ Objective of best solution found: -7942
+ Optimization finished in 0.004960795s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.014756429s.
+ Objective of best solution found: -7942
+ Optimization finished in 0.058402839s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.028338235s.
+ Objective of best solution found: -7942
+ Optimization finished in 0.733359434s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.003691083s.
+ Objective of best solution found: -7942
+ Optimization finished in 0.005015307s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.009991582s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.012914755s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.021982364s.
+ Objective of best solution found: -7970
+ Optimization finished in 1.00145399s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.004552199s.
+ Objective of best solution found: -7942
+ Optimization finished in 3.177688657s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.01083289s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000002297s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.019854381s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.974855448s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.004569211s.
+ Objective of best solution found: -7942
+ Optimization finished in 3.197688792s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.010889185s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.032652859s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.013520571s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.979129044s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.006160947s.
+ Objective of best solution found: -7970
+ Optimization finished in 3.325533215s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.015660495s.
+ Objective of best solution found: -7942
+ Optimization finished in 5.000000695s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.022654234s.
+ Objective of best solution found: -7970
+ Optimization finished in 1.272855339s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.005915125s.
+ Objective of best solution found: -7942
+ Optimization finished in 3.654720656s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.016755779s.
+ Objective of best solution found: -7942
+ Optimization finished in 5.000000174s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.019525925s.
+ Objective of best solution found: -7970
+ Optimization finished in 1.269475439s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.005865593s.
+ Objective of best solution found: -7942
+ Optimization finished in 3.690407355s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.01621273s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000001696s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.049785304s.
+ Objective of best solution found: -7970
+ Optimization finished in 1.312896436s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.006084122s.
+ Objective of best solution found: -7942
+ Optimization finished in 3.543011418s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.01702282s.
+ Objective of best solution found: -7970
+ Optimization finished in 5.000002519s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.019504535s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.019817713s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.002346521s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.006178891s.
+ Objective of best solution found: -7918
+ Optimization finished in 0.005513673s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.034410015s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.018622271s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.00844434s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.002335541s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.014538881s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.005559197s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.460167336s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.011597194s.
+ Objective of best solution found: -7888
+ Optimization finished in 0.039255914s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.002334008s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.679412152s.
+ Objective of best solution found: -7898
+ Optimization finished in 0.006156919s.
+ Objective of best solution found: -7811
+ Optimization finished in 0.013212724s.
+ Objective of best solution found: -7904
+ Optimization finished in 0.018987235s.
+ Objective of best solution found: -7898
+ Optimization finished in 0.003814184s.
+ Objective of best solution found: -7812
+ Optimization finished in 0.002962737s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.004355008s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.006826906s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.02336641s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.019301575s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.004372742s.
+ Objective of best solution found: -7918
+ Optimization finished in 0.001430955s.
+ Objective of best solution found: -7904
+ Optimization finished in 0.014459101s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.008421797s.
+ Objective of best solution found: -7896
+ Optimization finished in 0.015672147s.
+ Objective of best solution found: -7811
+ Optimization finished in 0.014048622s.
+ Objective of best solution found: -7815
+ Optimization finished in 0.003768749s.
+ Objective of best solution found: -7840
+ Optimization finished in 0.002975972s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.010448489s.
+ Objective of best solution found: -7942
+ Optimization finished in 0.006349901s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.027163502s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.0193256s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.074337347s.
+ Objective of best solution found: -7830
+ Optimization finished in 0.003991387s.
+ Objective of best solution found: -7928
+ Optimization finished in 0.090272969s.
+ Objective of best solution found: -7904
+ Optimization finished in 0.011031713s.
+ Objective of best solution found: -7800
+ Optimization finished in 0.024688769s.
+ Objective of best solution found: -7872
+ Optimization finished in 0.020199549s.
+ Objective of best solution found: -7876
+ Optimization finished in 0.120312776s.
+ Objective of best solution found: -7896
+ Optimization finished in 0.004730434s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.018696299s.
+ Objective of best solution found: -7898
+ Optimization finished in 0.011126881s.
+ Objective of best solution found: -7898
+ Optimization finished in 0.008885637s.
+ Objective of best solution found: -7898
+ Optimization finished in 0.012099074s.
+ Objective of best solution found: -7811
+ Optimization finished in 0.082266291s.
+ Objective of best solution found: -7918
+ Optimization finished in 0.003192728s.
+ Objective of best solution found: -7848
+ Optimization finished in 0.019452398s.
+ Objective of best solution found: -7898
+ Optimization finished in 0.011103277s.
+ Objective of best solution found: -7900
+ Optimization finished in 0.024576018s.
+ Objective of best solution found: -7970
+ Optimization finished in 0.020172448s.
+ Objective of best solution found: -7900best choice for bqp100.1: 0.1 0.1 0.1 1 0
+Using time limit of 5s
+
+ Optimization finished in 0.645769117s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.005283049s.
+ Objective of best solution found: -11036
+ Optimization finished in 2.6918289079999997s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.022712132s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000001497s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.043462464s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.09159416s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.005426839s.
+ Objective of best solution found: -11036
+ Optimization finished in 2.790529986s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.022654253s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000000665s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.043447967s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.642166539s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.005559859s.
+ Objective of best solution found: -11036
+ Optimization finished in 2.750858493s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.021132789s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000001757s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.043331128s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.882762756s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.011147069s.
+ Objective of best solution found: -11036
+ Optimization finished in 3.002910828s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.029702745s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000000965s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.054865504s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.910843398s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.009409309s.
+ Objective of best solution found: -11036
+ Optimization finished in 2.98022732s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.02610182s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000001356s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.045330288s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.881996178s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.008708705s.
+ Objective of best solution found: -11036
+ Optimization finished in 2.983871866s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.028379733s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000000815s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.04974556s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.230189459s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.011112324s.
+ Objective of best solution found: -11036
+ Optimization finished in 3.326869251s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.034144737s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000002629s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.071184464s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.216358956s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.011770188s.
+ Objective of best solution found: -11036
+ Optimization finished in 3.261634718s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.028552427s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000002869s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.057335787s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.211100774s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.011738859s.
+ Objective of best solution found: -11036
+ Optimization finished in 3.262943893s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.032196633s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000001616s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.050857606s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.679796884s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.006273608s.
+ Objective of best solution found: -11012
+ Optimization finished in 3.052882783s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.012252983s.
+ Objective of best solution found: -11026
+ Optimization finished in 5.000002317s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.023141939s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.689066822s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.004983157s.
+ Objective of best solution found: -11014
+ Optimization finished in 3.039799502s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.011670711s.
+ Objective of best solution found: -11032
+ Optimization finished in 5.000001417s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.022811479s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.684961141s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.004253569s.
+ Objective of best solution found: -11014
+ Optimization finished in 3.017615701s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.013260343s.
+ Objective of best solution found: -11022
+ Optimization finished in 5.000001096s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.022809375s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.956719299s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.008660715s.
+ Objective of best solution found: -11030
+ Optimization finished in 0.039766091s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.030205738s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000000445s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.026347321s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.054159483s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.017021588s.
+ Objective of best solution found: -11012
+ Optimization finished in 3.367090876s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.017769371s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000000765s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.025236858s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.043033883s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.009933854s.
+ Objective of best solution found: -11026
+ Optimization finished in 3.466795837s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.015859268s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000000966s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.023730131s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.289076707s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.010770372s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.020040611s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.0271253s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000000535s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.02674694s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.383930537s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.014837401s.
+ Objective of best solution found: -11030
+ Optimization finished in 3.866584989s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.024321651s.
+ Objective of best solution found: -11036
+ Optimization finished in 5.000002328s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.026530184s.
+ Objective of best solution found: -11036
+ Optimization finished in 1.434245266s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.014690786s.
+ Objective of best solution found: -11030
+ Optimization finished in 0.010887813s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.015500135s.
+ Objective of best solution found: -11032
+ Optimization finished in 5.000000905s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.025656765s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.060114008s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.004839037s.
+ Objective of best solution found: -11012
+ Optimization finished in 1.294397286s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.016376768s.
+ Objective of best solution found: -11032
+ Optimization finished in 4.191225771s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.038413944s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.096481124s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.004624685s.
+ Objective of best solution found: -11012
+ Optimization finished in 3.367779979s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.021435036s.
+ Objective of best solution found: -11012
+ Optimization finished in 3.568281839s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.037737215s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.130818682s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.004530108s.
+ Objective of best solution found: -11012
+ Optimization finished in 3.431497036s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.020238512s.
+ Objective of best solution found: -11012
+ Optimization finished in 4.257817289s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.038791203s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.089250001s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.002234231s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.028622979s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.008611273s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.078074027s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.039646056s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.084147199s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.006724564s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.093941901s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.005023623s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.173760359s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.041075627s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.02016266s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.005588192s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.049515087s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.021071364s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.057229358s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.016112022s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.040124704s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.008313474s.
+ Objective of best solution found: -11012
+ Optimization finished in 4.145045859s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.028366217s.
+ Objective of best solution found: -11032
+ Optimization finished in 1.958154765s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.03377293s.
+ Objective of best solution found: -11026
+ Optimization finished in 0.140476418s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.007009267s.
+ Objective of best solution found: -11032
+ Optimization finished in 4.038035395s.
+ Objective of best solution found: -11036
+ Optimization finished in 0.013454147s.
+ Objective of best solution found: -11032
+ Optimization finished in 0.05557817s.
+ Objective of best solution found: -11014
+ Optimization finished in 0.041945269s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.063071877s.
+ Objective of best solution found: -11018
+ Optimization finished in 0.005615723s.
+ Objective of best solution found: -11036
+ Optimization finished in 4.019067386s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.023197191s.
+ Objective of best solution found: -11012
+ Optimization finished in 5.00000309s.
+ Objective of best solution found: -11012
+ Optimization finished in 0.041905013s.
+ Objective of best solution found: -11012best choice for bqp100.2: 0.1 0.1 0.1 1 0
+Using time limit of 5s
+
+ Optimization finished in 5.000006976s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.032331195s.
+ Objective of best solution found: -45573
+ Optimization finished in 5.000001947s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.11930711s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000002097s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.234704956s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.00000314s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.031876472s.
+ Objective of best solution found: -45573
+ Optimization finished in 5.00000381s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.123641119s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000000184s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.245852155s.
+ Objective of best solution found: -45607
+ Optimization finished in 3.989039913s.
+ Objective of best solution found: -45573
+ Optimization finished in 0.031530423s.
+ Objective of best solution found: -45573
+ Optimization finished in 5.000000283s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.127819616s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000005213s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.247417962s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000000865s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.044568569s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.00000297s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.141134011s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000005323s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.248476679s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000005173s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.045110916s.
+ Objective of best solution found: -45573
+ Optimization finished in 5.000000535s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.136656142s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000004773s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.260844858s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000001186s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.056497895s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000001276s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.150922071s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000004753s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.249993243s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000001086s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.088392211s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.00000343s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.151790009s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000007137s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.262623695s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000001717s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.089811493s.
+ Objective of best solution found: -45583
+ Optimization finished in 5.000000765s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.139165007s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000001116s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.246325323s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.00000336s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.105380076s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000002898s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.138517192s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000002439s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.242638638s.
+ Objective of best solution found: -45607
+ Optimization finished in 3.970136174s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.028498676s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006686s.
+ Objective of best solution found: -45583
+ Optimization finished in 0.118194292s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.00000345s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.232247877s.
+ Objective of best solution found: -45579
+ Optimization finished in 3.967977305s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.027721629s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006466s.
+ Objective of best solution found: -45583
+ Optimization finished in 0.118905887s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006656s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.241561718s.
+ Objective of best solution found: -45579
+ Optimization finished in 4.008701584s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.028875042s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000002388s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.125642753s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000003651s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.234265913s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006877s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.036538417s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005724s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.131173327s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000007438s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.310853381s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000004011s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.03695093s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000001176s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.135416096s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000000495s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.249699412s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000003701s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.036796581s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000007728s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.137228525s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006116s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.254450153s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006276s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.050064728s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000004181s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.13855837s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005164s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.336590427s.
+ Objective of best solution found: -45607
+ Optimization finished in 5.000001015s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.048210551s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000000294s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.13875552s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005243s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.255373034s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000002518s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.048901447s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000002999s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.140603666s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005244s.
+ Objective of best solution found: -45607
+ Optimization finished in 0.255505883s.
+ Objective of best solution found: -45579
+ Optimization finished in 4.088335626s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.017926776s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000000755s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.073914936s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.00000334s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.154462953s.
+ Objective of best solution found: -45579
+ Optimization finished in 4.258359217s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.019454301s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006335s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.076805778s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000000955s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.153450002s.
+ Objective of best solution found: -45579
+ Optimization finished in 4.177132877s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.017611465s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000001547s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.074492288s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000001146s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.144892602s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000000163s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.023003168s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005534s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.083759912s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005454s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.151525583s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000075355s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.02304742s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000002408s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.07960028s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000003611s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.150434737s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000004873s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.022859749s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000000775s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.079667897s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005423s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.150971183s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000002768s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.030547209s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006776s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.085939049s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000004542s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.156637763s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000003209s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.030086264s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000007257s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.085989154s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000007458s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.156301s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.00000346s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.029913911s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000006536s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.086069414s.
+ Objective of best solution found: -45579
+ Optimization finished in 5.000005053s.
+ Objective of best solution found: -45579
+ Optimization finished in 0.156638774s.
+ Objective of best solution found: -45579best choice for bqp250.1: 0.1 0.1 0.1 1 0
+Using time limit of 5s
+
+ Optimization finished in 5.000014541s.
+ Objective of best solution found: -116051
+ Optimization finished in 0.100385938s.
+ Objective of best solution found: -116051
+ Optimization finished in 5.000002899s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.372725578s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000012558s.
+ Objective of best solution found: -116577
+ Optimization finished in 1.01611447s.
+ Objective of best solution found: -116586
+ Optimization finished in 5.000011195s.
+ Objective of best solution found: -116051
+ Optimization finished in 0.100650965s.
+ Objective of best solution found: -116051
+ Optimization finished in 5.000001005s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.397543519s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000015834s.
+ Objective of best solution found: -116577
+ Optimization finished in 0.773745829s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000005173s.
+ Objective of best solution found: -116051
+ Optimization finished in 0.102640077s.
+ Objective of best solution found: -116051
+ Optimization finished in 5.00000828s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.373425019s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000013299s.
+ Objective of best solution found: -116577
+ Optimization finished in 0.679368851s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000010022s.
+ Objective of best solution found: -116577
+ Optimization finished in 0.207273922s.
+ Objective of best solution found: -116097
+ Optimization finished in 5.00000897s.
+ Objective of best solution found: -116490
+ Optimization finished in 0.397369713s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000012667s.
+ Objective of best solution found: -116490
+ Optimization finished in 0.703057314s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000019019s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.144060891s.
+ Objective of best solution found: -116051
+ Optimization finished in 5.000001126s.
+ Objective of best solution found: -116577
+ Optimization finished in 0.398090175s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000006366s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.702135465s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000014591s.
+ Objective of best solution found: -116490
+ Optimization finished in 0.136792257s.
+ Objective of best solution found: -116577
+ Optimization finished in 5.00000377s.
+ Objective of best solution found: -116490
+ Optimization finished in 0.411309441s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000012958s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.714176482s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000005104s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.22001955s.
+ Objective of best solution found: -116577
+ Optimization finished in 5.000009542s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.433337379s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000006436s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.747375474s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.00000362s.
+ Objective of best solution found: -116577
+ Optimization finished in 0.279001956s.
+ Objective of best solution found: -116577
+ Optimization finished in 5.000012447s.
+ Objective of best solution found: -116577
+ Optimization finished in 0.426513018s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000004792s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.789171343s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000010483s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.395361567s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000010894s.
+ Objective of best solution found: -116490
+ Optimization finished in 0.43912219s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000000134s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.748965376s.
+ Objective of best solution found: -116490
+ Optimization finished in 5.000001256s.
+ Objective of best solution found: -115810
+ Optimization finished in 0.108784793s.
+ Objective of best solution found: -116196
+ Optimization finished in 5.000008029s.
+ Objective of best solution found: -115632
+ Optimization finished in 0.172228005s.
+ Objective of best solution found: -116052
+ Optimization finished in 5.000011856s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.766507871s.
+ Objective of best solution found: -116211
+ Optimization finished in 5.000006586s.
+ Objective of best solution found: -115337
+ Optimization finished in 0.094169668s.
+ Objective of best solution found: -115497
+ Optimization finished in 5.000007418s.
+ Objective of best solution found: -116192
+ Optimization finished in 0.382595721s.
+ Objective of best solution found: -115707
+ Optimization finished in 5.000014721s.
+ Objective of best solution found: -115179
+ Optimization finished in 0.696932556s.
+ Objective of best solution found: -115468
+ Optimization finished in 5.000001687s.
+ Objective of best solution found: -115798
+ Optimization finished in 0.092392394s.
+ Objective of best solution found: -115611
+ Optimization finished in 5.000011315s.
+ Objective of best solution found: -116162
+ Optimization finished in 0.311487911s.
+ Objective of best solution found: -115438
+ Optimization finished in 0.271059668s.
+ Objective of best solution found: -115785
+ Optimization finished in 0.202911791s.
+ Objective of best solution found: -115881
+ Optimization finished in 5.000003981s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.147063943s.
+ Objective of best solution found: -116000
+ Optimization finished in 5.000009791s.
+ Objective of best solution found: -116091
+ Optimization finished in 0.17955036s.
+ Objective of best solution found: -116052
+ Optimization finished in 2.337417374s.
+ Objective of best solution found: -115885
+ Optimization finished in 1.010862117s.
+ Objective of best solution found: -114989
+ Optimization finished in 5.000004513s.
+ Objective of best solution found: -115156
+ Optimization finished in 0.153263282s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000010633s.
+ Objective of best solution found: -116100
+ Optimization finished in 0.696745776s.
+ Objective of best solution found: -116238
+ Optimization finished in 1.502255906s.
+ Objective of best solution found: -116029
+ Optimization finished in 1.235667353s.
+ Objective of best solution found: -116446
+ Optimization finished in 5.000012127s.
+ Objective of best solution found: -115452
+ Optimization finished in 0.147010954s.
+ Objective of best solution found: -115382
+ Optimization finished in 5.000011405s.
+ Objective of best solution found: -116074
+ Optimization finished in 0.493082766s.
+ Objective of best solution found: -114559
+ Optimization finished in 5.000008029s.
+ Objective of best solution found: -115504
+ Optimization finished in 0.847295428s.
+ Objective of best solution found: -114805
+ Optimization finished in 5.000001787s.
+ Objective of best solution found: -116438
+ Optimization finished in 0.293255722s.
+ Objective of best solution found: -115297
+ Optimization finished in 5.000009101s.
+ Objective of best solution found: -116377
+ Optimization finished in 0.188129683s.
+ Objective of best solution found: -116052
+ Optimization finished in 2.775657509s.
+ Objective of best solution found: -115577
+ Optimization finished in 0.884866963s.
+ Objective of best solution found: -115899
+ Optimization finished in 5.000007738s.
+ Objective of best solution found: -115751
+ Optimization finished in 0.305070153s.
+ Objective of best solution found: -115856
+ Optimization finished in 5.000001186s.
+ Objective of best solution found: -116040
+ Optimization finished in 0.3576772s.
+ Objective of best solution found: -115890
+ Optimization finished in 5.000008209s.
+ Objective of best solution found: -115988
+ Optimization finished in 1.049126451s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000001085s.
+ Objective of best solution found: -116586
+ Optimization finished in 0.258609004s.
+ Objective of best solution found: -115308
+ Optimization finished in 5.000013529s.
+ Objective of best solution found: -115936
+ Optimization finished in 0.495864064s.
+ Objective of best solution found: -115165
+ Optimization finished in 5.000014892s.
+ Objective of best solution found: -115737
+ Optimization finished in 0.967892347s.
+ Objective of best solution found: -115109
+ Optimization finished in 5.000529757s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.076762056s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000015413s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.32431968s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000011896s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.639268544s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000013979s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.077629503s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000003269s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.338374965s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000012187s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.644679513s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000003821s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.076435814s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000011786s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.325198959s.
+d Objective of best solution found: -114533
+ Optimization finished in 5.000006476s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.651920054s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000009341s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.100011897s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000013298s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.34949313s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000011275s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.670136834s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000002658s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.107652088s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.0000138s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.364913835s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000001757s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.667805221s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000005664s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.103937881s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000014801s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.359616167s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.00001378s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.673327109s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000010172s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.134294071s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000015142s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.386352657s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000000485s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.7081994s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000010102s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.132553987s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000010453s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.378353724s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000001647s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.698304619s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000013779s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.140669961s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.000005643s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.388644858s.
+ Objective of best solution found: -114533
+ Optimization finished in 5.00000351s.
+ Objective of best solution found: -114533
+ Optimization finished in 0.715167881s.
+ Objective of best solution found: -114533best choice for bqp500.1: 0.1 0.1 0.1 5 0
+best choice overall: 0.1 0.1 0.1 1 0
