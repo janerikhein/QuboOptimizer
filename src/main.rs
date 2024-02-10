@@ -21,8 +21,9 @@ fn main() {
         1 => { experiments::analyze_preproc(); },
         2 => { experiments::analyze_start_heuristics(); },
         3 => { experiments::tune_tabu_params(); },
-        4 => { experiments::tune_tr(); },
-        5 => { experiments::analyze_tabu_search(); },
-        _ => { panic!("No valid experiment_num"); }
+        4 => { experiments::tune_dsf(); },
+        5 => { experiments::tune_tr(); },
+        6 => { experiments::analyze_tabu_search(); },
+        _ => { println!("No valid experiment_num"); }
     }
 }
