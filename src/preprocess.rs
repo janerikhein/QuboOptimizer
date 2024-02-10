@@ -197,106 +197,30 @@ pub fn compute_fixations_of_solution_variables(instance: &QuboInstance) -> (Arra
     (fix_states, tentative_modified_matrix, baseline_from_fixation)
 }
 
-//todo: write a good (better) test function
+#[cfg(test)]
+mod test {
+    use super::*;
 
-#[test]
-fn preprocessing_on_very_small_instances() {
-    let preprocess_tests =
-        [("instances/preprocessing_very_small/identity_matrix", [FixState::Fixed(false), FixState::Fixed(false), FixState::Fixed(false)]),
+    #[test]
+    fn preprocessing_on_very_small_instances() {
+        let preprocess_tests = [
+            ("instances/preprocessing_very_small/identity_matrix", [FixState::Fixed(false), FixState::Fixed(false), FixState::Fixed(false)]),
             ("instances/preprocessing_very_small/negative_identity_matrix", [FixState::Fixed(true), FixState::Fixed(true), FixState::Fixed(true)]),
             ("instances/preprocessing_very_small/test_rules_1_2_matrix", [FixState::Fixed(false), FixState::Fixed(true), FixState::Fixed(false)]),
             ("instances/preprocessing_very_small/test_rule_4_matrix", [FixState::Fixed(true), FixState::Fixed(true), FixState::Fixed(true)]),
             ("instances/preprocessing_very_small/other_small_test_matrix", [FixState::Fixed(true), FixState::Fixed(true), FixState::Fixed(false)]),
             ("instances/preprocessing_very_small/zero_matrix", [FixState::Irrelevant, FixState::Irrelevant, FixState::Irrelevant])
         ];
-    for preprocess_test in preprocess_tests {
-        println!("{}", preprocess_test.0);
-        let input_matrix = input::read_from_file(preprocess_test.0);
-        let qubo_instance = QuboInstance::new(input_matrix, 0.);
-        let (fixations_of_solution_vars, _tentative_modified_matrix, _baseline_from_fixation)
-            = compute_fixations_of_solution_variables(&qubo_instance);
-        for i in 0..3 {
-            assert_eq!(fixations_of_solution_vars[i], preprocess_test.1[i]);
-        }
-    }
-}
-
-//TODO: should be either removed or put into the qubo.rs file
-mod input {
-    use std::fs::File;
-    use std::io::{BufRead, BufReader, Read};
-    use ndarray::{Array2, ShapeBuilder};
-    use crate::qubo::{Matrix};
-
-    ///reads in a matrix in the MTX-format (see assignment 7)
-    pub(crate) fn read_from_file(filename: &str) -> Matrix {
-        let mut num_rows = 0;
-        let mut num_columns = 0;
-        let mut num_nonzero_entries_left = 0;
-        let mut matrix: Matrix = Default::default();
-
-        let input: Box<dyn Read> = Box::new(File::open(filename).expect("Can't open file"));
-        let input = BufReader::new(input);
-        let mut num_comment_lines: usize = 0;
-        let mut warned = false;
-        for (line_no, line) in input.lines().enumerate() {
-            let line = line.expect("Read error");
-            // map() works on the string slices created by split() and removes leading and trailing whitespaces (if exist)
-            let fields: Vec<&str> = line.split(' ').map(|s| s.trim()).collect();
-            assert!(!fields.is_empty());
-            if fields[0].starts_with('%') {
-                num_comment_lines += 1;
-                continue;
-            }
-            assert!(fields.len() >= 3);
-            if (fields.len() != 3) && !warned {
-                warned = true;
-                eprintln!("Warning! There is a line with more than 3 (namely {}) entries in the given file.", fields.len());
-            }
-
-            if line_no - num_comment_lines == 0 {
-                num_rows = fields[0]
-                    .parse::<usize>()
-                    .expect("Number of Rows is not a positive number");
-                num_columns = fields[1]
-                    .parse::<usize>()
-                    .expect("Number of Columns is not a positive number");
-                // question: is there a better/shorter way to code this?
-                //nodes.resize(num_nodes, Node{ neighbors : Vec::new() });
-                matrix = Array2::<f64>::zeros((num_rows, num_columns).f());
-                num_nonzero_entries_left = fields[2]
-                    .parse::<usize>()
-                    .expect("Number of non-zero entries is not a positive number");
-                //assert!(num_nonzero_entries_left < input.lines().count());
-            } else {
-                assert_ne!(num_rows, 0);
-                assert_ne!(num_columns, 0);
-                assert!(num_nonzero_entries_left > 0);
-                // question: how to parameterize the error messages with line_no+1
-                let row_of_entry: usize = fields[0]
-                    .parse::<usize>()
-                    .expect("The number for the row of an entry is not a positive number")
-                    - 1;
-                assert!(row_of_entry < num_rows);
-                let column_of_entry: usize = fields[1]
-                    .parse::<usize>()
-                    .expect("The number for the column of an entry is not a positive number")
-                    - 1;
-                assert!(column_of_entry < num_columns);
-                let mut idx_to_access_data: usize =2;
-                while fields[idx_to_access_data].is_empty() {
-                    idx_to_access_data += 1;
-                }
-                let data_of_entry: f64 = fields[idx_to_access_data]
-                    .parse::<f64>()
-                    .expect("Problem reading the data of an entry");
-                assert_ne!(data_of_entry, 0.0);
-                matrix[[row_of_entry, column_of_entry]] = data_of_entry;
-                num_nonzero_entries_left -= 1;
+        for preprocess_test in preprocess_tests {
+            println!("{}", preprocess_test.0);
+            let qubo_instance = QuboInstance::from_file(preprocess_test.0);
+            assert_eq!(qubo_instance.get_matrix().shape(), [3 as  usize, 3 as usize]);
+            assert_eq!(qubo_instance.size(), 3);
+            let (fixations_of_solution_vars, _tentative_modified_matrix, _baseline_from_fixation)
+                = compute_fixations_of_solution_variables(&qubo_instance);
+            for i in 0..3 {
+                assert_eq!(fixations_of_solution_vars[i], preprocess_test.1[i]);
             }
         }
-        assert_eq!(num_nonzero_entries_left, 0);
-        matrix
     }
-
 }

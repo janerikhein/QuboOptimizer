@@ -18,9 +18,11 @@ fn main() {
     let experiment_num: u8 = args[1].parse().expect("No valid experiment_num");
     // Match experiment_num with experiment function
     match experiment_num {
-        1 => { experiments::example(); },
-        2 => { experiments::test_start_heuristics(); },
+        1 => { experiments::analyze_preproc(); },
+        2 => { experiments::analyze_start_heuristics(); },
         3 => { experiments::tune_tabu_params(); },
+        4 => { experiments::tune_tr(); },
+        5 => { experiments::analyze_tabu_search(); },
         _ => { panic!("No valid experiment_num"); }
     }
 }

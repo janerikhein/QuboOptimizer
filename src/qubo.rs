@@ -34,7 +34,7 @@ impl QuboInstance {
     }
 
     /// Instance with matrix having uniformly random entries in [-10, 10]
-    pub fn new_rand(n: usize, density: f64) -> Self {
+    pub fn new_rand(n: usize) -> Self {
         let mut rng = Pcg32::seed_from_u64(42);
         let mut mat = Matrix::random_using(
             (n, n), Uniform::new(-10.0, 10.0), &mut rng);
