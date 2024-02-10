@@ -12,7 +12,7 @@ use std::io::Read;
 
 const INST_DIR: &str = "instances/";
 const METADATA: &str = "metadata.json";
-const LOG_LEVEL = 2;
+const LOG_LEVEL: usize = 2;
 
 /// Helper function to get filepath from instance name
 fn filepath_from_name(filename: &str) -> String {
@@ -103,8 +103,16 @@ fn compute_best_start_solution(qubo: &QuboInstance) -> BinaryVector {
 }
 
 /// Helper function to create SearchParameters with SOME defaults
-fn params_from(q: &QuboInstance, tr: f64, dls: f64, dbf: f64, dsf: f64, its: f64, bmns: f64, tl: usize)
--> SearchParameters {
+fn params_from(
+    q: &QuboInstance,
+    tr: f64,
+    dls: f64,
+    dbf: f64,
+    dsf: f64,
+    its: f64,
+    bmns: f64,
+    tl: usize
+) -> SearchParameters {
     let af = ActivationFunction::Constant;
     //                 qubo ...  ...  ...  ... ...  ...   ... ... seed
     SearchParameters::new(q, tr, dls, dbf, dsf, af, its, bmns, tl, 42)
@@ -219,10 +227,10 @@ pub fn tune_tabu_params() {
     ];
     println!("Run tabu parameter tuning");
     // Parameters to tune
-    let dls  = vec![0.05,  0.2,  0.5];   // diversification length scale
-    let dbf  = vec![0.1,   0.25, 0.5,];  // diversification base factor
-    let its  = vec![1.0,   5.0, 10.0,];  // improvements threshold scale
-    let bmns = vec![0.005, 0.01];        // blocking move number scale
+    let dls  = [0.05,  0.2,  0.5];   // diversification length scale
+    let dbf  = [0.1,   0.25, 0.5,];  // diversification base factor
+    let its  = [1.0,   5.0, 10.0,];  // improvements threshold scale
+    let bmns = [0.005, 0.01];        // blocking move number scale
     // Set constant tenure ratio and dsf
     let tr = 0.01;
     let dsf = 1.5;
@@ -241,18 +249,18 @@ pub fn tune_tabu_params() {
         //let mut obj_vals = Array4::from_elem((3, 3, 3, 2), 0.);
         let mut goodness = Array4::from_elem((3, 3, 3, 2), 0.);
         // Iterate over all possible combinations
-        for i in 0..dls.len() {
-            for j in 0..dbf.len() {
-                for k in 0..its.len() {
-                    for l in 0..bmns.len() {
+        for (i, dls) in dls.iter().enumerate() {
+            for (j, dbf) in dbf.iter().enumerate() {
+                for (k, its) in its.iter().enumerate() {
+                    for (l, bmns) in bmns.iter().enumerate() {
                         let params = params_from(
                             &qubo,
                             tr,
-                            dls[i],
-                            dbf[j],
+                            *dls,
+                            *dbf,
                             dsf,
-                            its[k],
-                            bmns[l],
+                            *its,
+                            *bmns,
                             time_limit_secs,
                         );
                         let solution =
@@ -289,8 +297,8 @@ pub fn tune_dsf() {
         "bqp1000.9",
     ];
     println!("Run dsf tuning");
-    let dfs = vec![1.1, 1.25,  1.5];
-    let mut total_goodness = Array1::from_elem(dfs.len(), 0.);
+    let dsf = [1.1, 1.25,  1.5];
+    let mut total_goodness = Array1::from_elem(dsf.len(), 0.);
     let time_limit_secs = 30;
     // Use constant tenure ratio
     let tr = 0.01;
@@ -307,8 +315,8 @@ pub fn tune_dsf() {
         let n = qubo.size();
         println!("Size shrunk from {m} to {n}");
         let start_solution = compute_best_start_solution(&qubo);
-        let mut goodness = Array1::from_elem(tr.len(), 0.);
-        for i in 0..dfs.len() {
+        let mut goodness = Array1::from_elem(dsf.len(), 0.);
+        for i in 0..dsf.len() {
             // Use best params given by param_tuning
             let params = params_from(
                 &qubo, tr, dls, dbf, dsf[i], its, bmns, time_limit_secs
@@ -320,9 +328,10 @@ pub fn tune_dsf() {
             total_goodness[i] += goodness[i];
         }
     }
-    let best = total_goodness.argmax().unwrap();
-    let avg = total_goodness[best]/(instances.len() as f64);
-    println!("\n{best} with {avg}");
+    let best_i = total_goodness.argmax().unwrap();
+    let dsf = dsf[best_i];
+    let avg = total_goodness[best_i]/(instances.len() as f64);
+    println!("\nbest dsf={dsf} with {avg}");
 }
 
 /// Tune tenure ratio only
@@ -336,13 +345,13 @@ pub fn tune_tr() {
         "bqp1000.9",
     ];
     println!("Run tenure ratio tuning");
-    let tr = vec![0.0, 0.05,  0.2,  0.5, 1.0];
+    let tr = [0.0, 0.05,  0.2,  0.5, 1.0];
     let mut total_goodness = Array1::from_elem(tr.len(), 0.);
     let time_limit_secs = 30;
-    // Use best params given by param_tuning
+    // Use best dsf and params given by previous param tunings
     let dls = 0.05;
     let dbf = 0.5;
-    let dsf = 0.; //TODO
+    let dsf = 1.1;
     let its = 1.;
     let bmns = 0.005;
     for inst in instances {
@@ -362,13 +371,14 @@ pub fn tune_tr() {
             let solution
                 = tabu_search(&qubo, &start_solution, LOG_LEVEL, params);
             let obj = qubo.compute_objective(&solution);
-            goodness[j] = 100.*obj/best_lit;
-            total_goodness[j] += goodness[j];
+            goodness[i] = 100.*obj/best_lit;
+            total_goodness[i] += goodness[i];
         }
     }
-    let best = total_goodness.argmax().unwrap();
-    let avg = total_goodness[best]/(instances.len() as f64);
-    println!("\n{best} with {avg}");
+    let best_i = total_goodness.argmax().unwrap();
+    let tr = tr[best_i];
+    let avg = total_goodness[best_i]/(instances.len() as f64);
+    println!("\nbest tr={tr} with {avg}");
 }
 
 /// Analyze tabu search
@@ -399,12 +409,11 @@ pub fn analyze_tabu_search() {
         "p7000.3",
     ];
     println!("Run tabu search analysis");
-    println!(" name      &   size &   obj% & best_lit &   gap% &   [ms] \\\\");
-    // Use best params given by tune_tabu_params() and tune_tr()
-    let tr = 0.;
-    // 0.05, 0.5, 1, 0.005
+    // Use best params given by tune_tabu_params(), tune_tr() and tune_dsf()
+    let tr = 0.05;
     let dls = 0.05;
     let dbf = 0.5;
+    let dsf = 1.1;
     let its = 1.;
     let bmns = 0.005;
     let time_limit_secs = 3600; // 1h
@@ -428,6 +437,7 @@ pub fn analyze_tabu_search() {
         goodness[i] = 100.*obj/best_lit;
     }
     // Table printing
+    println!(" name      &   size &   obj% & best_lit &   gap% &   [ms] \\\\");
     for (i, inst) in instances.iter().enumerate() {
         let best_lit = get_literature_obj(inst);
         let qubo = QuboInstance::from_file(&filepath_from_name(inst));
