@@ -2,25 +2,13 @@ use std::fmt::Debug;
 use std::time::Instant;
 use ndarray::Zip;
 
-use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
-use ndarray_rand::rand_distr::Uniform;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
-use rand_pcg::Pcg32;
 
 /// QUBO tabu search functions
 
 use crate::qubo::*;
-
-fn vecb_to_vecf(x: &BinaryVector) -> Vector {
-    let n = x.len();
-    let mut y = Vector::from_vec(vec![f64::MAX; n]);
-    for i in 0..n {
-        y[i] = if x[i] == true { 1. } else { 0. };
-    }
-    y
-}
 
 pub fn tabu_search_with_defaults(qubo: &QuboInstance, start_solution: &BinaryVector, log_level:usize) {
     let search_parameters = SearchParameters::default(qubo);
@@ -29,20 +17,18 @@ pub fn tabu_search_with_defaults(qubo: &QuboInstance, start_solution: &BinaryVec
 
 
 
-/// NOTE:
-/// These functions only serve as usage hints in the greater project context, as
-/// they could be used by the experiment functions.
-
-/// Do (simple) tabu search
+/// Do tabu search
 pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level:usize, search_parameters: SearchParameters) -> BinaryVector {
     // define how verbose log is: 3 no log, 0 complete log
     //let log_level = 2;
 
     //let search_parameters = SearchParameters::default(qubo);
     let mut search_state = TabuSearchState::new(qubo, search_parameters, start_solution);
+    let mut current_phase_type = "Search";
+    let mut phase_nr = 1;
 
     if log_level <= 2 {
-        println!("Time(ms) | It | Phase It | Phase Type | objective | best obj. | move type")
+        println!("Time(ms) | Phase nr. | It | Phase It | Phase Type | objective | best obj. | move type")
     }
     while let Some(return_code) = search_state.get_next() {
 
@@ -50,8 +36,13 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level
             PhaseType::Search => "Search",
             PhaseType::Diversification => "Diversification"
         };
-        let base_str = format!("{} | {} | {} | {} | {} | {}",
+        if phase_type != current_phase_type {
+            phase_nr += 1;
+            current_phase_type = phase_type;
+        }
+        let base_str = format!("{} | {} | {} | {} | {} | {} | {}",
                                search_state.search_start_time.elapsed().as_millis(),
+                               phase_nr,
                                search_state.it,
                                search_state.phase_it,
                                phase_type,
@@ -60,9 +51,7 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level
 
         match return_code {
             MoveReturnCode::GlobalImprovement => {
-                if log_level <= 2 {
-                    println!("{base_str} | Global Improvement.")
-                }
+                println!("{base_str} | Global Improvement.")
             },
             MoveReturnCode::LocalImprovement => {
                 if log_level <= 1 {
@@ -70,7 +59,7 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level
                 }
             },
             MoveReturnCode::NonImprovement => {
-                if log_level <= 0 {
+                if log_level == 0 {
                     println!("{base_str} | Non-Improvement.")
                 }
             },
@@ -84,14 +73,16 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level
 }
 
 
-
-enum ActivationFunction {
+#[derive(Debug,Clone)]
+pub enum ActivationFunction {
     // constant diversification intensity used
     Constant,
     // linearly descending intensity
     Linear,
 }
 
+
+#[derive(Debug)]
 pub struct SearchParameters {
     tabu_tenure: usize,
     diversification_length: usize,
@@ -107,7 +98,7 @@ pub struct SearchParameters {
 const MIN_TABU_TENURE: usize = 5;
 
 impl SearchParameters {
-    fn new(
+    pub fn new(
         // The QUBO instance
         qubo_instance: &QuboInstance,
         // ratio for setting tabu tenures relative to problem size
@@ -138,7 +129,7 @@ impl SearchParameters {
         // TODO: fix some seed value, i.e 42
         seed: usize,
     ) -> SearchParameters {
-        let mut tabu_tenure = tenure_ratio * qubo_instance.size() as f64;
+        let tabu_tenure = tenure_ratio * qubo_instance.size() as f64;
         let mut tabu_tenure = tabu_tenure.round() as usize;
         if tabu_tenure < MIN_TABU_TENURE {
             println!("Warning: Given tenure ratio leads to small tabu tenure of {tabu_tenure}.\
@@ -606,46 +597,53 @@ impl TabuSearchState {
     }
 }
 
-//tests flip values for a "current" solution that is the zero vector
-#[test]
-fn test_qubo_evaluator_rand() {
-    let seed = 0;
-    let size = 10;
-    let (min, max) = (-10., 10.);
-    let mut rng = Pcg32::seed_from_u64(seed);
-    let mut matrix = Matrix::random_using(
-        (size, size), Uniform::new(min, max), &mut rng);
-    //set entries to zero to make the matrix upper triangular
-    for row_idx in 0..size {
-        for column_idx in 0..row_idx {
-            matrix[[row_idx, column_idx]] = 0.;
+#[cfg(test)]
+mod test {
+    use super::*;
+    use rand_pcg::Pcg32;
+    use ndarray_rand::RandomExt;
+    use ndarray_rand::rand_distr::Uniform;
+
+    //tests flip values for a "current" solution that is the zero vector
+    #[test]
+    fn test_qubo_evaluator_rand() {
+        let seed = 0;
+        let size = 10;
+        let (min, max) = (-10., 10.);
+        let mut rng = Pcg32::seed_from_u64(seed);
+        let mut matrix = Matrix::random_using(
+            (size, size), Uniform::new(min, max), &mut rng);
+        //set entries to zero to make the matrix upper triangular
+        for row_idx in 0..size {
+            for column_idx in 0..row_idx {
+                matrix[[row_idx, column_idx]] = 0.;
+            }
+        }
+        let zero_vector = BinaryVector::from_vec(vec![false; size]);
+        let evaluator = QuboEvaluator::new(&matrix, zero_vector);
+        assert_eq!(evaluator.get_objective_of_curr_solution(), 0.);
+        for i in 0..size {
+            assert_eq!(evaluator.get_objective_delta_on_flip(i), matrix[[i, i]]);
         }
     }
-    let zero_vector = BinaryVector::from_vec(vec![false; size]);
-    let evaluator = QuboEvaluator::new(&matrix, zero_vector);
-    assert_eq!(evaluator.get_objective_of_curr_solution(), 0.);
-    for i in 0..size {
-        assert_eq!(evaluator.get_objective_delta_on_flip(i), matrix[[i, i]]);
-    }
-}
 
-#[test]
-fn test_qubo_evaluator_small_example() {
-    let mut matrix = Matrix::from_shape_vec((3, 3),
-                                            vec![1., -2.,  -3.,
-                                                 0., 4., 5.,
-                                                 0., 0., -6.]).unwrap();
-    //set entries to zero to make the matrix upper triangular
-    for row_idx in 0..3 {
-        for column_idx in 0..row_idx {
-            matrix[[row_idx, column_idx]] = 0.;
+    #[test]
+    fn test_qubo_evaluator_small_example() {
+        let mut matrix = Matrix::from_shape_vec((3, 3),
+                                                vec![1., -2.,  -3.,
+                                                     0., 4., 5.,
+                                                     0., 0., -6.]).unwrap();
+        //set entries to zero to make the matrix upper triangular
+        for row_idx in 0..3 {
+            for column_idx in 0..row_idx {
+                matrix[[row_idx, column_idx]] = 0.;
+            }
         }
+        let solution = BinaryVector::from_vec(vec![true, false, true]);
+        let evaluator = QuboEvaluator::new(&matrix, solution);
+        assert_eq!(evaluator.get_objective_of_curr_solution(), -8.);
+        assert_eq!(evaluator.get_objective_delta_on_flip(0), 2.);
+        assert_eq!(evaluator.get_objective_delta_on_flip(1), 7.);
+        assert_eq!(evaluator.get_objective_delta_on_flip(2), 9.);
     }
-    let solution = BinaryVector::from_vec(vec![true, false, true]);
-    let evaluator = QuboEvaluator::new(&matrix, solution);
-    assert_eq!(evaluator.get_objective_of_curr_solution(), -8.);
-    assert_eq!(evaluator.get_objective_delta_on_flip(0), 2.);
-    assert_eq!(evaluator.get_objective_delta_on_flip(1), 7.);
-    assert_eq!(evaluator.get_objective_delta_on_flip(2), 9.);
 }
-
