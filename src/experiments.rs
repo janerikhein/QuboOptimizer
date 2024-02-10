@@ -143,30 +143,30 @@ pub fn analyze_preproc() {
 
 /// Analyze start heuristics
 pub fn analyze_start_heuristics() {
-    //TODO: add G, remove < 250
     let instances = [
-        "bqp50.1",
-        "bqp50.2",
-        "bqp50.3",
-        "bqp100.1",
-        "bqp100.2",
-        "bqp100.3",
-        "bqp250.1",
-        "bqp250.2",
-        "bqp250.3",
         "bqp500.1",
         "bqp500.2",
         "bqp500.3",
+        "bqp500.4",
         "bqp1000.1",
         "bqp1000.2",
         "bqp1000.3",
+        "bqp1000.4",
         "bqp2500.1",
         "bqp2500.2",
-        "bqp2500.3",
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G22",
+        "G23",
+        "G55",
         "p3000.1",
+        "p3000.2",
+        "p3000.3",
         "p3000.4",
-        "p6000.1",
-        "p6000.3",
+        "p7000.2",
+        "p7000.3",
     ];
     println!("Run start heuristics analysis");
     println!(" name      &   size &    x0% &    x1% &    x2% & best_lit \
@@ -328,17 +328,16 @@ pub fn tune_tr() {
 /// Analyze tabu search
 pub fn analyze_tabu_search() {
     let instances = [
-        // "bqp500.1",
-        // "bqp500.2",
-        // "bqp500.3",
-        // "bqp500.4",
-        // "bqp1000.1",
-        // "bqp1000.2",
-        // "bqp1000.3",
-        // "bqp1000.4",
+        "bqp500.1",
+        "bqp500.2",
+        "bqp500.3",
+        "bqp500.4",
+        "bqp1000.1",
+        "bqp1000.2",
+        "bqp1000.3",
+        "bqp1000.4",
         "bqp2500.1",
         "bqp2500.2",
-
         "G1",
         "G2",
         "G3",
@@ -346,7 +345,6 @@ pub fn analyze_tabu_search() {
         "G22",
         "G23",
         "G55",
-
         "p3000.1",
         "p3000.2",
         "p3000.3",
@@ -378,7 +376,7 @@ pub fn analyze_tabu_search() {
         let params =
             params_from(&qubo, tr, dls, dbf, its, bmns, time_limit_secs);
         let now = std::time::Instant::now();
-        let solution = tabu_search(&qubo, &start_solution, 3, params);
+        let solution = tabu_search(&qubo, &start_solution, 2, params);
         times[i] = now.elapsed().as_millis();
         let obj = qubo.compute_objective(&solution);
         goodness[i] = 100.*obj/best_lit;

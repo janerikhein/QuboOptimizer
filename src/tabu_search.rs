@@ -17,20 +17,18 @@ pub fn tabu_search_with_defaults(qubo: &QuboInstance, start_solution: &BinaryVec
 
 
 
-/// NOTE:
-/// These functions only serve as usage hints in the greater project context, as
-/// they could be used by the experiment functions.
-
-/// Do (simple) tabu search
+/// Do tabu search
 pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level:usize, search_parameters: SearchParameters) -> BinaryVector {
     // define how verbose log is: 3 no log, 0 complete log
     //let log_level = 2;
 
     //let search_parameters = SearchParameters::default(qubo);
     let mut search_state = TabuSearchState::new(qubo, search_parameters, start_solution);
+    let mut current_phase_type = "Search";
+    let mut phase_nr = 1;
 
     if log_level <= 2 {
-        println!("Time(ms) | It | Phase It | Phase Type | objective | best obj. | move type")
+        println!("Time(ms) | Phase nr. | It | Phase It | Phase Type | objective | best obj. | move type")
     }
     while let Some(return_code) = search_state.get_next() {
 
@@ -38,8 +36,13 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level
             PhaseType::Search => "Search",
             PhaseType::Diversification => "Diversification"
         };
-        let base_str = format!("{} | {} | {} | {} | {} | {}",
+        if phase_type != current_phase_type {
+            phase_nr += 1;
+            current_phase_type = phase_type;
+        }
+        let base_str = format!("{} | {} | {} | {} | {} | {} | {}",
                                search_state.search_start_time.elapsed().as_millis(),
+                               phase_nr,
                                search_state.it,
                                search_state.phase_it,
                                phase_type,
