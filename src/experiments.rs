@@ -451,3 +451,86 @@ pub fn analyze_tabu_search() {
         );
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_bqp500_2() {
+        let inst = "bqp500.2";
+        let qubo = QuboInstance::from_file(&filepath_from_name(inst));
+        let qubo = shrink(qubo);
+        let params = SearchParameters::new(
+            &qubo,
+            0.05,
+            0.05,
+            0.5,
+            1.1,
+            ActivationFunction::Constant,
+            1.,
+            0.005,
+            3600,
+            42,
+        );
+        let best_lit = get_literature_obj(inst);
+        let start_solution = compute_best_start_solution(&qubo);
+        let solution = tabu_search(&qubo, &start_solution, LOG_LEVEL, params);
+        let obj = qubo.compute_objective(&solution);
+        let goodness = 100.*obj/best_lit;
+        assert!(goodness > 100.0);
+        let known_solution = BinaryVector::from_vec(vec![
+            false,
+            true, true, true, true, true, true, false, true, true, true, true,
+            false, true, true, false, false, true, false, true, true, false,
+            false, true, true, false, true, false, false, true, true, false,
+            true, true, true, true, false, false, true, true, false, true,
+            false, false, true, false, true, false, true, false, false, true,
+            true, false, false, true, true, true, false, true, true, true,
+            false, false, true, true, false, true, false, true, true, true,
+            true, true, true, true, false, false, false, true, true, true, true,
+            true, true, true, true, true, false, true, true, false, true, true,
+            true, true, false, true, true, true, true, true, true, true, true,
+            true, true, false, true, false, true, true, false, false, false,
+            true, false, false, true, true, false, true, true, true, false,
+            true, true, false, true, true, true, false, true, true, false, true,
+            true, true, false, true, false, true, true, false, true, true, true,
+            true, false, true, true, false, true, false, true, true, false,
+            false, false, true, true, true, true, true, true, false, false,
+            true, false, true, false, true, true, true, false, true, true, true,
+            false, false, true, true, false, false, true, true, true, false,
+            true, true, true, true, true, true, false, true, true, true, true,
+            false, true, true, false, true, false, true, false, true, true,
+            true, true, true, true, true, true, false, false, true, true, true,
+            true, false, true, true, true, true, true, true, true, true, true,
+            true, true, true, true, true, false, true, true, true, false, false,
+            false, true, false, true, true, true, true, false, false, true,
+            true, true, true, true, true, false, true, true, true, true, true,
+            true, true, true, true, false, true, false, false, true, true, true,
+            true, false, true, false, false, false, true, true, true, false,
+            false, true, true, true, true, false, false, true, true, true, true,
+            true, true, false, true, true, false, true, true, true, true, true,
+            false, false, true, false, true, false, true, false, true, true,
+            true, true, true, true, true, true, false, true, true, true, false,
+            true, false, false, false, false, false, true, true, true, false,
+            true, true, true, true, false, false, true, true, false, true,
+            false, false, true, false, true, true, false, true, false, true,
+            true, true, false, true, false, true, true, true, true, false,
+            false, false, true, false, true, true, true, true, false, true,
+            true, true, true, true, false, false, true, false, false, true,
+            true, true, true, true, true, true, false, false, false, true,
+            false, false, false, true, false, false, true, false, true, true,
+            false, false, false, true, true, true, false, false, false, true,
+            true, false, true, true, true, false, true, false, false, true,
+            true, true, true, false, false, true, true, true, true, true, false,
+            true, false, false, false, false, true, true, true, false, false,
+            true, true, false, true, true, false, false, true, true, true, true,
+            true, true, false, true, true, true, false, false, false, false,
+            true, false, true, false, true, true, true, false, true, false,
+            false, true, false, true, false, true, false, true, true, true,
+            true, true, true, true, true, false, true, false, true, true, false,
+        ]);
+        let known_obj = qubo.compute_objective(&known_solution);
+        assert!(known_obj == obj);
+    }
+}
