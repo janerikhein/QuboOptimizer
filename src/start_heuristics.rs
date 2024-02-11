@@ -18,8 +18,11 @@ fn compute_sum_cross(mat: &Matrix, x: &Vector, k: usize) -> f64 {
     let mut sum_cross = 0.0;
     for i in 0..k {
         let xi = x[i];
-        sum_cross += mat[[i, k]]*xi*xk;
         sum_cross += mat[[k, i]]*xi*xk;
+    }
+    for i in k+1..mat.nrows() {
+        let xi = x[i];
+        sum_cross += mat[[i, k]]*xi*xk;
     }
     sum_cross + mat[[k, k]]*xk*xk
 }
