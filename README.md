@@ -16,8 +16,8 @@ TU Berlin.
 * Paul Meinhold
 
 ## Usage
-Run `cargo run --release EXPERIMENT_NUM` and the corresponging experiment will
-be executed:
+Run `cargo run --release EXPERIMENT_NUM` inside the project directory and the
+corresponging experiment will be executed:
 ```Rust
 match experiment_num {
     1 => {
@@ -42,6 +42,10 @@ match experiment_num {
         println!("No valid experiment_num");
     }
 ```
+
+## Experiment logs
+For each experiment we provide the logs as `EXPERIMENT_NUM.out`.
+
 ## Source files
 **Rust**
 ```
