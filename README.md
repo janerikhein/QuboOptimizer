@@ -20,6 +20,9 @@ Some of the used instances can be found in the `instances/` directory.
 Due to size limitations, the bigger ones have to be attained
 [here](https://github.com/rliang/qubo-benchmark-instances).
 
+A comprehensive list of all used instances can be found in
+[./metadata.json](metadata.json).
+
 ## Usage
 Make sure all instances are locally available.  
 Run `cargo run --release EXPERIMENT_NUM` inside the project directory and the
