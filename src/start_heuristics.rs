@@ -158,7 +158,7 @@ impl StartHeuristic {
     ) -> Vector {
         let mat = qubo.get_matrix();
         let mut base_contribution = Vector::zeros(qubo.size());
-        let mut rng = StdRng::seed_from_u64(seed);
+        let mut rng = StdRng::seed_from_u64(seed as u64);
         // intialize contributions aka "sum crosses"
         for i in 0..qubo.size() {
             base_contribution[i] = compute_sum_cross(mat, hints, i);
