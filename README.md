@@ -7,7 +7,8 @@ Optimization is done in three main steps:
 3. Doing tabu search
 
 We also provide some experiments to benchmark/test this implementation.  
-This is part of a project for the Scientific Computing course of TU Berlin.
+This is part of a project for the Scientific Computing (2023/2024) course at
+TU Berlin.
 
 **Authors:**  
 * Jan-Erik Hein  
