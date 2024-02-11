@@ -247,7 +247,7 @@ mod tests {
         let sum_cross_values = vec![5.0, 0.0, 10.0];
         let mut obj_val = 0.0;
         for i in 0..matrix.nrows() {
-            let sum_cross = compute_sum_cross_bin(&matrix, &x, i);;
+            let sum_cross = compute_sum_cross_bin(&matrix, &x, i);
             obj_val += sum_cross;
             assert_eq!(sum_cross, sum_cross_values[i]);
         }
