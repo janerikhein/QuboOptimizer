@@ -1,12 +1,11 @@
 /// QUBO start heuristic enum
-
 use crate::qubo::*;
-use ndarray_stats::QuantileExt;
-use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::Uniform;
-use rand_pcg::Pcg32;
+use ndarray_rand::RandomExt;
+use ndarray_stats::QuantileExt;
 use rand::prelude::{SliceRandom, StdRng};
+use rand_pcg::Pcg32;
 
 const AT_DN: usize = 0;
 const AT_UP: usize = 1;
@@ -19,14 +18,14 @@ fn compute_sum_cross(mat: &Matrix, x: &Vector, k: usize) -> f64 {
     for i in 0..k {
         let xi = x[i];
         assert!(i < k);
-        sum_cross += mat[[i, k]]*xi*xk;
+        sum_cross += mat[[i, k]] * xi * xk;
     }
-    for i in k+1..mat.nrows() {
+    for i in k + 1..mat.nrows() {
         let xi = x[i];
         assert!(k < i);
-        sum_cross += mat[[k, i]]*xi*xk;
+        sum_cross += mat[[k, i]] * xi * xk;
     }
-    sum_cross + mat[[k, k]]*xk*xk
+    sum_cross + mat[[k, k]] * xk * xk
 }
 
 /// Cast Vector (f64) to BinaryVector (bool)
@@ -49,23 +48,15 @@ pub enum StartHeuristic {
 impl StartHeuristic {
     pub fn get_solution(&self, qubo: &QuboInstance) -> BinaryVector {
         match self {
-            StartHeuristic::Random(seed) => {
-                StartHeuristic::rand(qubo, seed)
-            },
-            StartHeuristic::GreedyFromHint(hint) => {
-                StartHeuristic::greedy_from_hint(qubo, *hint)
-            },
+            StartHeuristic::Random(seed) => StartHeuristic::rand(qubo, seed),
+            StartHeuristic::GreedyFromHint(hint) => StartHeuristic::greedy_from_hint(qubo, *hint),
             StartHeuristic::GreedyFromVec(hint_vec) => {
                 StartHeuristic::greedy_from_vec(qubo, hint_vec)
-            },
+            }
             StartHeuristic::RandomFromVec(hint_vec, n_tries, seed) => {
-                StartHeuristic::random_order_rounding(
-                    qubo, hint_vec, *n_tries, *seed
-                )
-            },
-            StartHeuristic::GreedyInSteps() => {
-                StartHeuristic::greedy_in_steps(qubo)
-            },
+                StartHeuristic::random_order_rounding(qubo, hint_vec, *n_tries, *seed)
+            }
+            StartHeuristic::GreedyInSteps() => StartHeuristic::greedy_in_steps(qubo),
         }
     }
 
@@ -73,14 +64,13 @@ impl StartHeuristic {
     fn rand(qubo: &QuboInstance, seed: &u64) -> BinaryVector {
         let n = qubo.size();
         let mut rng = Pcg32::seed_from_u64(*seed);
-        let mut solution = Vector::random_using(
-            n, Uniform::new(0.0, 1.0), &mut rng);
+        let mut solution = Vector::random_using(n, Uniform::new(0.0, 1.0), &mut rng);
         for i in 0..solution.len() {
             solution[i] = solution[i].round();
         }
         vecb_from_vecf(&solution)
     }
-    
+
     /// Do greedy rounding with "hint" for all starting entries
     fn greedy_from_hint(qubo: &QuboInstance, hint: f64) -> BinaryVector {
         let hints = Vector::from_vec(vec![hint; qubo.size()]);
@@ -104,12 +94,7 @@ impl StartHeuristic {
     }
 
     /// Find best rounding toward floor or ceil for each hint entry greedily
-    fn greedy(
-        qubo:  &QuboInstance,
-        hints: &Vector,
-        floor: f64,
-        ceil:  f64
-    ) -> Vector {
+    fn greedy(qubo: &QuboInstance, hints: &Vector, floor: f64, ceil: f64) -> Vector {
         assert!(0.0 <= floor && floor < ceil && ceil <= 1.0);
         // Make mutable copy
         //let mut hints = hints.clone();
@@ -117,20 +102,19 @@ impl StartHeuristic {
         let n = qubo.size();
         let mat = qubo.get_matrix();
         // Changes on round of entry:
-        let mut dx_on_round =
-            Matrix::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
+        let mut dx_on_round = Matrix::from_shape_vec((2, n), vec![0.0; 2 * n]).unwrap();
         // Compute initial dx
         for i in 0..n {
             let tmp = solution[i];
             let sum_cross_of_old_solution = compute_sum_cross(mat, &solution, i);
             // Round down
             solution[i] = floor;
-            dx_on_round[[AT_DN, i]]
-                = compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
+            dx_on_round[[AT_DN, i]] =
+                compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
             // Round up
             solution[i] = ceil;
-            dx_on_round[[AT_UP, i]]
-                = compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
+            dx_on_round[[AT_UP, i]] =
+                compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
             // Undo rounding
             solution[i] = tmp;
         }
@@ -139,17 +123,19 @@ impl StartHeuristic {
             let (row, k) = dx_on_round.argmin().unwrap();
             let round = match row {
                 AT_DN => floor,
-                _     => ceil,
+                _ => ceil,
             };
             // Update dx at k to MAX so it is not found as minimum again
             dx_on_round[[AT_DN, k]] = f64::MAX;
             dx_on_round[[AT_UP, k]] = f64::MAX;
             // Update dx at unvisited columns to respect the rounding at k
             for i in 0..n {
-                if solution[i] == f64::MAX { continue; }
+                if solution[i] == f64::MAX {
+                    continue;
+                }
                 let matsum = mat[[i, k]] + mat[[k, i]];
-                dx_on_round[[AT_DN, i]] += matsum*(floor-solution[i])*(round-solution[k]);
-                dx_on_round[[AT_UP, i]] += matsum*(ceil-solution[i])*(round-solution[k]);
+                dx_on_round[[AT_DN, i]] += matsum * (floor - solution[i]) * (round - solution[k]);
+                dx_on_round[[AT_UP, i]] += matsum * (ceil - solution[i]) * (round - solution[k]);
             }
             // Actually round at k
             solution[k] = round;
@@ -157,10 +143,10 @@ impl StartHeuristic {
         solution
     }
 
-    fn random_order_rounding (
-        qubo:  &QuboInstance,
+    fn random_order_rounding(
+        qubo: &QuboInstance,
         hints: &Vector,
-        number_of_tries : usize,
+        number_of_tries: usize,
         seed: u64,
     ) -> BinaryVector {
         let mat = qubo.get_matrix();
@@ -185,8 +171,14 @@ impl StartHeuristic {
                 let delta_up = (1.0 - solution[index]) * contribution[index];
                 let delta_down = -solution[index] * contribution[index];
                 for k in 0..qubo.size() {
-                    if is_rounded[k] { continue }
-                    let matrix_entry = if index < k { mat[[index, k]] } else { mat[[k, index]] };
+                    if is_rounded[k] {
+                        continue;
+                    }
+                    let matrix_entry = if index < k {
+                        mat[[index, k]]
+                    } else {
+                        mat[[k, index]]
+                    };
                     if delta_up <= 0.0 {
                         assert!(delta_down >= 0.0);
                         contribution[k] += (1.0 - solution[index]) * matrix_entry;
@@ -197,7 +189,7 @@ impl StartHeuristic {
                         solution_objective += delta_up;
                     }
                 }
-                solution[index] = if delta_up <= 0.0 {1.0} else {0.0};
+                solution[index] = if delta_up <= 0.0 { 1.0 } else { 0.0 };
             }
             if solution_objective < best_objective {
                 best_objective = solution_objective;
@@ -224,8 +216,9 @@ mod tests {
     #[test]
     fn test_sum_cross() {
         let x = BinaryVector::from_vec(vec![true, false, true]);
-        let matrix = Matrix::from_shape_vec((3,3),
-            vec![1.0, 0.0, 0.0, 2.0, 3.0, 0.0, 4.0, 5.0, 6.0,]).unwrap();
+        let matrix =
+            Matrix::from_shape_vec((3, 3), vec![1.0, 0.0, 0.0, 2.0, 3.0, 0.0, 4.0, 5.0, 6.0])
+                .unwrap();
         let sum_cross_values = vec![5.0, 0.0, 10.0];
         let mut obj_val = 0.0;
         for i in 0..matrix.nrows() {
@@ -237,18 +230,19 @@ mod tests {
 
     #[test]
     fn test_greedy_rounding() {
-        let matrix = Matrix::from_shape_vec((6, 6),
-            vec![-5.0,  2.0, -10.0, -9.0,  3.0, -3.0,
-                  0.0,  3.0,   8.0,  8.0,  6.0,  0.0,
-                  0.0,  0.0,   0.0, -9.0,  7.0,  6.0,
-                  0.0,  0.0,   0.0,  5.0,  3.0,  8.0,
-                  0.0,  0.0,   0.0,  0.0, -5.0,  0.0,
-                  0.0,  0.0,   0.0,  0.0,  0.0,  0.0,]).unwrap();
+        let matrix = Matrix::from_shape_vec(
+            (6, 6),
+            vec![
+                -5.0, 2.0, -10.0, -9.0, 3.0, -3.0, 0.0, 3.0, 8.0, 8.0, 6.0, 0.0, 0.0, 0.0, 0.0,
+                -9.0, 7.0, 6.0, 0.0, 0.0, 0.0, 5.0, 3.0, 8.0, 0.0, 0.0, 0.0, 0.0, -5.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0,
+            ],
+        )
+        .unwrap();
         let qubo = QuboInstance::new(matrix, 0.0);
         let heur = StartHeuristic::GreedyFromHint(0.5);
         let solution = heur.get_solution(&qubo);
-        let x = BinaryVector::from_vec(
-            vec![true, false, true, true, false, false]);
+        let x = BinaryVector::from_vec(vec![true, false, true, true, false, false]);
         assert_eq!(solution, x);
     }
 }

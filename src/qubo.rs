@@ -1,12 +1,11 @@
-/// QUBO instance struct and useful types
-
-use std::io::{BufRead,BufReader};
-use std::fs::File;
 use ndarray::{Array1, Array2};
-use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::Uniform;
+use ndarray_rand::RandomExt;
 use rand_pcg::Pcg32;
+use std::fs::File;
+/// QUBO instance struct and useful types
+use std::io::{BufRead, BufReader};
 
 /// Useful type definitions
 pub type Vector = Array1<f64>;
@@ -27,7 +26,9 @@ impl QuboInstance {
         let n = mat.nrows();
         for i in 0..n {
             for j in 0..i {
-                if mat[[i, j]] != 0.0 { panic!("Matrix not upper triangular"); }
+                if mat[[i, j]] != 0.0 {
+                    panic!("Matrix not upper triangular");
+                }
             }
         }
         Self { mat, baseline }
@@ -36,8 +37,7 @@ impl QuboInstance {
     /// Instance with matrix having uniformly random entries in [-10, 10]
     pub fn new_rand(n: usize) -> Self {
         let mut rng = Pcg32::seed_from_u64(42);
-        let mut mat = Matrix::random_using(
-            (n, n), Uniform::new(-10.0, 10.0), &mut rng);
+        let mut mat = Matrix::random_using((n, n), Uniform::new(-10.0, 10.0), &mut rng);
         for i in 0..n {
             for j in 0..i {
                 mat[[i, j]] = 0.0;
@@ -55,15 +55,19 @@ impl QuboInstance {
         let _ = reader.read_line(&mut buffer).expect("Error reading line");
         let header: Vec<&str> = buffer.split_whitespace().collect();
         let n = header[0].parse().unwrap();
-        let mut mat = Matrix::from_shape_vec((n, n), vec![0.0; n*n]).unwrap();
+        let mut mat = Matrix::from_shape_vec((n, n), vec![0.0; n * n]).unwrap();
         // Read each entry
-        for _ in 0..n*n {
+        for _ in 0..n * n {
             buffer.clear();
             let result = reader.read_line(&mut buffer);
             match result {
-                Ok(0)  => { break; },
-                Ok(_)  => { },
-                Err(_) => { panic!("Error reading file"); }
+                Ok(0) => {
+                    break;
+                }
+                Ok(_) => {}
+                Err(_) => {
+                    panic!("Error reading file");
+                }
             }
             let entry: Vec<&str> = buffer.split_whitespace().collect();
             let row = entry[0].parse().unwrap();
@@ -81,9 +85,7 @@ impl QuboInstance {
         let mut obj_val = 0.0;
         for i in 0..n {
             for j in i..n {
-                obj_val += self.get_entry_at(i, j)
-                    *(x[i] as u8 as f64)
-                    *(x[j] as u8 as f64);
+                obj_val += self.get_entry_at(i, j) * (x[i] as u8 as f64) * (x[j] as u8 as f64);
             }
         }
         obj_val + self.baseline
@@ -101,8 +103,11 @@ impl QuboInstance {
 
     pub fn get_entry_at(&self, i: usize, j: usize) -> f64 {
         if j < i {
-            panic!("Don't access lower (0) entries of upper triangular\
-                matrix"); }
-        self.mat[[i,j]]
+            panic!(
+                "Don't access lower (0) entries of upper triangular\
+                matrix"
+            );
+        }
+        self.mat[[i, j]]
     }
 }

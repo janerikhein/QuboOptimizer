@@ -1,5 +1,4 @@
 /// QUBO preprocessing functions
-
 use crate::qubo::*;
 use ndarray::{Array1, Array2, Axis};
 
@@ -7,8 +6,8 @@ use ndarray::{Array1, Array2, Axis};
 /// This function serves as a usage hint in the greater project context.
 /// Preprocessing rules 1-5
 pub fn shrink(instance: QuboInstance) -> QuboInstance {
-    let (fixations_of_solution_variables, tentative_modified_matrix, baseline_from_fixation)
-        = compute_fixations_of_solution_variables(&instance);
+    let (fixations_of_solution_variables, tentative_modified_matrix, baseline_from_fixation) =
+        compute_fixations_of_solution_variables(&instance);
     assert_eq!(fixations_of_solution_variables.len(), instance.size());
     assert_eq!(tentative_modified_matrix.nrows(), instance.size());
     assert_eq!(tentative_modified_matrix.ncols(), instance.size());
@@ -31,8 +30,7 @@ struct SumCrossOfSameSignEntriesWithoutDiagonal {
 }
 
 impl SumCrossOfSameSignEntriesWithoutDiagonal {
-    fn compute(matrix: &Array2<f64>)
-               -> SumCrossOfSameSignEntriesWithoutDiagonal {
+    fn compute(matrix: &Array2<f64>) -> SumCrossOfSameSignEntriesWithoutDiagonal {
         assert!(matrix.is_square());
 
         let mut positive: Array1<Option<f64>> = Array1::default(matrix.nrows());
@@ -42,22 +40,45 @@ impl SumCrossOfSameSignEntriesWithoutDiagonal {
 
         for row_and_column_idx in 0..matrix.nrows() {
             //remark that one could speed this up by exploiting the upper triangular form
-            let mut sum_of_positive_row_entries: f64 = matrix.row(row_and_column_idx).iter().filter(|&&x| x > 0.0).sum();
-            let mut sum_of_negative_row_entries: f64 = matrix.row(row_and_column_idx).iter().filter(|&&x| x < 0.0).sum();
-            let mut sum_of_positive_column_entries: f64 = matrix.column(row_and_column_idx).iter().filter(|&&x| x > 0.0).sum();
-            let mut sum_of_negative_column_entries: f64 = matrix.column(row_and_column_idx).iter().filter(|&&x| x < 0.0).sum();
+            let mut sum_of_positive_row_entries: f64 = matrix
+                .row(row_and_column_idx)
+                .iter()
+                .filter(|&&x| x > 0.0)
+                .sum();
+            let mut sum_of_negative_row_entries: f64 = matrix
+                .row(row_and_column_idx)
+                .iter()
+                .filter(|&&x| x < 0.0)
+                .sum();
+            let mut sum_of_positive_column_entries: f64 = matrix
+                .column(row_and_column_idx)
+                .iter()
+                .filter(|&&x| x > 0.0)
+                .sum();
+            let mut sum_of_negative_column_entries: f64 = matrix
+                .column(row_and_column_idx)
+                .iter()
+                .filter(|&&x| x < 0.0)
+                .sum();
             if matrix[[row_and_column_idx, row_and_column_idx]] > 0. {
                 sum_of_positive_row_entries -= matrix[[row_and_column_idx, row_and_column_idx]];
                 sum_of_positive_column_entries -= matrix[[row_and_column_idx, row_and_column_idx]];
-            }
-            else if matrix[[row_and_column_idx, row_and_column_idx]] < 0. {
+            } else if matrix[[row_and_column_idx, row_and_column_idx]] < 0. {
                 sum_of_negative_row_entries -= matrix[[row_and_column_idx, row_and_column_idx]];
                 sum_of_negative_column_entries -= matrix[[row_and_column_idx, row_and_column_idx]];
             }
-            positive[row_and_column_idx] = Some(positive[row_and_column_idx].unwrap() + sum_of_positive_row_entries + sum_of_positive_column_entries);
-            negative[row_and_column_idx] = Some(negative[row_and_column_idx].unwrap() + sum_of_negative_row_entries + sum_of_negative_column_entries);
+            positive[row_and_column_idx] = Some(
+                positive[row_and_column_idx].unwrap()
+                    + sum_of_positive_row_entries
+                    + sum_of_positive_column_entries,
+            );
+            negative[row_and_column_idx] = Some(
+                negative[row_and_column_idx].unwrap()
+                    + sum_of_negative_row_entries
+                    + sum_of_negative_column_entries,
+            );
         }
-        SumCrossOfSameSignEntriesWithoutDiagonal {positive, negative}
+        SumCrossOfSameSignEntriesWithoutDiagonal { positive, negative }
     }
 
     fn update(&mut self, matrix: &Array2<f64>, newly_fixed_indices: &Vec<usize>) {
@@ -91,33 +112,34 @@ impl SumCrossOfSameSignEntriesWithoutDiagonal {
                     (*fixed_idx, unfixed_idx)
                 };
                 if matrix[[row_idx, column_idx]] > 0. {
-                    self.positive[unfixed_idx] = Option::from(self.positive[unfixed_idx].unwrap()
-                        - matrix[[row_idx, column_idx]]);
-                }
-                else if matrix[[row_idx, column_idx]] < 0. {
-                    self.negative[unfixed_idx] = Option::from(self.negative[unfixed_idx].unwrap()
-                        - matrix[[row_idx, column_idx]]);
+                    self.positive[unfixed_idx] = Option::from(
+                        self.positive[unfixed_idx].unwrap() - matrix[[row_idx, column_idx]],
+                    );
+                } else if matrix[[row_idx, column_idx]] < 0. {
+                    self.negative[unfixed_idx] = Option::from(
+                        self.negative[unfixed_idx].unwrap() - matrix[[row_idx, column_idx]],
+                    );
                 }
             }
         }
     }
 }
 
-#[derive(Debug)]
-#[derive(PartialEq)]
-#[derive(Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum FixState {
-    Fixed(bool),    //fixed to 1 or fixed to 0
+    Fixed(bool), //fixed to 1 or fixed to 0
     Unfixed,
-    Irrelevant
+    Irrelevant,
 }
 
-pub fn compute_fixations_of_solution_variables(instance: &QuboInstance) -> (Array1<FixState>, Matrix, f64) {
+pub fn compute_fixations_of_solution_variables(
+    instance: &QuboInstance,
+) -> (Array1<FixState>, Matrix, f64) {
     let mut tentative_modified_matrix = instance.get_matrix().clone();
     let mut baseline_from_fixation = 0.;
-    let mut fix_states: Array1<FixState>  = Array1::from(vec![FixState::Unfixed; instance.size()]);
-    let mut sum_cross_of_same_sign_entries_without_diagonal
-        = SumCrossOfSameSignEntriesWithoutDiagonal::compute(&tentative_modified_matrix);
+    let mut fix_states: Array1<FixState> = Array1::from(vec![FixState::Unfixed; instance.size()]);
+    let mut sum_cross_of_same_sign_entries_without_diagonal =
+        SumCrossOfSameSignEntriesWithoutDiagonal::compute(&tentative_modified_matrix);
     let mut fixed_idx_in_last_iteration = true;
     while fixed_idx_in_last_iteration {
         fixed_idx_in_last_iteration = false;
@@ -128,27 +150,37 @@ pub fn compute_fixations_of_solution_variables(instance: &QuboInstance) -> (Arra
                 continue;
             }
             //Rule 5 (all zeros)
-            if (sum_cross_of_same_sign_entries_without_diagonal.negative[row_and_column_idx].unwrap() == 0.)
-                && (sum_cross_of_same_sign_entries_without_diagonal.positive[row_and_column_idx].unwrap() == 0.)
-                && (tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]] == 0.) {
+            if (sum_cross_of_same_sign_entries_without_diagonal.negative[row_and_column_idx]
+                .unwrap()
+                == 0.)
+                && (sum_cross_of_same_sign_entries_without_diagonal.positive[row_and_column_idx]
+                    .unwrap()
+                    == 0.)
+                && (tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]] == 0.)
+            {
                 fix_states[row_and_column_idx] = FixState::Irrelevant;
                 newly_fixed_indices.push(row_and_column_idx);
             }
             //Rule 1 (best case is still positive)
             else if tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]]
-                + sum_cross_of_same_sign_entries_without_diagonal.negative[row_and_column_idx].unwrap()
-                >= 0. {
+                + sum_cross_of_same_sign_entries_without_diagonal.negative[row_and_column_idx]
+                    .unwrap()
+                >= 0.
+            {
                 fix_states[row_and_column_idx] = FixState::Fixed(false);
                 newly_fixed_indices.push(row_and_column_idx);
             }
             //Rule 2 (worst case is still negative)
             else if tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]]
-                + sum_cross_of_same_sign_entries_without_diagonal.positive[row_and_column_idx].unwrap()
-                <= 0. {
+                + sum_cross_of_same_sign_entries_without_diagonal.positive[row_and_column_idx]
+                    .unwrap()
+                <= 0.
+            {
                 fix_states[row_and_column_idx] = FixState::Fixed(true);
                 newly_fixed_indices.push(row_and_column_idx);
 
-                baseline_from_fixation += tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]];
+                baseline_from_fixation +=
+                    tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]];
             }
             //Rule 4 (worst case is still negative, for two indices)
             else {
@@ -156,45 +188,62 @@ pub fn compute_fixations_of_solution_variables(instance: &QuboInstance) -> (Arra
                     if fix_states[other_row_and_column_idx] != FixState::Unfixed {
                         continue;
                     }
-                    if (tentative_modified_matrix[[other_row_and_column_idx, row_and_column_idx]] < 0.)
-                        && (tentative_modified_matrix[[other_row_and_column_idx, row_and_column_idx]]
-                        + tentative_modified_matrix[[other_row_and_column_idx, other_row_and_column_idx]]
-                        + tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]]
-                        + sum_cross_of_same_sign_entries_without_diagonal.positive[row_and_column_idx].unwrap()
-                        + sum_cross_of_same_sign_entries_without_diagonal.positive[other_row_and_column_idx].unwrap()
-                        <= 0.) {
+                    if (tentative_modified_matrix[[other_row_and_column_idx, row_and_column_idx]]
+                        < 0.)
+                        && (tentative_modified_matrix
+                            [[other_row_and_column_idx, row_and_column_idx]]
+                            + tentative_modified_matrix
+                                [[other_row_and_column_idx, other_row_and_column_idx]]
+                            + tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]]
+                            + sum_cross_of_same_sign_entries_without_diagonal.positive
+                                [row_and_column_idx]
+                                .unwrap()
+                            + sum_cross_of_same_sign_entries_without_diagonal.positive
+                                [other_row_and_column_idx]
+                                .unwrap()
+                            <= 0.)
+                    {
                         fix_states[row_and_column_idx] = FixState::Fixed(true);
                         newly_fixed_indices.push(row_and_column_idx);
                         fix_states[other_row_and_column_idx] = FixState::Fixed(true);
                         newly_fixed_indices.push(other_row_and_column_idx);
 
-                        baseline_from_fixation
-                            += tentative_modified_matrix[[row_and_column_idx, row_and_column_idx]]
-                            + tentative_modified_matrix[[other_row_and_column_idx, other_row_and_column_idx]]
-                            + tentative_modified_matrix[[other_row_and_column_idx, row_and_column_idx]];
+                        baseline_from_fixation += tentative_modified_matrix
+                            [[row_and_column_idx, row_and_column_idx]]
+                            + tentative_modified_matrix
+                                [[other_row_and_column_idx, other_row_and_column_idx]]
+                            + tentative_modified_matrix
+                                [[other_row_and_column_idx, row_and_column_idx]];
                     }
                 }
             }
-            sum_cross_of_same_sign_entries_without_diagonal.update(&tentative_modified_matrix, &newly_fixed_indices);
+            sum_cross_of_same_sign_entries_without_diagonal
+                .update(&tentative_modified_matrix, &newly_fixed_indices);
             //update matrix and objective value
             //todo: check that matrix is upper triangular
             //note that we must to update not only the diagonal entries since we need to access non-diagonal entries in rule 4
             for newly_fixed_idx in &newly_fixed_indices {
                 if fix_states[*newly_fixed_idx] == FixState::Fixed(true) {
                     for other_column_idx in 0..*newly_fixed_idx {
-                        tentative_modified_matrix[[other_column_idx, other_column_idx]] += tentative_modified_matrix[[other_column_idx, *newly_fixed_idx]]
+                        tentative_modified_matrix[[other_column_idx, other_column_idx]] +=
+                            tentative_modified_matrix[[other_column_idx, *newly_fixed_idx]]
                     }
-                    for other_row_idx in newly_fixed_idx+1..instance.size() {
-                        tentative_modified_matrix[[other_row_idx, other_row_idx]] += tentative_modified_matrix[[*newly_fixed_idx, other_row_idx]]
+                    for other_row_idx in newly_fixed_idx + 1..instance.size() {
+                        tentative_modified_matrix[[other_row_idx, other_row_idx]] +=
+                            tentative_modified_matrix[[*newly_fixed_idx, other_row_idx]]
                     }
                 }
             }
-            if ! newly_fixed_indices.is_empty() {
+            if !newly_fixed_indices.is_empty() {
                 fixed_idx_in_last_iteration = true;
             }
         }
     }
-    (fix_states, tentative_modified_matrix, baseline_from_fixation)
+    (
+        fix_states,
+        tentative_modified_matrix,
+        baseline_from_fixation,
+    )
 }
 
 #[cfg(test)]
@@ -204,20 +253,62 @@ mod test {
     #[test]
     fn preprocessing_on_very_small_instances() {
         let preprocess_tests = [
-            ("instances/preprocessing_very_small/identity_matrix", [FixState::Fixed(false), FixState::Fixed(false), FixState::Fixed(false)]),
-            ("instances/preprocessing_very_small/negative_identity_matrix", [FixState::Fixed(true), FixState::Fixed(true), FixState::Fixed(true)]),
-            ("instances/preprocessing_very_small/test_rules_1_2_matrix", [FixState::Fixed(false), FixState::Fixed(true), FixState::Fixed(false)]),
-            ("instances/preprocessing_very_small/test_rule_4_matrix", [FixState::Fixed(true), FixState::Fixed(true), FixState::Fixed(true)]),
-            ("instances/preprocessing_very_small/other_small_test_matrix", [FixState::Fixed(true), FixState::Fixed(true), FixState::Fixed(false)]),
-            ("instances/preprocessing_very_small/zero_matrix", [FixState::Irrelevant, FixState::Irrelevant, FixState::Irrelevant])
+            (
+                "instances/preprocessing_very_small/identity_matrix",
+                [
+                    FixState::Fixed(false),
+                    FixState::Fixed(false),
+                    FixState::Fixed(false),
+                ],
+            ),
+            (
+                "instances/preprocessing_very_small/negative_identity_matrix",
+                [
+                    FixState::Fixed(true),
+                    FixState::Fixed(true),
+                    FixState::Fixed(true),
+                ],
+            ),
+            (
+                "instances/preprocessing_very_small/test_rules_1_2_matrix",
+                [
+                    FixState::Fixed(false),
+                    FixState::Fixed(true),
+                    FixState::Fixed(false),
+                ],
+            ),
+            (
+                "instances/preprocessing_very_small/test_rule_4_matrix",
+                [
+                    FixState::Fixed(true),
+                    FixState::Fixed(true),
+                    FixState::Fixed(true),
+                ],
+            ),
+            (
+                "instances/preprocessing_very_small/other_small_test_matrix",
+                [
+                    FixState::Fixed(true),
+                    FixState::Fixed(true),
+                    FixState::Fixed(false),
+                ],
+            ),
+            (
+                "instances/preprocessing_very_small/zero_matrix",
+                [
+                    FixState::Irrelevant,
+                    FixState::Irrelevant,
+                    FixState::Irrelevant,
+                ],
+            ),
         ];
         for preprocess_test in preprocess_tests {
             println!("{}", preprocess_test.0);
             let qubo_instance = QuboInstance::from_file(preprocess_test.0);
-            assert_eq!(qubo_instance.get_matrix().shape(), [3 as  usize, 3 as usize]);
+            assert_eq!(qubo_instance.get_matrix().shape(), [3 as usize, 3 as usize]);
             assert_eq!(qubo_instance.size(), 3);
-            let (fixations_of_solution_vars, _tentative_modified_matrix, _baseline_from_fixation)
-                = compute_fixations_of_solution_variables(&qubo_instance);
+            let (fixations_of_solution_vars, _tentative_modified_matrix, _baseline_from_fixation) =
+                compute_fixations_of_solution_variables(&qubo_instance);
             for i in 0..3 {
                 assert_eq!(fixations_of_solution_vars[i], preprocess_test.1[i]);
             }
