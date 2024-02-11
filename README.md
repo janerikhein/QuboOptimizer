@@ -6,14 +6,39 @@ Optimization is done in three main steps:
 2. Running a greedy start heuristic
 3. Doing tabu search
 
-We also provide some experiments to benchmark/test this implementation.
-
+We also provide some experiments to benchmark/test this implementation.  
 This is part of a project for the Scientific Computing course of TU Berlin.
 
 **Authors:**  
 * Jan-Erik Hein  
 * Lukas Mehl  
 * Paul Meinhold
+
+## Usage
+Run `cargo run --release EXPERIMENT_NUM`.
+The following experiments are possible:
+
+```main.rs
+    match experiment_num {
+        1 => {
+            experiments::analyze_preproc();
+        }
+        2 => {
+            experiments::analyze_start_heuristics();
+        }
+        3 => {
+            experiments::tune_tabu_params();
+        }
+        4 => {
+            experiments::tune_dsf();
+        }
+        5 => {
+            experiments::tune_tr();
+        }
+        6 => {
+            experiments::analyze_tabu_search();
+        }
+```
 
 ## Source files
 ```
