@@ -43,6 +43,10 @@ match experiment_num {
     }
 ```
 
+## Benchmark instances
+All used instances can be found in the `instances/` directory.
+[Source](https://github.com/rliang/qubo-benchmark-instances)
+
 ## Experiment logs
 For each experiment we provide the logs as `EXPERIMENT_NUM.out`.
 
