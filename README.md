@@ -42,6 +42,7 @@ match experiment_num {
     }
 ```
 ## Source files
+**Rust**
 ```
 src
 ├── qubo.rs             // Implement QuboInstance struct with upper-triang. matrix
@@ -51,5 +52,9 @@ src
 ├── experiments.rs      // Implement experiments
 └── main.rs             // Run experiments via command line
 ```
-
-[Literature](https://pads.ccc.de/QUwrTGlwvn)
+**Python**
+```
+qbsolv
+└── main.rs             // Use Qbsolv to compare with out heuristic
+```
+[Qbsolv](https://github.com/dwavesystems/qbsolv)

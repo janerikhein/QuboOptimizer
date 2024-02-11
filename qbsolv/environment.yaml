@@ -1,9 +1,0 @@
-# environment.yaml
-
-name: qb
-channels:
-  - conda-forge
-dependencies:
-  - pip
-  - pip:
-    - -r file:./requirements.txt
