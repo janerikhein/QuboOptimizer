@@ -369,11 +369,13 @@ pub fn tune_tr() {
     let mut total_goodness = Array1::from_elem(tr.len(), 0.);
     let time_limit_secs = 30;
     // Use best dsf and params given by previous param tunings
-    let dls = 0.05;
+    // best choice: dls=0.5, dbf=0.5, its=1, bmns=0.01 with avg. goodness 99.96994214783106
+    // best dsf=1.25 with 99.96326302023078
+    let dls = 0.5;
     let dbf = 0.5;
-    let dsf = 1.1;
     let its = 1.;
-    let bmns = 0.005;
+    let bmns = 0.01;
+    let dsf = 1.25;
     for inst in instances {
         let best_lit = get_literature_obj(inst);
         let qubo = QuboInstance::from_file(&filepath_from_name(inst));
