@@ -16,6 +16,7 @@ Cargo.lock
 # Paul:
 test.py
 greedy.py
+qbsolv/venv/
 *.pdf
 instances/*
 !instances/G*
