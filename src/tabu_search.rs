@@ -67,7 +67,7 @@ pub fn tabu_search(qubo: &QuboInstance, start_solution: &BinaryVector, log_level
     }
     let duration_secs = search_state.search_start_time.elapsed().as_secs_f64();
     let best_obj = search_state.best_objective;
-    print!("\n Optimization finished in {duration_secs}s. \n Objective of best solution found: {best_obj}");
+    println!("\n Optimization finished in {duration_secs}s. \n Objective of best solution found: {best_obj}");
     // TODO: write optimal solution to file
     search_state.best_solution
 }

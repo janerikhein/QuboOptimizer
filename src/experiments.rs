@@ -243,7 +243,6 @@ pub fn tune_tabu_params() {
         "bqp1000.3",
         "bqp1000.4",
         "bqp1000.5",
-        "bqp1000.6",
     ];
     println!("Run tabu parameter tuning");
     // Parameters to tune
@@ -264,10 +263,10 @@ pub fn tune_tabu_params() {
         let qubo = shrink(qubo);
         let n = qubo.size();
         println!("Size shrunk from {m} to {n}");
-        let time_limit_secs = 5;
+        let time_limit_secs = 3;
         let start_solution = compute_best_start_solution(&qubo);
-        //let mut obj_vals = Array4::from_elem((3, 3, 3, 2), 0.);
         let mut goodness = Array4::from_elem((3, 3, 3, 2), 0.);
+        let mut obj_vals = Array4::from_elem((3, 3, 3, 2), 0.);
         // Iterate over all possible combinations
         for (i, dls) in dls.iter().enumerate() {
             for (j, dbf) in dbf.iter().enumerate() {
@@ -286,20 +285,20 @@ pub fn tune_tabu_params() {
                         let solution =
                             tabu_search(&qubo, &start_solution, LOG_LEVEL, params);
                         let indices = [i, j, k, l];
-                        //obj_vals[indices] = qubo.compute_objective(&solution);
-                        let obj = qubo.compute_objective(&solution);
-                        goodness[indices] = 100.*obj/best_lit;
+                        obj_vals[indices] = qubo.compute_objective(&solution);
+                        goodness[indices] = 100.*obj_vals[indices]/best_lit;
                         total_goodness[indices] += goodness[indices];
                     }
                 }
             }
         }
-        println!("Computed goodness values for {inst}:\n{goodness:?}");
+        println!("Computed objectives for {inst}:\n{:?}", obj_vals);
     }
     let best = total_goodness.argmax().unwrap();
     let avg = total_goodness[best]/(instances.len() as f64);
     println!(
-        "best overall choice: {}, {}, {}, {} with avg. goodness {avg}",
+        "best overall choice: dls={}, dbf={}, its={}, bmns={} \
+        with avg. goodness {avg}",
         dls[best.0],
         dbf[best.1],
         its[best.2],
@@ -323,10 +322,11 @@ pub fn tune_dsf() {
     // Use constant tenure ratio
     let tr = 0.01;
     // Use best params given by param_tuning
-    let dls = 0.05;
+    // best choice: dls=0.5, dbf=0.5, its=1, bmns=0.01 with avg. goodness 99.96994214783106
+    let dls = 0.5;
     let dbf = 0.5;
     let its = 1.;
-    let bmns = 0.005;
+    let bmns = 0.01;
     for inst in instances {
         let best_lit = get_literature_obj(inst);
         let qubo = QuboInstance::from_file(&filepath_from_name(inst));
