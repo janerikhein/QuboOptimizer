@@ -51,7 +51,8 @@ match experiment_num {
 ```
 
 ## Experiment logs
-For each experiment we provide the logs as `EXPERIMENT_NUM.out`.
+For each experiment previously run by us, we provide the logs as
+`EXPERIMENT_NUM.out`.
 
 ## Source files
 **Rust**
