@@ -7,19 +7,23 @@ use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::Uniform;
 use rand_pcg::Pcg32;
 use std::fmt;
+use rand::prelude::{SliceRandom, StdRng};
 
 const AT_DN: usize = 0;
 const AT_UP: usize = 1;
 
 /// Computes the "sum cross" of x^T@Q@x for index k efficiently: O(n)
 fn compute_sum_cross(mat: &Matrix, x: &Vector, k: usize) -> f64 {
-    assert!(k <= mat.nrows());
+    assert!(k < mat.nrows());
     let xk = x[k];
     let mut sum_cross = 0.0;
     for i in 0..k {
         let xi = x[i];
-        sum_cross += mat[[i, k]]*xi*xk;
         sum_cross += mat[[k, i]]*xi*xk;
+    }
+    for i in k+1..mat.nrows() {
+        let xi = x[i];
+        sum_cross += mat[[i, k]]*xi*xk;
     }
     sum_cross + mat[[k, k]]*xk*xk
 }
@@ -101,7 +105,8 @@ impl StartHeuristic {
     ) -> Vector {
         assert!(0.0 <= floor && floor < ceil && ceil <= 1.0);
         // Make mutable copy
-        let mut hints = hints.clone();
+        //let mut hints = hints.clone();
+        let mut solution = hints.clone();
         let n = qubo.size();
         let mat = qubo.get_matrix();
         // Changes on round of entry:
@@ -109,17 +114,18 @@ impl StartHeuristic {
             Matrix::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
         // Compute initial dx
         for i in 0..n {
-            let tmp = hints[i];
+            let tmp = solution[i];
+            let sum_cross_of_old_solution = compute_sum_cross(mat, &solution, i);
             // Round down
-            hints[i] = floor;
+            solution[i] = floor;
             dx_on_round[[AT_DN, i]]
-                = compute_sum_cross(mat, &hints, i);
+                = compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
             // Round up
-            hints[i] = ceil;
+            solution[i] = ceil;
             dx_on_round[[AT_UP, i]]
-                = compute_sum_cross(mat, &hints, i);
+                = compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
             // Undo rounding
-            hints[i] = tmp;
+            solution[i] = tmp;
         }
         for _ in 0..n {
             // Find next best k for up/down rounding (for biggest downward dx)
@@ -133,20 +139,68 @@ impl StartHeuristic {
             dx_on_round[[AT_UP, k]] = f64::MAX;
             // Update dx at unvisited columns to respect the rounding at k
             for i in 0..n {
-                if hints[i] == f64::MAX { continue; }
+                if solution[i] == f64::MAX { continue; }
                 let matsum = mat[[i, k]] + mat[[k, i]];
-                // Subtract from dx for current hints[i] and old hints[k]
-                dx_on_round[[AT_DN, i]] -= matsum*floor*hints[k];
-                dx_on_round[[AT_UP, i]] -= matsum*ceil*hints[k];
-                // Add to dx for new hints[k]=round and floor or ceil at i
-                dx_on_round[[AT_DN, i]] += matsum*floor*round;
-                dx_on_round[[AT_UP, i]] += matsum*ceil*round;
+                dx_on_round[[AT_DN, i]] += matsum*(floor-solution[i])*(round-solution[k]);
+                dx_on_round[[AT_UP, i]] += matsum*(ceil-solution[i])*(round-solution[k]);
             }
             // Actually round at k
-            hints[k] = round;
+            solution[k] = round;
         }
-        hints
+        solution
     }
+
+    fn random_order_rounding (
+        qubo:  &QuboInstance,
+        hints: &Vector,
+        number_of_tries : usize,
+        seed: usize,
+    ) -> Vector {
+        let mat = qubo.get_matrix();
+        let mut base_contribution = Vector::zeros(qubo.size());
+        let mut rng = StdRng::seed_from_u64(seed as u64);
+        // intialize contributions aka "sum crosses"
+        for i in 0..qubo.size() {
+            base_contribution[i] = compute_sum_cross(mat, hints, i);
+        }
+        let base_objective = base_contribution.sum();
+        let mut best_solution = None;
+        let mut best_objective = f64::MAX;
+        for _ in 0..number_of_tries {
+            let mut contribution = base_contribution.clone();
+            let mut solution = hints.clone();
+            let mut solution_objective = base_objective;
+            let mut is_rounded = BinaryVector::from_elem(qubo.size(), false);
+            let mut rounding_order: Vec<usize> = (0..qubo.size()).collect();
+            rounding_order.shuffle(&mut rng);
+            for index in rounding_order {
+                is_rounded[index] = true;
+                let delta_up = (1.0 - solution[index]) * contribution[index];
+                let delta_down = -solution[index] * contribution[index];
+                for k in 0..qubo.size() {
+                    if is_rounded[k] { continue }
+                    let matrix_entry = if index < k { mat[[index, k]] } else { mat[[k, index]] };
+                    if delta_up <= 0.0 {
+                        assert!(delta_down >= 0.0);
+                        contribution[k] += (1.0 - solution[index]) * matrix_entry;
+                        solution_objective += delta_up;
+                    } else {
+                        assert!(delta_up >= 0.0);
+                        contribution[k] -= solution[index] * matrix_entry;
+                        solution_objective += delta_up;
+                    }
+                }
+                solution[index] = if delta_up <= 0.0 {1.0} else {0.0};
+            }
+            if solution_objective < best_objective {
+                best_objective = solution_objective;
+                best_solution = Some(solution);
+            }
+        }
+        best_solution.unwrap()
+    }
+
+
 }
 impl fmt::Debug for StartHeuristic {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -189,12 +243,14 @@ mod tests {
     fn test_sum_cross() {
         let x = BinaryVector::from_vec(vec![true, false, true]);
         let matrix = Matrix::from_shape_vec((3,3),
-            vec![1.0, 2.0, 3.0, 0.0, 4.0, 5.0, 0.0, 0.0, 6.0,]).unwrap();
+            vec![1.0, 0.0, 0.0, 2.0, 3.0, 0.0, 4.0, 5.0, 6.0,]).unwrap();
+        let sum_cross_values = vec![5.0, 0.0, 10.0];
         let mut obj_val = 0.0;
         for i in 0..matrix.nrows() {
-            obj_val += compute_sum_cross_bin(&matrix, &x, i);
+            let sum_cross = compute_sum_cross_bin(&matrix, &x, i);
+            obj_val += sum_cross;
+            assert_eq!(sum_cross, sum_cross_values[i]);
         }
-        assert_eq!(10.0, obj_val);
     }
 
     #[test]
