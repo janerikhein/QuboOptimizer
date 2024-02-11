@@ -114,15 +114,15 @@ impl StartHeuristic {
         // Compute initial dx
         for i in 0..n {
             let tmp = solution[i];
-            let sum_cross_of_hints = compute_sum_cross(mat, &hints, i);
+            let sum_cross_of_old_solution = compute_sum_cross(mat, &solution, i);
             // Round down
             solution[i] = floor;
             dx_on_round[[AT_DN, i]]
-                = compute_sum_cross(mat, &solution, i) - sum_cross_of_hints;
+                = compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
             // Round up
             solution[i] = ceil;
             dx_on_round[[AT_UP, i]]
-                = compute_sum_cross(mat, &solution, i) - sum_cross_of_hints;
+                = compute_sum_cross(mat, &solution, i) - sum_cross_of_old_solution;
             // Undo rounding
             solution[i] = tmp;
         }
