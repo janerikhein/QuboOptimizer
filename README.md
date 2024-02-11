@@ -10,7 +10,10 @@ We also provide some experiments to benchmark/test this implementation.
 
 This is part of a project for the Scientific Computing course of TU Berlin.
 
-**Authors** Jan-Erik Hein, Lukas Mehl, Paul Meinhold
+**Authors:**
+Jan-Erik Hein \\
+Lukas Mehl \\
+Paul Meinhold \\
 
 ## Source files
 ```
