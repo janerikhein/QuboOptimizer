@@ -2,9 +2,9 @@ QuboOptimizer is a heuristic for the quadratic unconstrained binary optimization
 (**QUBO**) problem written in Rust.
 Optimization is done in three main steps:
 
-    1. Preprocessing
-    2. Running a greedy start heuristic
-    3. Doing tabu search
+1. Preprocessing
+2. Running a greedy start heuristic
+3. Doing tabu search
 
 We also provide some experiments to benchmark/test this implementation.
 
