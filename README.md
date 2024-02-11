@@ -15,7 +15,13 @@ TU Berlin.
 * Lukas Mehl  
 * Paul Meinhold
 
+## Benchmark instances
+Some of the used instances can be found in the `instances/` directory.
+Due to size limitations, the bigger ones have to be attained
+[here](https://github.com/rliang/qubo-benchmark-instances).
+
 ## Usage
+Make sure all instances are locally available.  
 Run `cargo run --release EXPERIMENT_NUM` inside the project directory and the
 corresponging experiment will be executed:
 ```Rust
@@ -42,10 +48,6 @@ match experiment_num {
         println!("No valid experiment_num");
     }
 ```
-
-## Benchmark instances
-All used instances can be found in the `instances/` directory.
-[Source](https://github.com/rliang/qubo-benchmark-instances)
 
 ## Experiment logs
 For each experiment we provide the logs as `EXPERIMENT_NUM.out`.
