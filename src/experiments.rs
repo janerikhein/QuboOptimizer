@@ -177,8 +177,10 @@ pub fn analyze_start_heuristics() {
         "p7000.3",
     ];
     println!("Run start heuristics analysis");
-    println!(" name      &   size &    x0% &    x1% &    x2% & best_lit \
-        &   gap% &   [ms] \\\\");
+    println!(
+        "{:10} & {:6} & {:10} & {:10} & {:10} & {:10} & {:6} & {:5} \\\\",
+        "name", "size", "x0",   "x1",   "x2",   "lit",  "gap%",  "[ms]",
+    );
     let mut total_goodness = Vector::from_vec(vec![0.; 4]);
     for inst in instances {
         let qubo = QuboInstance::from_file(&filepath_from_name(inst));
@@ -191,23 +193,24 @@ pub fn analyze_start_heuristics() {
         ];
         let best_lit = get_literature_obj(inst);
         let mut goodness = Vector::from_vec(vec![0.; heuristics.len()]);
+        let mut obj_vals = Vector::from_vec(vec![0.; heuristics.len()]);
         let mut avg_ms = 0;
         for k in 0..heuristics.len() {
             let now = std::time::Instant::now();
             let sol = heuristics[k].get_solution(&qubo);
             avg_ms += now.elapsed().as_millis();
-            let obj = qubo.compute_objective(&sol);
-            goodness[k] = 100.*obj/best_lit;
+            obj_vals[k] = qubo.compute_objective(&sol);
+            goodness[k] = 100.*obj_vals[k]/best_lit;
             total_goodness[k] += goodness[k];
         }
         avg_ms /= heuristics.len() as u128;
         let gap = 100. - goodness.max().unwrap();
-        let x0 = goodness[0];
-        let x1 = goodness[1];
-        let x2 = goodness[2];
+        let x0 = obj_vals[0];
+        let x1 = obj_vals[1];
+        let x2 = obj_vals[2];
         println!(
-            "{inst:10} & {n:6} & {x0:6.2} & {x1:6.2} & {x2:6.2} \
-            & {best_lit:5.3e} & {gap:6.2} & {avg_ms:>6?} \\\\"
+            "{:10} & {:6} & {:10} & {:10} & {:10} & {:10} & {:6.2} & {:5} \\\\",
+            inst,    n,     x0,     x1,     x2,   best_lit,  gap,  avg_ms,
         );
     }
     let best = total_goodness.argmax().unwrap();
@@ -418,6 +421,7 @@ pub fn analyze_tabu_search() {
     let bmns = 0.005;
     let time_limit_secs = 3600; // 1h
     let mut goodness = Array1::from_elem(instances.len(), 0.);
+    let mut obj_vals = Array1::from_elem(instances.len(), 0.);
     let mut times = Array1::from_elem(instances.len(), 0);
     for (i, inst) in instances.iter().enumerate() {
         let best_lit = get_literature_obj(inst);
@@ -433,21 +437,25 @@ pub fn analyze_tabu_search() {
         let now = std::time::Instant::now();
         let solution = tabu_search(&qubo, &start_solution, LOG_LEVEL, params);
         times[i] = now.elapsed().as_millis();
-        let obj = qubo.compute_objective(&solution);
-        goodness[i] = 100.*obj/best_lit;
+        obj_vals[i] = qubo.compute_objective(&solution);
+        goodness[i] = 100.*obj_vals[i]/best_lit;
     }
     // Table printing
-    println!(" name      &   size &   obj% & best_lit &   gap% &   [ms] \\\\");
+    println!(
+        "{:10} & {:6} & {:10} & {:10} & {:6} & {:5} \\\\",
+        "name", "size", "obj",  "lit",  "gap%",  "[ms]",
+    );
     for (i, inst) in instances.iter().enumerate() {
         let best_lit = get_literature_obj(inst);
         let qubo = QuboInstance::from_file(&filepath_from_name(inst));
         let m = qubo.size();
         let g = goodness[i];
-        let gap = 100. - g;
+        let obj = obj_vals[i];
+        let gap = 100. - g;;
         let elapsed = times[i];
         println!(
-            "{inst:10} & {m:6} & {g} & {best_lit:5.3e} & {gap:6.2} \
-            & {elapsed:>6?} \\\\"
+            "{:10} & {:6} & {:10} & {:10} & {:6.2} & {:5} \\\\",
+            inst,    m,     obj,   best_lit,  gap,  elapsed,
         );
     }
 }
