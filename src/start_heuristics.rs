@@ -101,7 +101,8 @@ impl StartHeuristic {
     ) -> Vector {
         assert!(0.0 <= floor && floor < ceil && ceil <= 1.0);
         // Make mutable copy
-        let mut hints = hints.clone();
+        //let mut hints = hints.clone();
+        let mut solution = hints.clone();
         let n = qubo.size();
         let mat = qubo.get_matrix();
         // Changes on round of entry:
@@ -109,17 +110,18 @@ impl StartHeuristic {
             Matrix::from_shape_vec((2, n), vec![0.0; 2*n]).unwrap();
         // Compute initial dx
         for i in 0..n {
-            let tmp = hints[i];
+            let tmp = solution[i];
+            let sum_cross_of_hints = compute_sum_cross(mat, &hints, i);
             // Round down
-            hints[i] = floor;
+            solution[i] = floor;
             dx_on_round[[AT_DN, i]]
-                = compute_sum_cross(mat, &hints, i);
+                = compute_sum_cross(mat, &solution, i) - sum_cross_of_hints;
             // Round up
-            hints[i] = ceil;
+            solution[i] = ceil;
             dx_on_round[[AT_UP, i]]
-                = compute_sum_cross(mat, &hints, i);
+                = compute_sum_cross(mat, &solution, i) - sum_cross_of_hints;
             // Undo rounding
-            hints[i] = tmp;
+            solution[i] = tmp;
         }
         for _ in 0..n {
             // Find next best k for up/down rounding (for biggest downward dx)
@@ -133,19 +135,15 @@ impl StartHeuristic {
             dx_on_round[[AT_UP, k]] = f64::MAX;
             // Update dx at unvisited columns to respect the rounding at k
             for i in 0..n {
-                if hints[i] == f64::MAX { continue; }
+                if solution[i] == f64::MAX { continue; }
                 let matsum = mat[[i, k]] + mat[[k, i]];
-                // Subtract from dx for current hints[i] and old hints[k]
-                dx_on_round[[AT_DN, i]] -= matsum*floor*hints[k];
-                dx_on_round[[AT_UP, i]] -= matsum*ceil*hints[k];
-                // Add to dx for new hints[k]=round and floor or ceil at i
-                dx_on_round[[AT_DN, i]] += matsum*floor*round;
-                dx_on_round[[AT_UP, i]] += matsum*ceil*round;
+                dx_on_round[[AT_DN, i]] += matsum*(floor-solution[i])*(round-solution[k]);
+                dx_on_round[[AT_UP, i]] += matsum*(ceil-solution[i])*(round-solution[k]);
             }
             // Actually round at k
-            hints[k] = round;
+            solution[k] = round;
         }
-        hints
+        solution
     }
 }
 impl fmt::Debug for StartHeuristic {
