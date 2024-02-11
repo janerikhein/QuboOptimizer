@@ -55,6 +55,6 @@ src
 **Python**
 ```
 qbsolv
-└── main.rs             // Use Qbsolv to compare with out heuristic
+└── test.py             // Use Qbsolv to compare with out heuristic
 ```
 Read [Qbsolv](https://github.com/dwavesystems/qbsolv) for more info.
