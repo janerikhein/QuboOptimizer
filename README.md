@@ -47,6 +47,7 @@ match experiment_num {
     _ => {
         println!("No valid experiment_num");
     }
+}
 ```
 
 ## Experiment logs
