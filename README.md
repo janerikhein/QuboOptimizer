@@ -57,4 +57,4 @@ src
 qbsolv
 └── main.rs             // Use Qbsolv to compare with out heuristic
 ```
-[Qbsolv](https://github.com/dwavesystems/qbsolv)
+Read [Qbsolv](https://github.com/dwavesystems/qbsolv) for more info.
