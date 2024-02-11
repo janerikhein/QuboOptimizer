@@ -6,7 +6,6 @@ use ndarray_rand::RandomExt;
 use ndarray_rand::rand::SeedableRng;
 use ndarray_rand::rand_distr::Uniform;
 use rand_pcg::Pcg32;
-use std::fmt;
 use rand::prelude::{SliceRandom, StdRng};
 
 const AT_DN: usize = 0;
@@ -31,7 +30,7 @@ fn compute_sum_cross(mat: &Matrix, x: &Vector, k: usize) -> f64 {
 }
 
 /// Cast Vector (f64) to BinaryVector (bool)
-fn vecf_from_vecb(x: &Vector) -> BinaryVector {
+fn vecb_from_vecf(x: &Vector) -> BinaryVector {
     let n = x.len();
     let mut y = BinaryVector::from_vec(vec![false; n]);
     for i in 0..n {
@@ -44,6 +43,7 @@ pub enum StartHeuristic {
     Random(u64),
     GreedyFromHint(f64),
     GreedyFromVec(Vector),
+    RandomFromVec(Vector, usize, u64),
     GreedyInSteps(),
 }
 impl StartHeuristic {
@@ -57,6 +57,11 @@ impl StartHeuristic {
             },
             StartHeuristic::GreedyFromVec(hint_vec) => {
                 StartHeuristic::greedy_from_vec(qubo, hint_vec)
+            },
+            StartHeuristic::RandomFromVec(hint_vec, n_tries, seed) => {
+                StartHeuristic::random_order_rounding(
+                    qubo, hint_vec, *n_tries, *seed
+                )
             },
             StartHeuristic::GreedyInSteps() => {
                 StartHeuristic::greedy_in_steps(qubo)
@@ -73,18 +78,18 @@ impl StartHeuristic {
         for i in 0..solution.len() {
             solution[i] = solution[i].round();
         }
-        vecf_from_vecb(&solution)
+        vecb_from_vecf(&solution)
     }
     
     /// Do greedy rounding with "hint" for all starting entries
     fn greedy_from_hint(qubo: &QuboInstance, hint: f64) -> BinaryVector {
         let hints = Vector::from_vec(vec![hint; qubo.size()]);
-        vecf_from_vecb(&Self::greedy(qubo, &hints, 0.0, 1.0))
+        vecb_from_vecf(&Self::greedy(qubo, &hints, 0.0, 1.0))
     }
 
     /// Do greedy rounding with hint vector
     fn greedy_from_vec(qubo: &QuboInstance, hints: &Vector) -> BinaryVector {
-        vecf_from_vecb(&Self::greedy(qubo, hints, 0.0, 1.0))
+        vecb_from_vecf(&Self::greedy(qubo, hints, 0.0, 1.0))
     }
 
     /// Do greedy rounding five times with ever-evolving floors/ceilings
@@ -95,7 +100,7 @@ impl StartHeuristic {
         let hints = &Self::greedy(qubo, hints, 0.2, 0.8);
         let hints = &Self::greedy(qubo, hints, 0.1, 0.9);
         let hints = &Self::greedy(qubo, hints, 0.0, 1.0);
-        vecf_from_vecb(hints)
+        vecb_from_vecf(hints)
     }
 
     /// Find best rounding toward floor or ceil for each hint entry greedily
@@ -156,11 +161,11 @@ impl StartHeuristic {
         qubo:  &QuboInstance,
         hints: &Vector,
         number_of_tries : usize,
-        seed: usize,
-    ) -> Vector {
+        seed: u64,
+    ) -> BinaryVector {
         let mat = qubo.get_matrix();
         let mut base_contribution = Vector::zeros(qubo.size());
-        let mut rng = StdRng::seed_from_u64(seed as u64);
+        let mut rng = StdRng::seed_from_u64(seed);
         // intialize contributions aka "sum crosses"
         for i in 0..qubo.size() {
             base_contribution[i] = compute_sum_cross(mat, hints, i);
@@ -199,32 +204,7 @@ impl StartHeuristic {
                 best_solution = Some(solution);
             }
         }
-        best_solution.unwrap()
-    }
-
-
-}
-impl fmt::Debug for StartHeuristic {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            StartHeuristic::Random(seed) => {
-                write!(f, "Random({seed})")
-            },
-            StartHeuristic::GreedyFromHint(hint) => {
-                write!(f, "GreedyFromHint({hint})")
-            },
-            StartHeuristic::GreedyFromVec(hint_vec) => {
-                write!(
-                    f,
-                    "GreedyFromVec([{:.3},..,{:.3}])",
-                    hint_vec[0],
-                    hint_vec[hint_vec.len() - 1]
-                )
-            },
-            StartHeuristic::GreedyInSteps() => {
-                write!(f, "GreedyInSteps()")
-            },
-        }
+        vecb_from_vecf(&best_solution.unwrap())
     }
 }
 

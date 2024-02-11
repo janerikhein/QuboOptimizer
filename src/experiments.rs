@@ -178,39 +178,56 @@ pub fn analyze_start_heuristics() {
     ];
     println!("Run start heuristics analysis");
     println!(
-        "{:10} & {:6} & {:10} & {:10} & {:10} & {:10} & {:6} & {:5} \\\\",
-        "name", "size", "x0",   "x1",   "x2",   "lit",  "gap%",  "[ms]",
+        "{:10} & {:6} & {:10} & {:10} & {:10} & {:10} & {:10} & {:10} \
+        & {:10} & {:6} & {:5} & {:5} \\\\",
+        "name", "size", "x0",   "x1",   "x2",   "r0",   "r1",   "r2",
+        "lit",  "gap%",  "greedy[ms]", "random[ms]",
     );
-    let mut total_goodness = Vector::from_vec(vec![0.; 4]);
+    let mut total_goodness = Vector::from_vec(vec![0.; 6]);
     for inst in instances {
         let qubo = QuboInstance::from_file(&filepath_from_name(inst));
         let n = qubo.size();
         let (a, b, c) = create_hint_vecs(&qubo);
         let heuristics = [
-            StartHeuristic::GreedyFromVec(a),
-            StartHeuristic::GreedyFromVec(b),
-            StartHeuristic::GreedyFromVec(c),
+            StartHeuristic::GreedyFromVec(a.clone()),
+            StartHeuristic::GreedyFromVec(b.clone()),
+            StartHeuristic::GreedyFromVec(c.clone()),
+            StartHeuristic::RandomFromVec(a, 100, 42),
+            StartHeuristic::RandomFromVec(b, 100, 42),
+            StartHeuristic::RandomFromVec(c, 100, 42),
         ];
         let best_lit = get_literature_obj(inst);
         let mut goodness = Vector::from_vec(vec![0.; heuristics.len()]);
         let mut obj_vals = Vector::from_vec(vec![0.; heuristics.len()]);
-        let mut avg_ms = 0;
+        let mut avg_ms_greedy = 0;
+        let mut avg_ms_random = 0;
         for k in 0..heuristics.len() {
             let now = std::time::Instant::now();
             let sol = heuristics[k].get_solution(&qubo);
-            avg_ms += now.elapsed().as_millis();
+            if k < 3 {
+                avg_ms_greedy += now.elapsed().as_millis();
+            }
+            else {
+                avg_ms_random += now.elapsed().as_millis();
+            }
             obj_vals[k] = qubo.compute_objective(&sol);
             goodness[k] = 100.*obj_vals[k]/best_lit;
             total_goodness[k] += goodness[k];
         }
-        avg_ms /= heuristics.len() as u128;
+        avg_ms_greedy /= 3;
+        avg_ms_random /= 3;
         let gap = 100. - goodness.max().unwrap();
         let x0 = obj_vals[0];
         let x1 = obj_vals[1];
         let x2 = obj_vals[2];
+        let r0 = obj_vals[3];
+        let r1 = obj_vals[4];
+        let r2 = obj_vals[5];
         println!(
-            "{:10} & {:6} & {:10} & {:10} & {:10} & {:10} & {:6.2} & {:5} \\\\",
-            inst,    n,     x0,     x1,     x2,   best_lit,  gap,  avg_ms,
+            "{:10} & {:6} & {:10} & {:10} & {:10} & {:10} & {:10} & {:10} \
+            & {:10} & {:6.2} & {:5} & {:5} \\\\",
+            inst,    n,     x0,     x1,     x2,     r0,     r1,     r2,
+            best_lit,  gap,  avg_ms_greedy, avg_ms_random,
         );
     }
     let best = total_goodness.argmax().unwrap();
@@ -221,12 +238,12 @@ pub fn analyze_start_heuristics() {
 /// Tune variable tabu search parameters except tenure ratio
 pub fn tune_tabu_params() {
     let instances = [
-        "bqp250.1",
-        "bqp250.2",
-        "bqp250.3",
-        "bqp250.4",
-        "bqp250.5",
-        "bqp250.6",
+        "bqp1000.1",
+        "bqp1000.2",
+        "bqp1000.3",
+        "bqp1000.4",
+        "bqp1000.5",
+        "bqp1000.6",
     ];
     println!("Run tabu parameter tuning");
     // Parameters to tune
@@ -247,7 +264,7 @@ pub fn tune_tabu_params() {
         let qubo = shrink(qubo);
         let n = qubo.size();
         println!("Size shrunk from {m} to {n}");
-        let time_limit_secs = 30;
+        let time_limit_secs = 5;
         let start_solution = compute_best_start_solution(&qubo);
         //let mut obj_vals = Array4::from_elem((3, 3, 3, 2), 0.);
         let mut goodness = Array4::from_elem((3, 3, 3, 2), 0.);
@@ -451,7 +468,7 @@ pub fn analyze_tabu_search() {
         let m = qubo.size();
         let g = goodness[i];
         let obj = obj_vals[i];
-        let gap = 100. - g;;
+        let gap = 100. - g;
         let elapsed = times[i];
         println!(
             "{:10} & {:6} & {:10} & {:10} & {:6.2} & {:5} \\\\",
