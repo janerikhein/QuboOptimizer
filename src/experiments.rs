@@ -432,12 +432,15 @@ pub fn analyze_tabu_search() {
     ];
     println!("Run tabu search analysis");
     // Use best params given by tune_tabu_params(), tune_tr() and tune_dsf()
-    let tr = 0.05;
-    let dls = 0.05;
+    // best choice: dls=0.5, dbf=0.5, its=1, bmns=0.01 with avg. goodness 99.96994214783106
+    // best dsf=1.25 with 99.96326302023078
+    // best tr=0.05 with 99.98820818743988
+    let dls = 0.5;
     let dbf = 0.5;
-    let dsf = 1.1;
     let its = 1.;
-    let bmns = 0.005;
+    let bmns = 0.01;
+    let dsf = 1.25;
+    let tr = 0.05;
     let time_limit_secs = 3600; // 1h
     let mut goodness = Array1::from_elem(instances.len(), 0.);
     let mut obj_vals = Array1::from_elem(instances.len(), 0.);
