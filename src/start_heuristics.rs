@@ -13,13 +13,16 @@ const AT_UP: usize = 1;
 
 /// Computes the "sum cross" of x^T@Q@x for index k efficiently: O(n)
 fn compute_sum_cross(mat: &Matrix, x: &Vector, k: usize) -> f64 {
-    assert!(k <= mat.nrows());
+    assert!(k < mat.nrows());
     let xk = x[k];
     let mut sum_cross = 0.0;
     for i in 0..k {
         let xi = x[i];
-        sum_cross += mat[[i, k]]*xi*xk;
         sum_cross += mat[[k, i]]*xi*xk;
+    }
+    for i in k+1..mat.nrows() {
+        let xi = x[i];
+        sum_cross += mat[[i, k]]*xi*xk;
     }
     sum_cross + mat[[k, k]]*xk*xk
 }
@@ -187,12 +190,14 @@ mod tests {
     fn test_sum_cross() {
         let x = BinaryVector::from_vec(vec![true, false, true]);
         let matrix = Matrix::from_shape_vec((3,3),
-            vec![1.0, 2.0, 3.0, 0.0, 4.0, 5.0, 0.0, 0.0, 6.0,]).unwrap();
+            vec![1.0, 0.0, 0.0, 2.0, 3.0, 0.0, 4.0, 5.0, 6.0,]).unwrap();
+        let sum_cross_values = vec![5.0, 0.0, 10.0];
         let mut obj_val = 0.0;
         for i in 0..matrix.nrows() {
-            obj_val += compute_sum_cross_bin(&matrix, &x, i);
+            let sum_cross = compute_sum_cross_bin(&matrix, &x, i);;
+            obj_val += sum_cross;
+            assert_eq!(sum_cross, sum_cross_values[i]);
         }
-        assert_eq!(10.0, obj_val);
     }
 
     #[test]
